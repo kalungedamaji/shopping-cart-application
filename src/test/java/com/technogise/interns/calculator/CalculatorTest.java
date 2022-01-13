@@ -14,6 +14,14 @@ class CalculatorTest {
         int actualSum = calculator.sum(FIRST_NUMBER,SECOND_NUMBER);
         Assertions.assertEquals(EXPECTED_SUM,actualSum);
     }
+    @Test
+    public void testTwoMinusTwoEqualsZero() {
+        int FIRST_NUMBER = 2, SECOND_NUMBER = 2, EXPECTED_DIFFERENCE = 0;
+        Calculator calculator = new Calculator();
+        int actualDifference = calculator.minus(FIRST_NUMBER,SECOND_NUMBER);
+        Assertions.assertEquals(EXPECTED_DIFFERENCE,actualDifference);
+    }
+
 
     @Test
     public void testMaxOfFourAndThreeEqualsFour() {

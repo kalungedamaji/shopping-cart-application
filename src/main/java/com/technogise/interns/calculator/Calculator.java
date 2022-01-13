@@ -5,8 +5,8 @@ public class Calculator {
     public int sum(int firstNumber, int secondNumber) {
         return firstNumber + secondNumber;
     }
-    public int minus(int a, int b) {
-        return a - b;
+    public int minus(int firstNumber, int secondNumber) {
+        return firstNumber - secondNumber;
     }
     public int divide(int a, int b) {
         return a / b;
