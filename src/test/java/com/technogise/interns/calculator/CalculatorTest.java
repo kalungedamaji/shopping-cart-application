@@ -22,6 +22,13 @@ class CalculatorTest {
         Assertions.assertEquals(EXPECTED_DIFFERENCE,actualDifference);
     }
 
+    @Test
+    public void testEightDividesFourEqualsTwo() {
+        int FIRST_NUMBER = 8, SECOND_NUMBER = 4, EXPECTED_QUOTIENT = 2;
+        Calculator calculator = new Calculator();
+        int actualQuotient = calculator.divide(FIRST_NUMBER, SECOND_NUMBER);
+        Assertions.assertEquals(EXPECTED_QUOTIENT, actualQuotient);
+    }
 
     @Test
     public void testMaxOfFourAndThreeEqualsFour() {
@@ -39,4 +46,11 @@ class CalculatorTest {
         Assertions.assertEquals(EXPECTED_PRODUCT,actualProduct);
     }
 
+    @Test
+    public void testMinOfTwoAndFiveEqualsTwo() {
+        int FIRST_NUMBER = 2, SECOND_NUMBER = 5, EXPECTED_MIN = 2;
+        Calculator calculator = new Calculator();
+        int actualMin = calculator.min(FIRST_NUMBER,SECOND_NUMBER);
+        Assertions.assertEquals(EXPECTED_MIN,actualMin);
+    }
 }
