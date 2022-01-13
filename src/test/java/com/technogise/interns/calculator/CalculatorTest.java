@@ -23,4 +23,12 @@ class CalculatorTest {
         Assertions.assertEquals(EXPECTED_MAX,actualMax);
     }
 
+    @Test
+    public void testTwoMultiplyTwoEqualsFour() {
+        int FIRST_NUMBER = 2, SECOND_NUMBER = 2, EXPECTED_PRODUCT = 4;
+        Calculator calculator = new Calculator();
+        int actualProduct = calculator.multiply(FIRST_NUMBER,SECOND_NUMBER);
+        Assertions.assertEquals(EXPECTED_PRODUCT,actualProduct);
+    }
+
 }

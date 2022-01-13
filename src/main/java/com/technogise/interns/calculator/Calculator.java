@@ -11,8 +11,8 @@ public class Calculator {
     public int divide(int a, int b) {
         return a / b;
     }
-    public int multiply(int a, int b) {
-        return a * b;
+    public int multiply(int firstNumber, int secondNumber) {
+        return firstNumber * secondNumber;
     }
     public int min(int a, int b) {
         return a<b?a:b;
