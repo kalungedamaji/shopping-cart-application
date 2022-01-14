@@ -12,14 +12,16 @@ public class ProductTest {
     @Test
     public void testGetNameAndSetName(){
         String EXPECTED_NAME = "Dove";
-        product.setName("Dove");
+        String INPUT_NAME = "Dove";
+        product.setName(INPUT_NAME);
         String actualName = product.getName();
         assertEquals(EXPECTED_NAME, actualName);
     }
     @Test
     public void testGetPriceAndSetPrice(){
         BigDecimal EXPECTED_PRICE = BigDecimal.valueOf(39.99);
-        product.setPrice(EXPECTED_PRICE);
+        BigDecimal INPUT_PRICE = BigDecimal.valueOf(39.99);
+        product.setPrice(INPUT_PRICE);
         BigDecimal actualPrice = product.getPrice();
         assertEquals(EXPECTED_PRICE,actualPrice);
 
