@@ -8,24 +8,26 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
+    Product product = new Product();
+
     @Test
-    public void testGetName()
+    public void testSetNameGetName()
     {
-        String expectedName = "Dove";
-        Product product = new Product();
-        product.setName(expectedName);
+        final String EXPECTED_NAME = "Dove";
+        final String INPUT_NAME = "Dove";
+        product.setName(INPUT_NAME);
         String actualName = product.getName();
-        Assertions.assertEquals(expectedName, actualName);
+        assertEquals(EXPECTED_NAME, actualName);
     }
 
     @Test
-    public void testGetPrice()
+    public void testSetPriceGetPrice()
     {
-        BigDecimal expectedPrice = BigDecimal.valueOf(39.99);
-        Product product = new Product();
-        product.setPrice(expectedPrice);
+        final BigDecimal EXPECTED_PRICE = BigDecimal.valueOf(39.99);
+        final BigDecimal INPUT_PRICE = BigDecimal.valueOf(39.99);
+        product.setPrice(INPUT_PRICE);
         BigDecimal actualPrice = product.getPrice();
-        Assertions.assertEquals(expectedPrice, actualPrice);
+        assertEquals(EXPECTED_PRICE, actualPrice);
     }
 
 }
