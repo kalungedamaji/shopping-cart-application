@@ -8,7 +8,7 @@ public class ShoppingCart {
     private static final int TWO_DIGIT_PRECISION =2;
 
     public void addProducts(Product product, int numberOfProducts) {
-        //product.setName("XYZ");
+        product= new Product();
        setProduct(product);
        setNumberOfProducts(numberOfProducts);
     }
