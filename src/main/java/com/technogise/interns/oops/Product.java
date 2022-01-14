@@ -3,7 +3,7 @@ package com.technogise.interns.oops;
 import java.math.BigDecimal;
 
 public class Product {
-   private  String name;
+    private  String name;
     private BigDecimal price;
 
     public BigDecimal getPrice() {
