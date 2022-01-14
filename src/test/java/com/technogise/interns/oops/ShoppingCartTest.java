@@ -9,28 +9,42 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ShoppingCartTest {
 
-    Product product = new Product();
-    ShoppingCart shoppingCart = new ShoppingCart();
-    int NO_OF_PRODUCTS = 5;
+    private ShoppingCart shoppingCart = new ShoppingCart();
+
 
     @Test
-    public void testGetNumberOfProducts(){
-        int EXPECTED_NO_OF_PRODUCTS = 5;
-        Product  product = new Product();
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.addProducts(product, NO_OF_PRODUCTS);
+    public void testGetAndSetNumberOfProducts(){
+        final int EXPECTED_NO_OF_PRODUCTS = 5;
+        final int NO_OF_PRODUCTS = 5;
+        Product soapProduct = new Product();
+        soapProduct.setName("Nivea");
+        soapProduct.setPrice(BigDecimal.valueOf(20.99));
+
+        shoppingCart.addProducts(soapProduct, NO_OF_PRODUCTS);
+
         int actualNoOfProducts = shoppingCart.getNumberOfProducts();
         Assertions.assertEquals(EXPECTED_NO_OF_PRODUCTS,actualNoOfProducts);
+
+        Product actualProduct = shoppingCart.getProduct();
+
+        Product expectedProduct = new Product();
+        expectedProduct.setName("Nivea");
+        expectedProduct.setPrice(BigDecimal.valueOf(20.99));
+        Assertions.assertEquals(expectedProduct, actualProduct);
+
     }
     @Test
     public void testCalculateTotalPrice(){
-        int TWO_DIGIT_PRECISION = 2;
-        BigDecimal unitPrice = BigDecimal.valueOf(39.99);
-        BigDecimal EXPECTED_TOTAL_PRICE = BigDecimal.valueOf(199.95);
-        shoppingCart.addProducts(product, NO_OF_PRODUCTS);
-        product.setPrice(unitPrice);
-        BigDecimal actualTotalPrice = shoppingCart.getProduct().getPrice().multiply(BigDecimal.valueOf(shoppingCart.getNumberOfProducts())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP) ;
-        Assertions.assertEquals(EXPECTED_TOTAL_PRICE,actualTotalPrice);
+        final int NO_OF_PRODUCTS = 5;
+        final BigDecimal EXPECTED_TOTAL_CART_VALUE = BigDecimal.valueOf(199.95);
+        Product soapProduct = new Product();
+        soapProduct.setName("Dove");
+        soapProduct.setPrice(BigDecimal.valueOf(39.99));
+        shoppingCart.addProducts(soapProduct, NO_OF_PRODUCTS);
+
+        BigDecimal actualTotalPrice = shoppingCart.calculateTotalPrice();
+
+        Assertions.assertEquals(EXPECTED_TOTAL_CART_VALUE,actualTotalPrice);
     }
 
 }
