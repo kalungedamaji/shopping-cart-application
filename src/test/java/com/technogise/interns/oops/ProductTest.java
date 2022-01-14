@@ -9,10 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductTest {
     Product product = new Product();
+    ShoppingCart shoppingCart = new ShoppingCart();
     @Test
     public void testGetNameAndSetName(){
         String EXPECTED_NAME = "Dove";
-        String INPUT_NAME = "Dove";
+        int numberOfProducts = shoppingCart.getNumberOfProducts();
+        shoppingCart.addProducts(product, numberOfProducts);
+        String INPUT_NAME = shoppingCart.getProduct().getName() ;
         product.setName(INPUT_NAME);
         String actualName = product.getName();
         assertEquals(EXPECTED_NAME, actualName);
