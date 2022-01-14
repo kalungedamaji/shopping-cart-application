@@ -6,8 +6,8 @@ public class ShoppingCartApplication {
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart();
         Product soap = new Product();
-        soap.price = new BigDecimal(39.99);
-        soap.name = "Dove";
+        soap.setPrice(new BigDecimal(39.99));
+        soap.setName("Dove");
         int numberOfProducts = 5;
         cart.addProducts(soap, numberOfProducts);
         System.out.println("Total price of the cart = $" + cart.calculateTotalPrice());
