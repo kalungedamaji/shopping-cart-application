@@ -29,5 +29,6 @@ class ProductTest {
         BigDecimal actualPrice = product.getPrice();
         assertEquals(EXPECTED_PRICE, actualPrice);
     }
-
 }
+
+
