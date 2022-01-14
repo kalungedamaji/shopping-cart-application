@@ -12,7 +12,7 @@ public class ProductTest {
     @Test
     public void testSetProductName() {
         String expectedName = "Vishal";
-        product.setName("Vishal");
+        product.setName(expectedName);
         String actualName = product.getName();
         Assertions.assertEquals(expectedName, actualName);
     }
@@ -20,7 +20,7 @@ public class ProductTest {
     @Test
     public void testSetProductPrice() {
         BigDecimal expectedPrice = new BigDecimal(41.32);
-        product.setPrice(new BigDecimal(41.32));
+        product.setPrice(expectedPrice);
         BigDecimal actualPrice = product.getPrice();
         Assertions.assertEquals(expectedPrice, actualPrice);
     }
