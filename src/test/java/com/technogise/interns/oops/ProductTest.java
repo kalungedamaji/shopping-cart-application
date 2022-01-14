@@ -5,43 +5,31 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ProductTest {
+    Product product=new Product();
 
     @Test
-    public void testSetNameDove(){
-        String NAME="Dove",EXPECTED_NAME="Dove";
-        Product product=new Product();
-        product.setName(NAME);
-        Assertions.assertEquals(EXPECTED_NAME,NAME);
+    public void testSetNameGetName(){
+
+        String EXPECTED_NAME="Dove",INPUT_NAME="Dove";
+        product.setName(INPUT_NAME);
+
+        String actualName=product.getName();
+
+        assertEquals(EXPECTED_NAME,actualName);
     }
     @Test
-    public void testGetNameDove(){
-        String EXPECTED_NAME="Dove";
-        Product product=new Product();
-        product.setName("Dove");
-        String actualName = product.getName();
-        Assertions.assertEquals(EXPECTED_NAME,actualName);
-    }
-    @Test
-    public void testSetPrice(){
-        double PRICE=39.99,EXPECTED_PRICE=39.99;
-        BigDecimal b =new BigDecimal(PRICE);
-        BigDecimal d =new BigDecimal(EXPECTED_PRICE);
-        Product product=new Product();
-        product.setPrice(b);
-        Assertions.assertEquals(d,b);
-    }
-    @Test
-    public void testGetPrice(){
-        double EXPECTED_PRICE=39.99;
-        Product product=new Product();
-        BigDecimal d =new BigDecimal(EXPECTED_PRICE);
-        BigDecimal b =new BigDecimal(39.99);
-        product.setPrice(b);
+    public void testSetPriceGetPrice(){
+
+        BigDecimal EXPECTED_PRICE =BigDecimal.valueOf(39.99);
+        BigDecimal INPUT_PRICE =BigDecimal.valueOf(39.99);
+        product.setPrice(INPUT_PRICE);
+
         BigDecimal actualPrice = product.getPrice();
-        Assertions.assertEquals(d,actualPrice);
+
+        assertEquals(EXPECTED_PRICE,actualPrice);
     }
-
-
 
 }
