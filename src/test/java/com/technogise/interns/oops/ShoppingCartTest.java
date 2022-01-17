@@ -5,47 +5,46 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ShoppingCartTest {
-    ShoppingCart shoppingCart=new ShoppingCart();
-    Product product=new Product();
+
+    private ShoppingCart shoppingCart = new ShoppingCart();
+
 
     @Test
-    public void testSetGetNumberOfProduct(){
-        int EXPECTED_NUMEBER_OF_PRODUCTS=5,INPUT_NUMBER_OF_PRODUCTS=5;
-        shoppingCart.setNumberOfProducts(INPUT_NUMBER_OF_PRODUCTS);
-        int actualNumberOfProducts=shoppingCart.getNumberOfProducts();
-        assertEquals(EXPECTED_NUMEBER_OF_PRODUCTS,actualNumberOfProducts);
-    }
-    @Test
-    public void testSetProductGetProduct(){
-        Product EXPECTED_PRODUCT=product;
-        shoppingCart.setProduct(product);
-        Product actualProduct=shoppingCart.getProduct();
-        assertEquals(EXPECTED_PRODUCT,actualProduct);
-    }
-    @Test
-    public void testAddProducts(){
-        int EXPECTED_PRODUCTS=5;
-        shoppingCart.addProducts(product,5);
-        int actualProduct=shoppingCart.getNumberOfProducts();
-        assertEquals(EXPECTED_PRODUCTS,actualProduct);
+    public void testGetAndSetNumberOfProducts(){
+        final int EXPECTED_NO_OF_PRODUCTS = 5;
+        final int NO_OF_PRODUCTS = 5;
+        Product soapProduct = new Product();
+        soapProduct.setName("Nivea");
+        soapProduct.setPrice(BigDecimal.valueOf(20.99));
+
+        shoppingCart.addProducts(soapProduct, NO_OF_PRODUCTS);
+
+        int actualNoOfProducts = shoppingCart.getNumberOfProducts();
+        Assertions.assertEquals(EXPECTED_NO_OF_PRODUCTS,actualNoOfProducts);
+
+        Product actualProduct = shoppingCart.getProduct();
+
+        Product expectedProduct = new Product();
+        expectedProduct.setName("Nivea");
+        expectedProduct.setPrice(BigDecimal.valueOf(20.99));
+        Assertions.assertEquals(expectedProduct, actualProduct);
+
     }
     @Test
     public void testCalculateTotalPrice(){
-        BigDecimal EXPECTED_TOTAL_PRICE=BigDecimal.valueOf(199.95);
-        product.setPrice(BigDecimal.valueOf(39.99));
-        product.setName("Dove");
-        shoppingCart.setProduct(product);
-        shoppingCart.setNumberOfProducts(5);
-        BigDecimal actualTotalPrice=shoppingCart.calculateTotalPrice();
-        assertEquals(EXPECTED_TOTAL_PRICE,actualTotalPrice);
+        final int NO_OF_PRODUCTS = 5;
+        final BigDecimal EXPECTED_TOTAL_CART_VALUE = BigDecimal.valueOf(199.95);
+        Product soapProduct = new Product();
+        soapProduct.setName("Dove");
+        soapProduct.setPrice(BigDecimal.valueOf(39.99));
+        shoppingCart.addProducts(soapProduct, NO_OF_PRODUCTS);
+
+        BigDecimal actualTotalPrice = shoppingCart.calculateTotalPrice();
+
+        Assertions.assertEquals(EXPECTED_TOTAL_CART_VALUE,actualTotalPrice);
     }
-
-
-
-
-
 
 }
