@@ -18,6 +18,8 @@ public class PaymentManager {
         } else if (paymentType == PaymentType.DEBIT_CARD) {
             return new DebitCardPayment();
         }
+        else if(paymentType == PaymentType.GOOGLE_PAY)
+            return new GooglePay();
         else
             return null;
     }
