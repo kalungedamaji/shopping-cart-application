@@ -1,36 +1,24 @@
 package com.technogise.interns.srp;
 
 public class TextManipulator {
-        private String text;
-
-        public TextManipulator(String text) {
-            this.text = text;
-        }
-
-        public String getText() {
-            return text;
-        }
-
+String ManipulatedText;
+TextDefinition object;
         public void appendText(String newText) {
-            text = text.concat(newText);
+           ManipulatedText = object.getText().concat(newText);
         }
 
         public String findWordAndReplace(String word, String replacementWord) {
-            if (text.contains(word)) {
-                text = text.replace(word, replacementWord);
+            if (object.getText().contains(word)) {
+                ManipulatedText = object.getText().replace(word, replacementWord);
             }
-            return text;
+            return ManipulatedText;
         }
 
         public String findWordAndDelete(String word) {
-            if (text.contains(word)) {
-                text = text.replace(word, "");
+            if (object.getText().contains(word)) {
+                ManipulatedText = object.getText().replace(word, "");
             }
-            return text;
-        }
-
-        public void printText() {
-            System.out.println(getText());
+            return ManipulatedText;
         }
 
     }
