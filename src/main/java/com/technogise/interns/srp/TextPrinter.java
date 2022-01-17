@@ -1,9 +1,9 @@
 package com.technogise.interns.srp;
 
-public class TextDefinition {
+public class TextPrinter {
     private String text;
 
-    public TextDefinition(String text) {
+    public TextPrinter(String text) {
         this.text = text;
     }
 
