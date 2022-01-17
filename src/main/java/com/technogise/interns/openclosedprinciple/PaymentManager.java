@@ -1,23 +1,24 @@
 package com.technogise.interns.openclosedprinciple;
 
 public class PaymentManager {
-    private  PaymentType paymentType;
 
-    public void Pay(Money money){
-        if(paymentType == PaymentType.CASH){
-// pay with cash
-        }else if(paymentType == PaymentType.CREDIT_CARD){
-// pay with credit card
-        } else if(paymentType == PaymentType.DEBIT_CARD){
-// pay with Debit card
-    }
-    }
 
-    public PaymentType getPaymentType() {
-        return paymentType;
+    public void pay(Money money, PaymentType paymentType) {
+        Payment payment = getPayment(paymentType);
+        payment.setPaymentType(paymentType);
+       payment.pay(money);
     }
+    private Payment getPayment(PaymentType paymentType){
+        if (paymentType == PaymentType.CASH) {
+            return new CashPayment();
 
-    public void setPaymentType(PaymentType paymentType) {
-        this.paymentType = paymentType;
+        } else if (paymentType == PaymentType.CREDIT_CARD) {
+            return new CreditCardPayment();
+
+        } else if (paymentType == PaymentType.DEBIT_CARD) {
+            return new DebitCardPayment();
+        }
+        else
+            return null;
     }
 }
