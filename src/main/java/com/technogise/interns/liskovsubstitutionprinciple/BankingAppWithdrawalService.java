@@ -8,4 +8,9 @@ public class BankingAppWithdrawalService {
    customer.getCurrentAccount().deposit(money);
    customer.getSavingAccount().deposit(money);
  }
+
+    public void withDrawFromAllAccount(Money money, Customer customer){
+        customer.getCurrentAccount().deposit(money);
+        customer.getSavingAccount().deposit(money);
+    }
 }
