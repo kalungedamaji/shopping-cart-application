@@ -6,7 +6,7 @@ public class PaymentManager {
     public void pay(Money money, PaymentType paymentType) {
         Payment payment = getPayment(paymentType);
         payment.setPaymentType(paymentType);
-       payment.pay(money);
+        payment.pay(money);
     }
     private Payment getPayment(PaymentType paymentType){
         if (paymentType == PaymentType.CASH) {
@@ -17,6 +17,9 @@ public class PaymentManager {
 
         } else if (paymentType == PaymentType.DEBIT_CARD) {
             return new DebitCardPayment();
+        }
+        else if (paymentType == PaymentType.GOOGLE_PAY) {
+            return new GooglePayPayment();
         }
         else
             return null;

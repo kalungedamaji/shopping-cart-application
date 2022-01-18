@@ -1,11 +1,21 @@
 package com.technogise.interns.liskovsubstitutionprinciple;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Executor {
     public static void main(String[] args) {
-        BankingAppWithdrawalService  bankService=new  BankingAppWithdrawalService();
-        Customer  customerA=new Customer(new CurrentAccount(), new SavingAccount());
+        BankingAppService bankService=new BankingAppService();
+        List<Account> accountList = new ArrayList<>();
+        accountList.add(new CurrentAccount());
+        accountList.add(new SavingAccount());
+        accountList.add(new SalaryAccount());
+        accountList.add(new FixedTermDeposit());
+
+        Customer  customerA = new Customer(accountList);
         bankService.withDrawFromAllAccount(new Money(),customerA);
-        Customer  customerB=new Customer(new CurrentAccount(), new SavingAccount());
+
+        Customer  customerB=new Customer(accountList);
         bankService.depositToAllAccount(new Money(),customerB);
     }
 }

@@ -24,5 +24,6 @@ private String manipulatedText;
             return manipulatedText;
         }
 
-    }
+
+}
 
