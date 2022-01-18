@@ -3,7 +3,7 @@ package com.technogise.interns.srp;
 public class TextDefinition {
     private String text;
 
-    public TextDefinition(String text) {
+    public TextDefinition() {
         this.text = text;
     }
 

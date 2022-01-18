@@ -21,5 +21,6 @@ TextDefinition object;
             return ManipulatedText;
         }
 
-    }
+
+}
 

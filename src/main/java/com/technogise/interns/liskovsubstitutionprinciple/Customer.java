@@ -1,27 +1,19 @@
 package com.technogise.interns.liskovsubstitutionprinciple;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer {
-    private  CurrentAccount  currentAccount;
-    private  SavingAccount  savingAccount;
 
-    public Customer (CurrentAccount  currentAccount, SavingAccount  savingAccount){
-        this.currentAccount=currentAccount;
-        this.savingAccount=savingAccount;
+    private List<Account> accountList = new ArrayList<>();
 
-    }
-    public void setCurrentAccount(CurrentAccount currentAccount) {
-        this.currentAccount = currentAccount;
+    public Customer (List<Account> accountList){
+
+        this.accountList = accountList;
     }
 
-    public void setSavingAccount(SavingAccount savingAccount) {
-        this.savingAccount = savingAccount;
-    }
+    public List<Account> getAccountList() {
 
-    public CurrentAccount getCurrentAccount() {
-        return currentAccount;
-    }
-
-    public SavingAccount getSavingAccount() {
-        return savingAccount;
+        return accountList;
     }
 }
