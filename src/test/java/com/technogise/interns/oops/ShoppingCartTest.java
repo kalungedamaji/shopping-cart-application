@@ -44,4 +44,50 @@ public class ShoppingCartTest {
         assertEquals(EXPECTED_TOTALPRICE, actualTotalPrice);
     }
 
+    @Test
+    public void testGetUpdatedNumberOfProducts(){
+        final int EXPECTED_NO_OF_PRODUCTS = 8;
+        final int INITIAL_NO_OF_PRODUCTS=5;
+
+        Product soapProduct = new Product();
+        soapProduct.setName("Nivea");
+        soapProduct.setPrice(BigDecimal.valueOf(20.99));
+        shoppingCart.addProducts(soapProduct, INITIAL_NO_OF_PRODUCTS);
+
+        final int NO_OF_PRODUCTS = 3;
+        shoppingCart.addProducts(soapProduct, NO_OF_PRODUCTS);
+
+        int actualNoOfProducts=shoppingCart.getNumberOfProducts();
+        assertEquals(EXPECTED_NO_OF_PRODUCTS,actualNoOfProducts);
+
+        int TWO_DIGIT_PRECISION = 2;
+        BigDecimal unitPrice= BigDecimal.valueOf(20.99);
+        BigDecimal EXPECTED_TOTALPRICE = unitPrice.multiply(BigDecimal.valueOf(EXPECTED_NO_OF_PRODUCTS)).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
+
+        BigDecimal actualTotalPrice= shoppingCart.calculateTotalPrice();
+        assertEquals(EXPECTED_TOTALPRICE, actualTotalPrice);
+    }
+
+
+
+    /*
+    @Test
+    public void testCalculateUpdatedTotalPrice()
+    {
+        int TWO_DIGIT_PRECISION = 2, INITIAL_NO_OF_PRODUCTS= 5,TOTAL_NO_OF_PRODUCTS=8;
+        BigDecimal unitPrice= BigDecimal.valueOf(39.9);
+        BigDecimal EXPECTED_TOTALPRICE = unitPrice.multiply(BigDecimal.valueOf(TOTAL_NO_OF_PRODUCTS)).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
+
+        Product soapProduct = new Product();
+        soapProduct.setName("Nivea");
+        soapProduct.setPrice(unitPrice);
+        shoppingCart.addProducts(soapProduct, INITIAL_NO_OF_PRODUCTS);
+
+        int NO_OF_PRODUCTS=3;
+        shoppingCart.addProducts(soapProduct,NO_OF_PRODUCTS);
+
+        BigDecimal actualTotalPrice= shoppingCart.calculateTotalPrice();
+        assertEquals(EXPECTED_TOTALPRICE, actualTotalPrice);
+    }
+    */
 }

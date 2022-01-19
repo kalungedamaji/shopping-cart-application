@@ -7,10 +7,10 @@ public class ShoppingCart {
     private Product product;
     private static final int TWO_DIGIT_PRECISION =2;
 
-    public void addProducts(Product product, int numberOfProducts) {
-        product= new Product();
-       setProduct(product);
-       setNumberOfProducts(numberOfProducts);
+    public void addProducts(final Product product, final int numberOfProducts) {
+        setProduct(product);
+        int productCount= getNumberOfProducts()+numberOfProducts;
+        setNumberOfProducts(productCount);
     }
 
     public BigDecimal calculateTotalPrice() {

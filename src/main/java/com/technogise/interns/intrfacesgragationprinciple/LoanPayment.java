@@ -2,10 +2,16 @@ package com.technogise.interns.intrfacesgragationprinciple;
 
 import java.util.List;
 
-public class LoanPayment implements Payment {
+public class LoanPayment implements Loan {
+
     @Override
-    public void initiatePayments() {
-        throw  new RuntimeException("Operation not Supported");
+    public void initiateLoanSettlement() {
+
+    }
+
+    @Override
+    public void initiateRePayment() {
+
     }
 
     @Override
@@ -16,15 +22,5 @@ public class LoanPayment implements Payment {
     @Override
     public List<Object> getPayments() {
         return null;
-    }
-
-    @Override
-    public void initiateLoanSettlement() {
-
-    }
-
-    @Override
-    public void initiateRePayment() {
-
     }
 }
