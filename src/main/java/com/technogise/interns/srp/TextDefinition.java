@@ -1,6 +1,6 @@
 package com.technogise.interns.srp;
 
-public class TextDefinition {
+public  class TextDefinition {
     private String text;
 
     public TextDefinition() {

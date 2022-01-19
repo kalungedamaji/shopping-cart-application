@@ -2,7 +2,7 @@ package com.technogise.interns.intrfacesgragationprinciple;
 
 import java.util.List;
 
-public class BankPayment implements  Payment{
+public class BankPayment implements  Bank{
     @Override
     public void initiatePayments() {
 
@@ -18,13 +18,5 @@ public class BankPayment implements  Payment{
         return null;
     }
 
-    @Override
-    public void initiateLoanSettlement() {
-        throw  new RuntimeException("Operation not Supported");
-    }
 
-    @Override
-    public void initiateRePayment() {
-        throw  new RuntimeException("Operation not Supported");
-    }
 }

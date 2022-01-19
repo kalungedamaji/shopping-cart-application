@@ -4,7 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomerDao {
+public class CustomerDao implements Dao{
+
     public Optional<Customer> findById(int id) {
         /**
          *  select * from customer where id=id;

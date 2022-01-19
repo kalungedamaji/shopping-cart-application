@@ -8,9 +8,11 @@ public class ShoppingCart {
     private static final int TWO_DIGIT_PRECISION =2;
 
     public void addProducts(Product product, int numberOfProducts) {
-        product= new Product();
+
+        int productCount = getNumberOfProducts() + numberOfProducts;
        setProduct(product);
-       setNumberOfProducts(numberOfProducts);
+       setNumberOfProducts(productCount);
+
     }
 
     public BigDecimal calculateTotalPrice() {
