@@ -15,9 +15,11 @@ class ProductTest {
     {
         final String EXPECTED_NAME = "Dove";
         final String INPUT_NAME = "Dove";
+
         product.setName(INPUT_NAME);
         String actualName = product.getName();
         assertEquals(EXPECTED_NAME, actualName);
+
     }
 
     @Test

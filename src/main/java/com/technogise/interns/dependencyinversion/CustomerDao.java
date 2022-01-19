@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomerDao {
+public class CustomerDao implements  Dao {
     public Optional<Customer> findById(int id) {
         /**
          *  select * from customer where id=id;
@@ -17,5 +17,16 @@ public class CustomerDao {
          *  select * from customer;
          */
         return Collections.EMPTY_LIST;
+    }
+
+
+    @Override
+    public Optional<Customer> searchCustomer(int id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Customer> listAllCustomer() {
+        return null;
     }
 }
