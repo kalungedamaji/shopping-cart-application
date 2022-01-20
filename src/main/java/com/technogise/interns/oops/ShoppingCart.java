@@ -32,4 +32,5 @@ public class ShoppingCart {
     public void setProduct(Product product) {
         this.product = product;
     }
+
 }

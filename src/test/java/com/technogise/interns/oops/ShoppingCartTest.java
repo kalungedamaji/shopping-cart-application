@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ShoppingCartTest {
 
-    private ShoppingCart shoppingCart = new ShoppingCart();
-    public BigDecimal unitPrice= BigDecimal.valueOf(39.99);
+    final private ShoppingCart shoppingCart = new ShoppingCart();
+    final public BigDecimal unitPrice= BigDecimal.valueOf(39.99);
 
 
     @Test
@@ -82,6 +82,17 @@ public class ShoppingCartTest {
 
         assertEquals(EXPECTED_TOTAL_PRICE, actualTotalPrice);
 
+    }
+
+    @Test
+    public void testAddSalesTaxinShoppingCartGives()
+    {
+        final BigDecimal EXPECTED_SALES_TAX = BigDecimal.valueOf(0.125);
+        shoppingCart.setSalesTax(EXPECTED_SALES_TAX);
+
+        final BigDecimal actualSalesTax = shoppingCart.getSalesTax();
+
+        assertEquals(EXPECTED_SALES_TAX, actualSalesTax);
     }
 
 }
