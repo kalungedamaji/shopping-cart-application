@@ -1,20 +1,25 @@
 package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 
 public class ShoppingCart {
     private int numberOfProducts = 0;
     private Product product;
-    private static final int TWO_DIGIT_PRECISION =2;
+    private ShoppingCartCalculation shoppingCartCalculation = new ShoppingCartCalculation();
+    HashSet<Product> productList = new HashSet<>();
 
-    public void addProducts(final Product product, final int numberOfProducts) {
-        setProduct(product);
+    public void addProducts(Product product, int numberOfProducts) {
         int productCount = getNumberOfProducts() + numberOfProducts;
+        setProduct(product);
         setNumberOfProducts(productCount);
+        getProduct().addQuantity(numberOfProducts);
+        productList.add(product);
     }
 
-    public BigDecimal calculateTotalPrice() {
-        return getProduct().getPrice().multiply(BigDecimal.valueOf(getNumberOfProducts())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP) ;
+    public int getQuantityOfProduct (Product product)
+    {
+        return product.getQuantity();
     }
 
     public int getNumberOfProducts() {
@@ -33,4 +38,7 @@ public class ShoppingCart {
         this.product = product;
     }
 
+    public BigDecimal getTotalPrice() {
+        return shoppingCartCalculation.calculateTotalPriceOfShoppingCart(productList);
+    }
 }

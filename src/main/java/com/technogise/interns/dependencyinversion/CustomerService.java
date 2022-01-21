@@ -6,17 +6,15 @@ import java.util.Optional;
 public class CustomerService {
     private Dao dao;
 
-    public CustomerService(Dao dao) {
-        this.dao = dao;
-    }
+    public CustomerService(Dao dao) {this.dao = dao;}
 
     // standard constructor / getter
 
     public Optional<Customer> searchCustomer(int id) {
-        return searchCustomer(id);
+        return dao.findById(id);
     }
 
     public List<Customer> listAllCustomer() {
-        return listAllCustomer();
+        return dao.findAll();
     }
 }

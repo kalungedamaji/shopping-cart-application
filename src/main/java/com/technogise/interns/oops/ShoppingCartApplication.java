@@ -10,6 +10,6 @@ public class ShoppingCartApplication {
         soap.setName("Dove");
         int numberOfProducts = 5;
         cart.addProducts(soap, numberOfProducts);
-        System.out.println("Total price of the cart = $" + cart.calculateTotalPrice());
+        System.out.println("Total price of the cart = $" + cart.getTotalPrice());  //totalpice
     }
 }

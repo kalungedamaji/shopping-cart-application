@@ -7,6 +7,7 @@ public class BankPayment implements  Bank{
     public void initiatePayments() {
 
     }
+
     @Override
     public Object status() {
         return null;
@@ -16,5 +17,6 @@ public class BankPayment implements  Bank{
     public List<Object> getPayments() {
         return null;
     }
+
 
 }
