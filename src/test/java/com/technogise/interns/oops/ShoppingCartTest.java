@@ -68,26 +68,103 @@ public class ShoppingCartTest {
         assertEquals(EXPECTED_TOTALPRICE, actualTotalPrice);
     }
 
-
-
-    /*
     @Test
-    public void testCalculateUpdatedTotalPrice()
-    {
-        int TWO_DIGIT_PRECISION = 2, INITIAL_NO_OF_PRODUCTS= 5,TOTAL_NO_OF_PRODUCTS=8;
-        BigDecimal unitPrice= BigDecimal.valueOf(39.9);
-        BigDecimal EXPECTED_TOTALPRICE = unitPrice.multiply(BigDecimal.valueOf(TOTAL_NO_OF_PRODUCTS)).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
+    public void testAddMultipleProducts(){
+        final int EXPECTED_NO_OF_DOVE_SOAP = 2;
+        final int NO_OF_DOVE_SOAP=2;
 
-        Product soapProduct = new Product();
-        soapProduct.setName("Nivea");
-        soapProduct.setPrice(unitPrice);
-        shoppingCart.addProducts(soapProduct, INITIAL_NO_OF_PRODUCTS);
+        Product soapProduct=new Product();
+        soapProduct.setName("Dove");
+        soapProduct.setPrice(BigDecimal.valueOf(39.99));
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
 
-        int NO_OF_PRODUCTS=3;
-        shoppingCart.addProducts(soapProduct,NO_OF_PRODUCTS);
+        int actualNoOfDoveSoap= shoppingCart.getProductQuantity(soapProduct);
 
-        BigDecimal actualTotalPrice= shoppingCart.calculateTotalPrice();
-        assertEquals(EXPECTED_TOTALPRICE, actualTotalPrice);
+        final int EXPECTED_NO_OF_AXE_DEO = 2;
+        final int NO_OF_AXE_DEO=2;
+
+        Product deoProduct=new Product();
+        deoProduct.setName("Deo");
+        deoProduct.setPrice(BigDecimal.valueOf(99.99));
+        shoppingCart.addProducts(deoProduct,NO_OF_AXE_DEO);
+
+        int actualNoOfAxeDeo= shoppingCart.getProductQuantity(deoProduct);
+
+        final int EXPECTED_NO_OF_TOTAL_PRODUCT=4;
+        int actualNoOfTotalProduct=shoppingCart.getNumberOfProducts();
+
+        boolean testCaseSucceed= ((EXPECTED_NO_OF_TOTAL_PRODUCT==actualNoOfTotalProduct)&&(EXPECTED_NO_OF_AXE_DEO==actualNoOfAxeDeo)&&(EXPECTED_NO_OF_DOVE_SOAP==actualNoOfDoveSoap));
+        assertTrue(testCaseSucceed);
+
     }
-    */
+
+    @Test
+    public void testCalculateTotalPriceOfMultipleProductWithoutTax(){
+        int TWO_DIGIT_PRECISION = 2;
+        BigDecimal doveUnitPrice = BigDecimal.valueOf(39.99);
+        BigDecimal deoUnitPrice = BigDecimal.valueOf(99.99);
+        final int NO_OF_DOVE_SOAP=2;
+        final int NO_OF_AXE_DEO=2;
+        BigDecimal EXPECTED_TOTAL_PRICE_WITHOUT_TAX = BigDecimal.valueOf(279.96);
+        Product soapProduct = new Product();
+
+        soapProduct.setName("Dove");
+        soapProduct.setPrice(doveUnitPrice);
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+
+        Product deoProduct = new Product();
+        deoProduct.setName("Deo");
+        deoProduct.setPrice(deoUnitPrice);
+        shoppingCart.addProducts(deoProduct,NO_OF_AXE_DEO);
+
+        BigDecimal actualTotalPriceWithoutTax=shoppingCart.calculateTotalPrice();
+        assertEquals(EXPECTED_TOTAL_PRICE_WITHOUT_TAX,actualTotalPriceWithoutTax);
+
+    }
+
+    @Test
+    public void testCalculateSalesTax(){
+        int TWO_DIGIT_PRECISION = 2;
+        final BigDecimal EXPECTED_TOTAL_SALES_TAX=BigDecimal.valueOf(35.00).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
+
+        final int NO_OF_DOVE_SOAP=2;
+
+        Product soapProduct=new Product();
+        soapProduct.setName("Dove");
+        soapProduct.setPrice(BigDecimal.valueOf(39.99));
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+
+        final int NO_OF_AXE_DEO=2;
+
+        Product deoProduct=new Product();
+        deoProduct.setName("Deo");
+        deoProduct.setPrice(BigDecimal.valueOf(99.99));
+        shoppingCart.addProducts(deoProduct,NO_OF_AXE_DEO);
+
+        BigDecimal actualTotalSalesTax=shoppingCart.calculateTotalSalesTax();
+        assertEquals(EXPECTED_TOTAL_SALES_TAX,actualTotalSalesTax);
+
+    }
+
+    @Test
+    public void testCalculateTotalPriceOfCartIncludingTaxes() {
+        final BigDecimal EXPECTED_TOTAL_PRICE_OF_CART_INCLUDING_TAXES = BigDecimal.valueOf(314.96);
+        final int NO_OF_DOVE_SOAP=2;
+
+        Product soapProduct=new Product();
+        soapProduct.setName("Dove");
+        soapProduct.setPrice(BigDecimal.valueOf(39.99));
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+
+        final int NO_OF_AXE_DEO=2;
+
+        Product deoProduct = new Product();
+        deoProduct.setName("Deo");
+        deoProduct.setPrice(BigDecimal.valueOf(99.99));
+        shoppingCart.addProducts(deoProduct,NO_OF_AXE_DEO);
+
+        BigDecimal actualTotalPriceOfCartIncludingTaxes = shoppingCart.CalculateTotalPriceOfCartIncludingTaxes();
+        assertEquals(EXPECTED_TOTAL_PRICE_OF_CART_INCLUDING_TAXES,actualTotalPriceOfCartIncludingTaxes);
+    }
+
 }
