@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Product {
-   private  String name;
+    private  String name;
     private BigDecimal price;
+    private int quantity = 0;
 
     @Override
     public boolean equals(Object o) {
@@ -35,4 +36,16 @@ public class Product {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    public void addQuantity(int quantity)
+    {
+        int totalQuantityOfProduct = getQuantity()+quantity;
+        setQuantity(totalQuantityOfProduct);
+    }
+
+    public void setQuantity(int quantity){
+        this.quantity = quantity;}
+
+    public int getQuantity() {
+        return quantity; }
 }
