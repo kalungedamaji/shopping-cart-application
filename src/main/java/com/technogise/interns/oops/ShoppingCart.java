@@ -41,4 +41,12 @@ public class ShoppingCart {
     public BigDecimal getTotalPrice() {
         return shoppingCartCalculation.calculateTotalPriceOfShoppingCart(productList);
     }
+
+    public BigDecimal getTotalPriceBeforeTax() {
+        return shoppingCartCalculation.calculateTotalPriceBeforeTax(productList);
+    }
+
+    public BigDecimal getTotalSalesTax() {
+        return shoppingCartCalculation.calculateTotalSalesTax(productList);
+    }
 }

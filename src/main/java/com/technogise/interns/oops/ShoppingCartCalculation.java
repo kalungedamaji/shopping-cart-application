@@ -11,22 +11,18 @@ public class ShoppingCartCalculation {
     private HashSet<Product> productList;
     private static final BigDecimal SALES_TAX_PERCENTAGE = BigDecimal.valueOf(12.5);
 
-    public BigDecimal calculateTotalPriceBeforeTax() {
+    public BigDecimal calculateTotalPriceOfShoppingCart(HashSet<Product> productList) {
+        return calculateTotalPriceBeforeTax(productList).add(calculateTotalSalesTax(productList));
+    }
+    public BigDecimal calculateTotalSalesTax(HashSet<Product> productList) {
+        BigDecimal percentageMultiplier = BigDecimal.valueOf(0.01);
+        return SALES_TAX_PERCENTAGE.multiply(calculateTotalPriceBeforeTax(productList)).multiply(percentageMultiplier).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
+    }
+    public BigDecimal calculateTotalPriceBeforeTax(HashSet<Product> productList) {
         BigDecimal totalPriceBeforeTax = BigDecimal.valueOf(0);
         for(Product product: productList){
             totalPriceBeforeTax = totalPriceBeforeTax.add(product.getPrice().multiply(BigDecimal.valueOf(product.getQuantity())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP));
         }
         return totalPriceBeforeTax;
-    }
-
-    public BigDecimal calculateTotalSalesTax() {
-        BigDecimal percentageMultiplier = BigDecimal.valueOf(0.01);
-        return SALES_TAX_PERCENTAGE.multiply(calculateTotalPriceBeforeTax()).multiply(percentageMultiplier).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
-    }
-
-    public BigDecimal calculateTotalPriceOfShoppingCart(HashSet<Product> productList) {
-        this.productList = productList;
-        return calculateTotalPriceBeforeTax().add(calculateTotalSalesTax());
-
     }
 }
