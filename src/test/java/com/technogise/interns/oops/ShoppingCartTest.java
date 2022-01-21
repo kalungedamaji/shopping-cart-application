@@ -41,7 +41,7 @@ public class ShoppingCartTest {
         BigDecimal EXPECTED_TOTAL_PRICE = unitPrice.multiply(BigDecimal.valueOf(No_OF_PRODUCTS)).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
         shoppingCart.addProducts(soapProduct, No_OF_PRODUCTS);
         soapProduct.setPrice(unitPrice);
-        BigDecimal actualTotalPrice= shoppingCart.calculateTotalPriceBeforeTax();
+        BigDecimal actualTotalPrice= shoppingCart.getTotalPrice();
         assertEquals(EXPECTED_TOTAL_PRICE, actualTotalPrice);
     }
     @Test
@@ -72,7 +72,7 @@ public class ShoppingCartTest {
         product.setPrice(unitPrice);
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addProducts(product, NO_OF_PRODUCTS);
-        BigDecimal ACTUAL_TOTAL_PRICE = shoppingCart.calculateTotalPriceBeforeTax();
+        BigDecimal ACTUAL_TOTAL_PRICE = shoppingCart.getTotalPrice();
         assertEquals(EXPECTED_TOTAL_PRICE, ACTUAL_TOTAL_PRICE);
     }
 
@@ -95,7 +95,7 @@ public class ShoppingCartTest {
         shoppingCart.addProducts(doveSoap, NO_OF_DOVE_SOAPS);
         shoppingCart.addProducts(axeDeo, NO_OF_AXE_DEO);
 
-        BigDecimal ACTUAL_TOTAL_PRICE_OF_SHOPPING_CART = shoppingCart.calculateTotalPriceBeforeTax();
+        BigDecimal ACTUAL_TOTAL_PRICE_OF_SHOPPING_CART = shoppingCart.getTotalPrice();
         assertEquals(EXPECTED_TOTAL_PRICE_OF_SHOPPING_CART,ACTUAL_TOTAL_PRICE_OF_SHOPPING_CART);
 
     }
@@ -104,7 +104,7 @@ public class ShoppingCartTest {
     public void testTotalSalesTaxInShoppingCart()
     {
         final BigDecimal EXPECTED_TOTAL_SALES_TAX = BigDecimal.valueOf(35.00).setScale(2);
-
+        ShoppingCartCalculation shoppingCartCalculation = new ShoppingCartCalculation();
         Product doveSoap = new Product();
         Product axeDeo = new Product();
 
@@ -121,7 +121,7 @@ public class ShoppingCartTest {
 
         shoppingCart.addProducts(axeDeo, noOfAxeProduct);
 
-        BigDecimal totalSalesTax = shoppingCart.calculateTotalSalesTax();
+        BigDecimal totalSalesTax = shoppingCartCalculation.calculateTotalSalesTax();
 
         assertEquals(EXPECTED_TOTAL_SALES_TAX, totalSalesTax);
     }
@@ -168,7 +168,7 @@ public class ShoppingCartTest {
         shoppingCart.addProducts(doveSoap, NO_OF_DOVE_SOAPS);
         shoppingCart.addProducts(axeDeo, NO_OF_AXE_DEO);
 
-        BigDecimal ACTUAL_TOTAL_PRICE_OF_SHOPPING_CART = shoppingCart.calculateTotalPrice();
+        BigDecimal ACTUAL_TOTAL_PRICE_OF_SHOPPING_CART = shoppingCart.getTotalPrice();
         assertEquals(EXPECTED_TOTAL_PRICE_OF_SHOPPING_CART,ACTUAL_TOTAL_PRICE_OF_SHOPPING_CART);
 
     }

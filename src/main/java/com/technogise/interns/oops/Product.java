@@ -39,7 +39,7 @@ public class Product {
 
     public void addQuantity(int quantity)
     {
-        int totalQuantityOfProduct = getQuantity()+quantity;
+        int totalQuantityOfProduct = getQuantity() + quantity;
         setQuantity(totalQuantityOfProduct);
     }
 

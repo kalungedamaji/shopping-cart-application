@@ -6,12 +6,8 @@ import java.util.HashSet;
 public class ShoppingCart {
     private int numberOfProducts = 0;
     private Product product;
-    private static final int TWO_DIGIT_PRECISION =2;
-    final BigDecimal SALES_TAX = BigDecimal.valueOf(12.5);
-
-
+    private ShoppingCartCalculation shoppingCartCalculation = new ShoppingCartCalculation();
     HashSet<Product> productList = new HashSet<>();
-
 
     public void addProducts(Product product, int numberOfProducts) {
         int productCount = getNumberOfProducts() + numberOfProducts;
@@ -23,25 +19,7 @@ public class ShoppingCart {
 
     public int getQuantityOfProduct (Product product)
     {
-        setProduct(product);
-        return getProduct().getQuantity();
-    }
-
-    public BigDecimal calculateTotalPriceBeforeTax() {
-        BigDecimal totalPriceBeforeTax = BigDecimal.valueOf(0);
-    //     return getProduct().getPrice().multiply(BigDecimal.valueOf(getNumberOfProducts())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP) ;
-        for(Product product: productList){
-            setProduct(product);
-            totalPriceBeforeTax = totalPriceBeforeTax.add(getProduct().getPrice().multiply(BigDecimal.valueOf(getQuantityOfProduct(getProduct()))).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP));
-        }
-        return totalPriceBeforeTax;
-    }
-
-    public BigDecimal calculateTotalSalesTax() {
-        BigDecimal salesTax;
-        BigDecimal percentageMultiplier = BigDecimal.valueOf(0.01);
-        salesTax = SALES_TAX.multiply(calculateTotalPriceBeforeTax()).multiply(percentageMultiplier).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
-        return salesTax;
+        return product.getQuantity();
     }
 
     public int getNumberOfProducts() {
@@ -60,8 +38,7 @@ public class ShoppingCart {
         this.product = product;
     }
 
-    public BigDecimal calculateTotalPrice() {
-
-        return calculateTotalPriceBeforeTax().add(calculateTotalSalesTax());
+    public BigDecimal getTotalPrice() {
+        return shoppingCartCalculation.calculateTotalPriceOfShoppingCart(productList);
     }
 }
