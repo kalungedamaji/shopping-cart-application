@@ -7,48 +7,41 @@ import java.util.Map;
 public class ShoppingCart {
     private int numberOfProducts = 0;
     private Product product;
+    ShoppingCartPriceCalculator shoppingCartPriceCalculator=new ShoppingCartPriceCalculator();
     private static final int TWO_DIGIT_PRECISION =2;
     private HashMap<Product, Integer> cart = new HashMap<>();
+
+
+    public void increaseProductQuantity(final Product product, final int numberOfProducts){
+        if(getCart().containsKey(product)) {
+            int productQuantity= getCart().get(product) + numberOfProducts;
+            getCart().put(product,productQuantity);
+        } else {
+            getCart().put(product,numberOfProducts);
+        }
+    }
 
     public void addProducts(final Product product, final int numberOfProducts) {
         setProduct(product);
         int productCount=getNumberOfProducts()+numberOfProducts;
-        if(cart.containsKey(product))
-        {
-            int productQuantity= cart.get(product) + numberOfProducts;
-            cart.put(product,productQuantity);
-        }
-        else
-        {
-            cart.put(product,numberOfProducts);
-        }
+        increaseProductQuantity(product,numberOfProducts);
         setNumberOfProducts(productCount);
     }
 
-    public BigDecimal calculateTotalPrice() {
-        BigDecimal currentTotalPrice = BigDecimal.valueOf(0.00);
-        for (Map.Entry<Product,Integer> item : cart.entrySet()){
-            BigDecimal productTotalPrice = (item.getKey().getPrice().multiply(BigDecimal.valueOf(item.getValue())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP));
-            currentTotalPrice=currentTotalPrice.add(productTotalPrice);
-        }
-        return currentTotalPrice;
+    public BigDecimal cartTotalPriceWithoutTax(){
+        return shoppingCartPriceCalculator.calculateTotalPriceWithoutTax(cart);
     }
 
-
-    public BigDecimal calculateTotalSalesTax() {
-        BigDecimal totalSalesTaxRate=BigDecimal.valueOf(12.5).divide(BigDecimal.valueOf(100.00));
-        BigDecimal totalSalesTax=totalSalesTaxRate.multiply(calculateTotalPrice()).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
-        return totalSalesTax;
+    public BigDecimal cartTotalSalesTax(){
+        return shoppingCartPriceCalculator.calculateTotalSalesTax(cart);
     }
 
-    public BigDecimal CalculateTotalPriceOfCartIncludingTaxes(){
-        BigDecimal totalPriceOfCartIncludingTaxe = calculateTotalPrice().add(calculateTotalSalesTax()) ;
-        return totalPriceOfCartIncludingTaxe;
+    public BigDecimal cartTotalPriceIncludingTax(){
+        return shoppingCartPriceCalculator.calculateTotalPriceOfCartIncludingTaxes(cart);
     }
-
 
     public int getProductQuantity(final Product product){
-        return cart.get(product);
+        return getCart().get(product);
     }
 
     public int getNumberOfProducts() {
@@ -65,6 +58,14 @@ public class ShoppingCart {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public void setCart(HashMap<Product, Integer> cart) {
+        this.cart = cart;
+    }
+
+    public HashMap<Product, Integer> getCart() {
+        return cart;
     }
 
 
