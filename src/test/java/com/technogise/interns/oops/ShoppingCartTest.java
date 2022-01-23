@@ -34,11 +34,12 @@ public class ShoppingCartTest {
     @Test
     public void testCalculateTotalPrice()
     {
-        int TWO_DIGIT_PRECISION = 2, No_OF_PRODUCTS= 2;
+        int No_OF_PRODUCTS= 2;
         BigDecimal unitPrice= BigDecimal.valueOf(39.99);
         Product soapProduct = new Product();
         ShoppingCart shoppingCart = new ShoppingCart();
         BigDecimal EXPECTED_TOTAL_PRICE = BigDecimal.valueOf(79.98);
+
         shoppingCart.addProducts(soapProduct, No_OF_PRODUCTS);
         soapProduct.setPrice(unitPrice);
         BigDecimal actualTotalPrice= shoppingCart.getTotalPriceBeforeTax();
@@ -89,26 +90,24 @@ public class ShoppingCartTest {
     @Test
     public void testTotalSalesTaxInShoppingCart()
     {
-        final BigDecimal EXPECTED_TOTAL_SALES_TAX = BigDecimal.valueOf(35.00).setScale(2);
-        ShoppingCartCalculation shoppingCartCalculation = new ShoppingCartCalculation();
+        int TWO_DIGIT_PRECISION = 2;
+        final BigDecimal EXPECTED_TOTAL_SALES_TAX = BigDecimal.valueOf(35.00).setScale(TWO_DIGIT_PRECISION);
         Product doveSoap = new Product();
         Product axeDeo = new Product();
+        ShoppingCart shoppingCart = new ShoppingCart();
 
         BigDecimal doveUnitPrice = BigDecimal.valueOf(39.99);
         BigDecimal axeUnitPrice = BigDecimal.valueOf(99.99);
         int noOfDoveProduct = 2;
-        int noOfAxeProduct = 2;
         doveSoap.setName("Dove");
         doveSoap.setPrice(doveUnitPrice);
+        shoppingCart.addProducts(doveSoap, noOfDoveProduct);
+        int noOfAxeProduct = 2;
         axeDeo.setName("Axe");
         axeDeo.setPrice(axeUnitPrice);
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.addProducts(doveSoap, noOfDoveProduct);
-
         shoppingCart.addProducts(axeDeo, noOfAxeProduct);
 
         BigDecimal totalSalesTax = shoppingCart.getTotalSalesTax();
-
         assertEquals(EXPECTED_TOTAL_SALES_TAX, totalSalesTax);
     }
 
@@ -119,20 +118,20 @@ public class ShoppingCartTest {
         BigDecimal unitPriceDeo = BigDecimal.valueOf(99.99);
         BigDecimal unitPriceSoaps = BigDecimal.valueOf(39.99);
         int noOfDoveSoaps= 2;
-        int noOfAxeDeos = 3;
+        int noOfAxeDeo = 3;
 
-        Product axeDeos = new Product();
-        axeDeos.setName("Axe Deos");
-        axeDeos.setPrice(unitPriceDeo);
+        Product axeDeo = new Product();
+        axeDeo.setName("Axe Deo");
+        axeDeo.setPrice(unitPriceDeo);
         Product doveSoaps = new Product();
-        axeDeos.setName("Dove Soaps");
-        axeDeos.setPrice(unitPriceSoaps);
+        axeDeo.setName("Dove Soaps");
+        axeDeo.setPrice(unitPriceSoaps);
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.addProducts(doveSoaps , noOfDoveSoaps);
-        shoppingCart.addProducts(axeDeos , noOfAxeDeos);
+        shoppingCart.addProducts(axeDeo , noOfAxeDeo);
 
         int actualDoveSoaps = shoppingCart.getQuantityOfProduct(doveSoaps);
-        int actualAxeDeo = shoppingCart.getQuantityOfProduct(axeDeos);
+        int actualAxeDeo = shoppingCart.getQuantityOfProduct(axeDeo);
         assertEquals(EXPECTED_AXE_DEO, actualAxeDeo);
         assertEquals(EXPECTED_DOVE_SOAPS, actualDoveSoaps);
     }

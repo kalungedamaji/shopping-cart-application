@@ -7,16 +7,23 @@ public class ShoppingCart {
     private int numberOfProducts = 0;
     private Product product;
     private ShoppingCartCalculation shoppingCartCalculation = new ShoppingCartCalculation();
-    HashSet<Product> productList = new HashSet<>();
+    private HashSet<Product> productList = new HashSet<>();
 
     public void addProducts(Product product, int numberOfProducts) {
-        int productCount = getNumberOfProducts() + numberOfProducts;
+        int totalProductCount = getNumberOfProducts() + numberOfProducts;
         setProduct(product);
-        setNumberOfProducts(productCount);
+        setNumberOfProducts(totalProductCount);
         getProduct().addQuantity(numberOfProducts);
         productList.add(product);
     }
 
+    public void setNumberOfProducts(int numberOfProducts) {
+        this.numberOfProducts = numberOfProducts;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
     public int getQuantityOfProduct (Product product)
     {
         return product.getQuantity();
@@ -28,14 +35,6 @@ public class ShoppingCart {
 
     public Product getProduct() {
         return product;
-    }
-
-    public void setNumberOfProducts(int numberOfProducts) {
-        this.numberOfProducts = numberOfProducts;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public BigDecimal getTotalPrice() {

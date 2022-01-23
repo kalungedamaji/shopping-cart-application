@@ -21,12 +21,10 @@ public class Product {
         return Objects.hash(name, price);
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public String getName() {
-        return name;
+    public void addQuantity(int quantity)
+    {
+        int totalQuantityOfProduct = getQuantity() + quantity;
+        setQuantity(totalQuantityOfProduct);
     }
 
     public void setName(String name) {
@@ -37,14 +35,16 @@ public class Product {
         this.price = price;
     }
 
-    public void addQuantity(int quantity)
-    {
-        int totalQuantityOfProduct = getQuantity() + quantity;
-        setQuantity(totalQuantityOfProduct);
-    }
-
     public void setQuantity(int quantity){
         this.quantity = quantity;}
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public int getQuantity() {
         return quantity; }

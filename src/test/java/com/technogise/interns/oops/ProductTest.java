@@ -1,11 +1,8 @@
 package com.technogise.interns.oops;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ProductTest {
     Product product = new Product();
@@ -19,7 +16,6 @@ class ProductTest {
         product.setName(INPUT_NAME);
         String actualName = product.getName();
         assertEquals(EXPECTED_NAME, actualName);
-
     }
 
     @Test

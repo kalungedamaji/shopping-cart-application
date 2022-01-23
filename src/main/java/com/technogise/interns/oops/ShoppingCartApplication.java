@@ -6,10 +6,10 @@ public class ShoppingCartApplication {
     public static void main(String[] args) {
         ShoppingCart cart = new ShoppingCart();
         Product soap = new Product();
-        soap.setPrice(new BigDecimal(39.99));
+        soap.setPrice(BigDecimal.valueOf(39.99));
         soap.setName("Dove");
         int numberOfProducts = 5;
         cart.addProducts(soap, numberOfProducts);
-        System.out.println("Total price of the cart = $" + cart.getTotalPrice());  //totalpice
+        System.out.println("Total price of the cart = $" + cart.getTotalPrice());
     }
 }
