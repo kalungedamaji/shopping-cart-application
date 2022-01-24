@@ -2,72 +2,65 @@ package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Map;
+
 
 public class ShoppingCart {
-    private int numberOfProducts = 0;
-    private Product product;
-    private static final int TWO_DIGIT_PRECISION =2;
+    private ShoppingCartPriceCalculator shoppingCartPriceCalculator = new ShoppingCartPriceCalculator();
     private HashMap<Product,Integer> cart = new HashMap<>();
-    /*public void addProducts(final Product product,final int numberOfProducts) {
-
-       setProduct(product);
-       int productCount = getNumberOfProducts() + numberOfProducts;
-       setNumberOfProducts(productCount);
-    }*/
 
     public void addProducts(final Product product, final int numberOfProducts) {
-        setProduct(product);
-        int productCount = getNumberOfProducts()+numberOfProducts;
-        if(cart.containsKey(product))
-        {
-            int productQuantity= cart.get(product) + numberOfProducts;
-            cart.put(product,productQuantity);
+        addProductsMechanism(product,numberOfProducts);
+    }
+
+    private void addProductsMechanism(final Product product, final int numberOfProducts){
+        if(getCart().containsKey(product)) {
+            int productQuantity= getCart().get(product) + numberOfProducts;
+            getCart().put(product,productQuantity);
+        } else {
+            getCart().put(product,numberOfProducts);
         }
-        else
-        {
-            cart.put(product,numberOfProducts);
-        }
-        setNumberOfProducts(productCount);
     }
 
-    public BigDecimal calculateTotalPriceWithoutTaxes() {
-        BigDecimal currentTotalPrice = BigDecimal.valueOf(0.00);
-       for (Map.Entry<Product,Integer> entry : cart.entrySet()){
-          currentTotalPrice = currentTotalPrice.add((entry.getKey().getPrice().
-                  multiply(BigDecimal.valueOf(entry.getValue())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP)));
-       }
-return currentTotalPrice;
+    public BigDecimal calculateTotalPriceWithoutTaxes(){
+        return getShoppingCartPriceCalculator().calculateTotalPriceWithoutTaxes(getCart());
     }
 
-    public BigDecimal calculateTotalSalesTax() {
-        BigDecimal totalSalesTaxRate = BigDecimal.valueOf(12.5).divide(BigDecimal.valueOf(100.00));
-        BigDecimal totalSalesTax = totalSalesTaxRate.multiply(calculateTotalPriceWithoutTaxes()).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
-        return totalSalesTax;
+    public BigDecimal calculateTotalSalesTax(){
+        return getShoppingCartPriceCalculator().calculateTotalSalesTax(getCart());
     }
 
-    public BigDecimal CalculateTotalPriceOfCartIncludingTaxes(){
-        BigDecimal totalPriceOfCartIncludingTaxes = calculateTotalPriceWithoutTaxes().add(calculateTotalSalesTax());
-        return totalPriceOfCartIncludingTaxes;
+    public BigDecimal calculateTotalPriceOfCartIncludingTaxes(){
+        return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCart());
     }
-
 
     public int getNumberOfProducts() {
-        return numberOfProducts;
+        int productCount = 0;
+        for (Integer productQuantity:cart.values()){
+            productCount += productQuantity;
+        }
+            return productCount;
     }
 
-    public Product getProduct() {
-        return product;
+    public Product getProduct(String productName) {
+        for (Product product : cart.keySet()){
+            if (product.getName() == productName)
+                return product;
+        }
+        return null;
     }
 
     public int getProductQuantity(final Product product){
-        return cart.get(product);
-    }
-    public void setNumberOfProducts(int numberOfProducts) {
-        this.numberOfProducts = numberOfProducts;
+        return getCart().get(product);
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    private HashMap<Product, Integer> getCart() {
+        return cart;
+    }
+
+    private ShoppingCartPriceCalculator getShoppingCartPriceCalculator() {
+        return shoppingCartPriceCalculator;
+    }
+    public void setSalesTaxMultiplier(BigDecimal salesTaxMultiplier) {
+        getShoppingCartPriceCalculator().setSalesTaxMultiplier(salesTaxMultiplier);
     }
 }

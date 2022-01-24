@@ -14,6 +14,11 @@ public class Product {
         Product product = (Product) o;
         return Objects.equals(name, product.name) && Objects.equals(price, product.price);
     }
+    Product(String name, BigDecimal price){
+        this.name=name;
+        this.price=price;
+    }
+
 
     @Override
     public int hashCode() {

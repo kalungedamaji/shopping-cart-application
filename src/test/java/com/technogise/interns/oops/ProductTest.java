@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
-    Product product = new Product();
+    Product product = new Product("Dove",BigDecimal.valueOf(39.99));
 
     @Test
     public void testSetNameGetName()
