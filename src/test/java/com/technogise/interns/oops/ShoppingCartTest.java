@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -96,6 +98,48 @@ public class ShoppingCartTest {
 
         BigDecimal actualTotalSalesTax=shoppingCart.calculateTotalSalesTax();
         assertEquals(EXPECTED_TOTAL_SALES_TAX,actualTotalSalesTax);
+
+    }
+
+    @Test
+    public void testGiftFunctionalityOfProduct() {
+        boolean EXPECTED_GIFT_ABILITY_OF_PRODUCT = true;
+        boolean giftable = true; //private not working
+        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
+
+        boolean actualGiftAbilityOfProduct = doveSoap.getGiftAbility();
+
+        assertEquals(EXPECTED_GIFT_ABILITY_OF_PRODUCT, actualGiftAbilityOfProduct);
+    }
+
+    @Test
+    public void testUserOptedProductAsGift() {
+        boolean giftable = true;
+        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
+        final int NO_OF_DOVE_SOAP=1;
+
+        shoppingCart.addProducts(doveSoap, NO_OF_DOVE_SOAP);
+
+
+
+
+    }
+
+    @Test
+    public void testGetAllTheProductFromShoppingCart(){
+        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE);
+
+        final int NO_OF_DOVE_SOAP=1;
+
+        shoppingCart.addProducts(doveSoap, NO_OF_DOVE_SOAP);
+
+        Set<CartItem> cartItemList = shoppingCart.getCartItems();
+
+      //  CartItem cartItem = cartItemList.;
+
+        assertEquals(SOAP_NAME, cartItem.getName());
+
+        assertEquals(DOVE_SOAP_UNIT_PRICE, cartItem.getPrice());
 
     }
 

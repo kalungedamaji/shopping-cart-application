@@ -1,17 +1,19 @@
 package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.*;
 
 public class ShoppingCart {
     final private ShoppingCartPriceCalculator shoppingCartPriceCalculator = new ShoppingCartPriceCalculator();
-    final private HashMap<Product,Integer> cart = new HashMap<>();
+    final private Set<CartItem> cartItemsList = new HashSet<>();
 
     public void addProducts(final Product product, final int numberOfProducts) {
-        addProductsMechanism(product,numberOfProducts);
+    //    addProductsMechanism(product,numberOfProducts);
+        CartItem cartItem = new CartItem(product.getName(), product.getPrice(),numberOfProducts, true);
+        cartItemsList.add(cartItem);
     }
 
-    private void addProductsMechanism(final Product product, final int numberOfProducts){
+    /*  private void addProductsMechanism(final Product product, final int numberOfProducts){
         if(getCart().containsKey(product)) {
             int productQuantity= getCart().get(product) + numberOfProducts;
             getCart().put(product,productQuantity);
@@ -19,6 +21,7 @@ public class ShoppingCart {
             getCart().put(product,numberOfProducts);
         }
     }
+*/
 
     public BigDecimal calculateTotalPriceWithoutTaxes(){
         return getShoppingCartPriceCalculator().calculateTotalPriceWithoutTaxes(getCart());
@@ -32,8 +35,8 @@ public class ShoppingCart {
         return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCart());
     }
 
-    private HashMap<Product, Integer> getCart() {
-        return cart;
+    public Set<CartItem> getCart() {  //changed from private to public
+        return cartItemsList;
     }
 
     private ShoppingCartPriceCalculator getShoppingCartPriceCalculator() {
@@ -42,5 +45,9 @@ public class ShoppingCart {
 
     public void setSalesTaxMultiplier(BigDecimal salesTaxMultiplier) {
         getShoppingCartPriceCalculator().setSalesTaxMultiplier(salesTaxMultiplier);
+    }
+
+    public Set<CartItem> getCartItems() {
+        return cartItemsList;
     }
 }

@@ -2,8 +2,7 @@ package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 class ShoppingCartPriceCalculator {
 
@@ -18,24 +17,23 @@ class ShoppingCartPriceCalculator {
         return salesTaxMultiplier.divide(BigDecimal.valueOf(100.00));
     }
 
-     BigDecimal calculateTotalPriceWithoutTaxes(Map<Product, Integer> cart) {
+     BigDecimal calculateTotalPriceWithoutTaxes(Set<CartItem> cartItemsList) {
          BigDecimal currentTotalPrice = BigDecimal.valueOf(0.00);
-        for (Map.Entry<Product,Integer> entry : cart.entrySet()){
-            currentTotalPrice = currentTotalPrice.add((entry.getKey().getPrice().
-                    multiply(BigDecimal.valueOf(entry.getValue())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP)));
+        for (CartItem cartItem : cartItemsList){
+            currentTotalPrice = currentTotalPrice.add((cartItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP)));
         }
         return currentTotalPrice;
     }
 
-     BigDecimal calculateTotalSalesTax(HashMap<Product,Integer> cart) {
+     BigDecimal calculateTotalSalesTax(Set<CartItem> cartItemsList) {
         BigDecimal totalSalesTaxRate= getSalesTaxMultiplier();
-        BigDecimal totalSalesTax=totalSalesTaxRate.multiply(calculateTotalPriceWithoutTaxes(cart)).
+        BigDecimal totalSalesTax=totalSalesTaxRate.multiply(calculateTotalPriceWithoutTaxes(cartItemsList)).
                 setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
         return totalSalesTax;
     }
 
-     BigDecimal calculateTotalPriceOfCartIncludingTaxes(HashMap<Product,Integer> cart){
-        BigDecimal totalPriceOfCartIncludingTaxes = calculateTotalPriceWithoutTaxes(cart).add(calculateTotalSalesTax(cart));
+     BigDecimal calculateTotalPriceOfCartIncludingTaxes(Set<CartItem> cartItemsList){
+        BigDecimal totalPriceOfCartIncludingTaxes = calculateTotalPriceWithoutTaxes(cartItemsList).add(calculateTotalSalesTax(cartItemsList));
         return totalPriceOfCartIncludingTaxes;
     }
 }
