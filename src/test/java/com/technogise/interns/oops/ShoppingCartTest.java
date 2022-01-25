@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShoppingCartTest {
 
-    final private ShoppingCart shoppingCart = new ShoppingCart();
+     ShoppingCart shoppingCart = new ShoppingCart();
 
     final private String SOAP_NAME="Dove";
     final private BigDecimal DOVE_SOAP_UNIT_PRICE=BigDecimal.valueOf(39.99);

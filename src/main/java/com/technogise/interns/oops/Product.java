@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Product {
     final private  String name;
     final private BigDecimal price;
-
+    private Boolean isGift;
 
     Product(final String name,final BigDecimal price){
         this.name=name;
