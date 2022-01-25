@@ -1,106 +1,35 @@
 package com.technogise.interns.oops;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShoppingCartTest {
 
-    private ShoppingCart shoppingCart = new ShoppingCart();
+    final private ShoppingCart shoppingCart = new ShoppingCart();
 
-    final String SOAP_NAME="Dove";
-    final BigDecimal DOVE_SOAP_UNIT_PRICE=BigDecimal.valueOf(39.99);
+    final private String SOAP_NAME="Dove";
+    final private BigDecimal DOVE_SOAP_UNIT_PRICE=BigDecimal.valueOf(39.99);
 
-    final String DEO_NAME="Axe";
-    final BigDecimal AXE_DEO_UNIT_PRICE=BigDecimal.valueOf(99.99);
+    final private String DEO_NAME="Axe";
+    final private BigDecimal AXE_DEO_UNIT_PRICE=BigDecimal.valueOf(99.99);
 
     @Test
-    public void testGetAndSetNumberOfProducts(){
-        final int EXPECTED_NO_OF_PRODUCTS = 5;
-        final int NO_OF_PRODUCTS = 5;
+    public void testCalculateTotalPriceOfCartIncludingTaxesWhenShoppingCartIsEmptyReturnsZero(){
+        final int TWO_DIGIT_PRECISION = 2;
 
-        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        final BigDecimal EXPECTED_PRICE_OF_CART = BigDecimal.valueOf(0).setScale(TWO_DIGIT_PRECISION, RoundingMode.HALF_UP);
 
-        shoppingCart.addProducts(soapProduct, NO_OF_PRODUCTS);
+        BigDecimal actualTotalPrice = shoppingCart.calculateTotalPriceOfCartIncludingTaxes();
 
-        int actualNoOfProducts = shoppingCart.getNumberOfProducts();
-        Assertions.assertEquals(EXPECTED_NO_OF_PRODUCTS,actualNoOfProducts);
-
-        Product actualProduct = shoppingCart.getProduct(SOAP_NAME);
-
-        Product expectedProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-
-        Assertions.assertEquals(expectedProduct, actualProduct);
+        assertEquals(EXPECTED_PRICE_OF_CART,actualTotalPrice);
     }
 
     @Test
-    public void testCalculateTotalPrice()
-    {
-        int TWO_DIGIT_PRECISION = 2, No_OF_PRODUCTS= 5;
-
-        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-
-        BigDecimal EXPECTED_TOTALPRICE = DOVE_SOAP_UNIT_PRICE.multiply(BigDecimal.valueOf(No_OF_PRODUCTS)).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
-
-        shoppingCart.addProducts(soapProduct, No_OF_PRODUCTS);
-
-        BigDecimal actualTotalPrice= shoppingCart.calculateTotalPriceWithoutTaxes();
-
-        assertEquals(EXPECTED_TOTALPRICE, actualTotalPrice);
-    }
-    @Test
-    public void testIncreaseProductQuantity(){
-        final int EXPECTED_NUMBER_OF_PRODUCTS = 8;
-
-        Product soapDoveProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-
-        shoppingCart.addProducts(soapDoveProduct, 5);
-        shoppingCart.addProducts(soapDoveProduct, 3);
-
-        int actualNumberOfProducts = shoppingCart.getNumberOfProducts();
-
-        Assertions.assertEquals(EXPECTED_NUMBER_OF_PRODUCTS, actualNumberOfProducts);
-    }
-
-    @Test
-    public void testCalculateUpdatedTotalPrice()
-    {
-        final int No_OF_PRODUCTS= 8;
-        final BigDecimal EXPECTED_UPDATED_TOTALPRICE = BigDecimal.valueOf(319.92);
-
-        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-        shoppingCart.addProducts(soapProduct, No_OF_PRODUCTS);
-
-        BigDecimal actualTotalPrice= shoppingCart.calculateTotalPriceWithoutTaxes();
-        assertEquals(EXPECTED_UPDATED_TOTALPRICE, actualTotalPrice);
-    }
-
-    @Test
-    public void testAddMultipleProducts(){
-        final int EXPECTED_NO_OF_DOVE_SOAP = 2;
-        final int NO_OF_DOVE_SOAP=2;
-
-        Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
-
-        int actualNoOfDoveSoap= shoppingCart.getProductQuantity(soapProduct);
-
-        final int EXPECTED_NO_OF_AXE_DEO = 3;
-
-        Product deoProduct = new Product(DEO_NAME,AXE_DEO_UNIT_PRICE);
-        shoppingCart.addProducts(deoProduct, 3);
-
-        int actualNoOfAxeDeo= shoppingCart.getProductQuantity(deoProduct);
-
-        boolean testCaseSucceed= ((EXPECTED_NO_OF_AXE_DEO==actualNoOfAxeDeo)&&(EXPECTED_NO_OF_DOVE_SOAP==actualNoOfDoveSoap));
-        assertTrue(testCaseSucceed);
-
-    }
-    @Test
-    public void testCalculateTotalPriceOfCartIncludingTaxes() {
+    public void testCalculateTotalPriceOfCartIncludingTaxesWhenMultipleCategoryOfProductsAreAdded() {
         final BigDecimal EXPECTED_TOTAL_PRICE_OF_CART_INCLUDING_TAXES = BigDecimal.valueOf(314.96);
         final int NO_OF_DOVE_SOAP=2;
 
@@ -119,8 +48,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void testCalculateTotalPriceOfMultipleProductWithoutTax(){
-        int TWO_DIGIT_PRECISION = 2;
+    public void testCalculateTotalPriceOfCartWhenMultipleCategoryOfProductsAreAddedWithoutTax(){
 
         final int NO_OF_DOVE_SOAP=2;
         final int NO_OF_AXE_DEO=2;
@@ -140,7 +68,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void testCalculateSalesTax(){
+    public void testSalesTaxWhenDifferentProductsAreAddedToShoppingCart(){
         int TWO_DIGIT_PRECISION = 2;
         BigDecimal salesTaxRate=BigDecimal.valueOf(12.5);
         shoppingCart.setSalesTaxMultiplier(salesTaxRate);

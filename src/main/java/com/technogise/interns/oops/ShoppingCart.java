@@ -3,10 +3,9 @@ package com.technogise.interns.oops;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-
 public class ShoppingCart {
-    private ShoppingCartPriceCalculator shoppingCartPriceCalculator = new ShoppingCartPriceCalculator();
-    private HashMap<Product,Integer> cart = new HashMap<>();
+    final private ShoppingCartPriceCalculator shoppingCartPriceCalculator = new ShoppingCartPriceCalculator();
+    final private HashMap<Product,Integer> cart = new HashMap<>();
 
     public void addProducts(final Product product, final int numberOfProducts) {
         addProductsMechanism(product,numberOfProducts);
@@ -33,26 +32,6 @@ public class ShoppingCart {
         return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCart());
     }
 
-    public int getNumberOfProducts() {
-        int productCount = 0;
-        for (Integer productQuantity:cart.values()){
-            productCount += productQuantity;
-        }
-            return productCount;
-    }
-
-    public Product getProduct(String productName) {
-        for (Product product : cart.keySet()){
-            if (product.getName() == productName)
-                return product;
-        }
-        return null;
-    }
-
-    public int getProductQuantity(final Product product){
-        return getCart().get(product);
-    }
-
     private HashMap<Product, Integer> getCart() {
         return cart;
     }
@@ -60,6 +39,7 @@ public class ShoppingCart {
     private ShoppingCartPriceCalculator getShoppingCartPriceCalculator() {
         return shoppingCartPriceCalculator;
     }
+
     public void setSalesTaxMultiplier(BigDecimal salesTaxMultiplier) {
         getShoppingCartPriceCalculator().setSalesTaxMultiplier(salesTaxMultiplier);
     }
