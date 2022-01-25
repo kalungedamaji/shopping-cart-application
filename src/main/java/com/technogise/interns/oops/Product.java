@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Product {
-    final private  String name;
-    final private BigDecimal price;
+    private final String name;
+    private final BigDecimal price;
     private Boolean isGift;
 
     Product(final String name,final BigDecimal price){
@@ -13,7 +13,19 @@ public class Product {
         this.price=price;
     }
 
+    public void setGift(Boolean gift) {
+        isGift = gift;
+    }
+
+    public Boolean getGift() {
+        return isGift;
+    }
+
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public String getName() {
+        return name;
     }
 }

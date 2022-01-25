@@ -2,8 +2,11 @@ package com.technogise.interns.oops;
 
 import org.junit.jupiter.api.Test;
 
+import javax.jnlp.BasicService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -11,11 +14,11 @@ public class ShoppingCartTest {
 
      ShoppingCart shoppingCart = new ShoppingCart();
 
-    final private String SOAP_NAME="Dove";
-    final private BigDecimal DOVE_SOAP_UNIT_PRICE=BigDecimal.valueOf(39.99);
+    private final String SOAP_NAME="Dove";
+    private final BigDecimal DOVE_SOAP_UNIT_PRICE=BigDecimal.valueOf(39.99);
 
-    final private String DEO_NAME="Axe";
-    final private BigDecimal AXE_DEO_UNIT_PRICE=BigDecimal.valueOf(99.99);
+    private final String DEO_NAME="Axe";
+    private final BigDecimal AXE_DEO_UNIT_PRICE=BigDecimal.valueOf(99.99);
 
     @Test
     public void testCalculateTotalPriceOfCartIncludingTaxesWhenShoppingCartIsEmptyReturnsZero(){
@@ -96,8 +99,29 @@ public class ShoppingCartTest {
 
         BigDecimal actualTotalSalesTax=shoppingCart.calculateTotalSalesTax();
         assertEquals(EXPECTED_TOTAL_SALES_TAX,actualTotalSalesTax);
-
     }
+    @Test
+    public void testProductIsGiftable(){
+        final int NO_OF_DOVE_SOAP = 1;
+        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        soapProduct.setGift(true);
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+        Boolean USER_CHOICE = true;
 
+        assertEquals(USER_CHOICE, shoppingCart.itemIsgiftable(soapProduct));
+    }
+    @Test
+    public void testGetAllProductsOfShoppingCart(){
+        final int NO_OF_DOVE_SOAP = 2;
+
+        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+
+        List<Product> actualItems = shoppingCart.getAllItemsOfCart();
+
+        Product actualProduct = actualItems.get(0);
+        assertEquals(SOAP_NAME, actualProduct.getName());
+        assertEquals(DOVE_SOAP_UNIT_PRICE, actualProduct.getPrice());
+    }
 }
 

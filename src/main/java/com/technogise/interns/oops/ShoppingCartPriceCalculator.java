@@ -1,9 +1,8 @@
 package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 class ShoppingCartPriceCalculator {
 
@@ -18,23 +17,23 @@ class ShoppingCartPriceCalculator {
         return salesTaxMultiplier.divide(BigDecimal.valueOf(100.00));
     }
 
-     BigDecimal calculateTotalPriceWithoutTaxes(Map<Product, Integer> cart) {
+     BigDecimal calculateTotalPriceWithoutTaxes(List<ShoppingCartItem> cart) {
          BigDecimal currentTotalPrice = BigDecimal.valueOf(0.00);
-        for (Map.Entry<Product,Integer> entry : cart.entrySet()){
-            currentTotalPrice = currentTotalPrice.add((entry.getKey().getPrice().
-                    multiply(BigDecimal.valueOf(entry.getValue())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP)));
+        for (ShoppingCartItem shoppingCartItem : cart){
+            currentTotalPrice = currentTotalPrice.add((shoppingCartItem.getPrice()).
+                    multiply(BigDecimal.valueOf(shoppingCartItem.getQuantity()))).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
         }
         return currentTotalPrice;
     }
 
-     BigDecimal calculateTotalSalesTax(HashMap<Product,Integer> cart) {
+     BigDecimal calculateTotalSalesTax(List<ShoppingCartItem> cart) {
         BigDecimal totalSalesTaxRate= getSalesTaxMultiplier();
         BigDecimal totalSalesTax=totalSalesTaxRate.multiply(calculateTotalPriceWithoutTaxes(cart)).
                 setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
         return totalSalesTax;
     }
 
-     BigDecimal calculateTotalPriceOfCartIncludingTaxes(HashMap<Product,Integer> cart){
+     BigDecimal calculateTotalPriceOfCartIncludingTaxes(List<ShoppingCartItem> cart){
         BigDecimal totalPriceOfCartIncludingTaxes = calculateTotalPriceWithoutTaxes(cart).add(calculateTotalSalesTax(cart));
         return totalPriceOfCartIncludingTaxes;
     }
