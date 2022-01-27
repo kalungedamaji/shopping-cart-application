@@ -9,6 +9,12 @@ public class ShoppingCartItem {
     private String name;
     private BigDecimal price;
 
+    ShoppingCartItem(final int quantity,final String name, final BigDecimal price){
+        this.quantity=quantity;
+        this.name=name;
+        this.price=price;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }

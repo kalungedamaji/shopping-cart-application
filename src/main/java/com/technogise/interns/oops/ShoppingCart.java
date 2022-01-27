@@ -21,27 +21,24 @@ public class ShoppingCart {
             }
         }
         if (!itemPresentInCart){
-            ShoppingCartItem shoppingCartItem1 = new ShoppingCartItem();
-            shoppingCartItem1.setName(product.getName());
-            shoppingCartItem1.setPrice(product.getPrice());
-            shoppingCartItem1.setQuantity(numberOfProducts);
+            ShoppingCartItem shoppingCartItem1 = new ShoppingCartItem(numberOfProducts, product.getName(),product.getPrice());
             cart.add(shoppingCartItem1);
         }
     }
 
     public BigDecimal calculateTotalPriceWithoutTaxes(){
-        return getShoppingCartPriceCalculator().calculateTotalPriceWithoutTaxes(getCart());
+        return getShoppingCartPriceCalculator().calculateTotalPriceWithoutTaxes(getCartItems());
     }
 
     public BigDecimal calculateTotalSalesTax(){
-        return getShoppingCartPriceCalculator().calculateTotalSalesTax(getCart());
+        return getShoppingCartPriceCalculator().calculateTotalSalesTax(getCartItems());
     }
 
     public BigDecimal calculateTotalPriceOfCartIncludingTaxes(){
-        return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCart());
+        return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCartItems());
     }
 
-    public List<ShoppingCartItem> getCart() {
+    public List<ShoppingCartItem> getCartItems() {
         return cart;
     }
 
@@ -54,7 +51,7 @@ public class ShoppingCart {
     }
 
     public void userOptedItemForGift(Product product) {
-        for(ShoppingCartItem shoppingCartItem:getCart()){
+        for(ShoppingCartItem shoppingCartItem: getCartItems()){
             if(shoppingCartItem.getName()==product.getName()  && product.getGift()){
                 shoppingCartItem.setUserChoiceForGift(true);
                 break;

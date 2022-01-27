@@ -6,6 +6,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ShoppingCartTest {
@@ -103,7 +111,7 @@ public class ShoppingCartTest {
         //given
         final int NO_OF_DOVE_SOAP=1;
         final boolean itemGiftable=true;
-        final boolean EXPECTED_USER_CHOICE_FOR_GIFT=false;
+        final boolean EXPECTED_USER_CHOICE_FOR_GIFT=true;
         Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
         soapProduct.setGift(itemGiftable);
 
@@ -112,9 +120,12 @@ public class ShoppingCartTest {
         shoppingCart.userOptedItemForGift(soapProduct);
 
         //then
-        assertEquals(EXPECTED_USER_CHOICE_FOR_GIFT,shoppingCart.getCart().get(0).getUserChoiceForGift());
+        //assertEquals(EXPECTED_USER_CHOICE_FOR_GIFT,shoppingCart.getCart());
+        assertThat(shoppingCart.getCartItems(),containsInAnyOrder(hasProperty("userChoiceForGift",
+                is(EXPECTED_USER_CHOICE_FOR_GIFT))));
 
     }
+
 
     @Test
     public void testGetAllProductsOfShoppingCart(){
@@ -123,7 +134,7 @@ public class ShoppingCartTest {
         Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
         shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
 
-        List<ShoppingCartItem> actualItems = shoppingCart.getCart();
+        List<ShoppingCartItem> actualItems = shoppingCart.getCartItems();
 
         assertEquals(SOAP_NAME, actualItems.get(0).getName());
         assertEquals(DOVE_SOAP_UNIT_PRICE, actualItems.get(0).getPrice());
