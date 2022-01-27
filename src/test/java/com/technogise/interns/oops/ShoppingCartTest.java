@@ -7,14 +7,10 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ShoppingCartTest {
 
@@ -106,14 +102,15 @@ public class ShoppingCartTest {
         BigDecimal actualTotalSalesTax=shoppingCart.calculateTotalSalesTax();
         assertEquals(EXPECTED_TOTAL_SALES_TAX,actualTotalSalesTax);
     }
+
     @Test
-    public void testUserHasAbilityToGiftTheProduct(){
+    public void testUserHasAbilityToGiftOneItem(){
         //given
         final int NO_OF_DOVE_SOAP=1;
-        final boolean itemGiftable=true;
+        final boolean doveProductIsGiftable=true;
         final boolean EXPECTED_USER_CHOICE_FOR_GIFT=true;
         Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-        soapProduct.setGift(itemGiftable);
+        soapProduct.setGift(doveProductIsGiftable);
 
         //When
         shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
@@ -127,7 +124,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void testUserHasAbilityToGiftTheMultipleProduct(){
+    public void testUserHasAbilityToGiftAllGiftableItems(){
         //given
         final int NO_OF_DOVE_SOAP=1;
         final boolean doveProductGiftable=true;
@@ -164,9 +161,63 @@ public class ShoppingCartTest {
 
     }
 
+    @Test
+    public void testUserHasAbilityToGiftSomeItems(){
+        //given
+        final int NO_OF_DOVE_SOAP=1;
+        final boolean doveProductGiftable=true;
+        final boolean EXPECTED_USER_CHOICE_FOR_DOVE_PRODUCT_AS_GIFT=true;
+
+        final int NO_OF_AXE_DEO=1;
+        final boolean deoProductGiftable=true;
+        final boolean EXPECTED_USER_CHOICE_FOR_DEO_PRODUCT_AS_GIFT=false;
+
+        Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        soapProduct.setGift(doveProductGiftable);
+
+        Product deoProduct=new Product(DEO_NAME,AXE_DEO_UNIT_PRICE);
+        deoProduct.setGift(deoProductGiftable);
+
+        //When
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+        shoppingCart.userOptedItemForGift(soapProduct);
+        shoppingCart.addProducts(deoProduct,NO_OF_AXE_DEO);
+
+        //then
+        assertThat(shoppingCart.getCartItems(),hasItems(allOf
+                                (hasProperty("userChoiceForGift", is(EXPECTED_USER_CHOICE_FOR_DOVE_PRODUCT_AS_GIFT))
+                                        ,hasProperty("name",is(SOAP_NAME))
+                                )
+                        ,allOf(
+                                hasProperty("userChoiceForGift",is(EXPECTED_USER_CHOICE_FOR_DEO_PRODUCT_AS_GIFT))
+                                ,hasProperty("name",is(DEO_NAME))
+                        )
+                )
+        );
+
+    }
 
     @Test
-    public void testGetAllProductsOfShoppingCart(){
+    public void testItemIsNotGiftable(){
+        //given
+        final int NO_OF_DOVE_SOAP=1;
+        final boolean doveProductGiftable=false;
+        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        soapProduct.setGift(doveProductGiftable);
+        String expectedMessage = "This item is not available for gifting";
+
+        //when
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+
+        //then
+        RuntimeException exception = assertThrows(RuntimeException.class ,()->shoppingCart.userOptedItemForGift(soapProduct));
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+}
+
+
+    @Test
+    public void testGetAllItemsOfShoppingCart(){
         final int NO_OF_DOVE_SOAP = 2;
 
         Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);

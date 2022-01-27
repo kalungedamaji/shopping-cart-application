@@ -50,7 +50,10 @@ public class ShoppingCart {
         getShoppingCartPriceCalculator().setSalesTaxMultiplier(salesTaxMultiplier);
     }
 
-    public void userOptedItemForGift(Product product) {
+     public void userOptedItemForGift(Product product) {
+        if (!product.getGift()){
+            throw new RuntimeException("This item is not available for gifting");
+        }
         for(ShoppingCartItem shoppingCartItem: getCartItems()){
             if(shoppingCartItem.getName()==product.getName()  && product.getGift()){
                 shoppingCartItem.setUserChoiceForGift(true);
@@ -58,4 +61,5 @@ public class ShoppingCart {
             }
         }
     }
+
 }

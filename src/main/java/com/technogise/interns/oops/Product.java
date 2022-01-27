@@ -14,6 +14,7 @@ public class Product {
     }
 
     public void setGift(Boolean gift) {
+
         isGift = gift;
     }
 
