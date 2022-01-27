@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class ShoppingCartItem {
 
     private int quantity = 0;
-    private Boolean userChoice;
+    private Boolean userChoiceForGift=false;
     private String name;
     private BigDecimal price;
 
@@ -21,16 +21,16 @@ public class ShoppingCartItem {
         return quantity;
     }
 
-    public Boolean getUserChoice() {
-        return userChoice;
+    public Boolean getUserChoiceForGift() {
+        return userChoiceForGift;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public void setUserChoice(Boolean userChoice) {
-        this.userChoice = userChoice;
+    public void setUserChoiceForGift(Boolean userChoiceForGift) {
+        this.userChoiceForGift = userChoiceForGift;
     }
 
     public void setPrice(BigDecimal price) {

@@ -2,10 +2,8 @@ package com.technogise.interns.oops;
 
 import org.junit.jupiter.api.Test;
 
-import javax.jnlp.BasicService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -101,15 +99,23 @@ public class ShoppingCartTest {
         assertEquals(EXPECTED_TOTAL_SALES_TAX,actualTotalSalesTax);
     }
     @Test
-    public void testProductIsGiftable(){
-        final int NO_OF_DOVE_SOAP = 1;
-        Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
-        soapProduct.setGift(true);
-        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
-        Boolean USER_CHOICE = true;
+    public void testUserHasAbilityToGiftTheProduct(){
+        //given
+        final int NO_OF_DOVE_SOAP=1;
+        final boolean itemGiftable=true;
+        final boolean EXPECTED_USER_CHOICE_FOR_GIFT=false;
+        Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        soapProduct.setGift(itemGiftable);
 
-        assertEquals(USER_CHOICE, shoppingCart.itemIsgiftable(soapProduct));
+        //When
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+        shoppingCart.userOptedItemForGift(soapProduct);
+
+        //then
+        assertEquals(EXPECTED_USER_CHOICE_FOR_GIFT,shoppingCart.getCart().get(0).getUserChoiceForGift());
+
     }
+
     @Test
     public void testGetAllProductsOfShoppingCart(){
         final int NO_OF_DOVE_SOAP = 2;
@@ -117,11 +123,10 @@ public class ShoppingCartTest {
         Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
         shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
 
-        List<Product> actualItems = shoppingCart.getAllItemsOfCart();
+        List<ShoppingCartItem> actualItems = shoppingCart.getCart();
 
-        Product actualProduct = actualItems.get(0);
-        assertEquals(SOAP_NAME, actualProduct.getName());
-        assertEquals(DOVE_SOAP_UNIT_PRICE, actualProduct.getPrice());
+        assertEquals(SOAP_NAME, actualItems.get(0).getName());
+        assertEquals(DOVE_SOAP_UNIT_PRICE, actualItems.get(0).getPrice());
     }
 }
 

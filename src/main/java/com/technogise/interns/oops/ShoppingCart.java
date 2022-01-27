@@ -13,14 +13,14 @@ public class ShoppingCart {
     }
 
     private void addProductsMechanism(final Product product, final int numberOfProducts){
-        boolean flag = true;
+        boolean itemPresentInCart = false;
         for (ShoppingCartItem shoppingCartItem : cart){
             if (shoppingCartItem.getName()==product.getName()){
                 shoppingCartItem.setQuantity(shoppingCartItem.getQuantity()+numberOfProducts);
-                flag = false;
+                itemPresentInCart = true;
             }
         }
-        if (flag){
+        if (!itemPresentInCart){
             ShoppingCartItem shoppingCartItem1 = new ShoppingCartItem();
             shoppingCartItem1.setName(product.getName());
             shoppingCartItem1.setPrice(product.getPrice());
@@ -41,16 +41,8 @@ public class ShoppingCart {
         return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCart());
     }
 
-    private List<ShoppingCartItem> getCart() {
+    public List<ShoppingCartItem> getCart() {
         return cart;
-    }
-    public List<Product> getAllItemsOfCart(){
-        List<Product> items= new ArrayList<>();
-        for (ShoppingCartItem shoppingCartItem : cart){
-            Product product = new Product(shoppingCartItem.getName(), shoppingCartItem.getPrice());
-            items.add(product);
-        }
-        return items;
     }
 
     private ShoppingCartPriceCalculator getShoppingCartPriceCalculator() {
@@ -61,9 +53,12 @@ public class ShoppingCart {
         getShoppingCartPriceCalculator().setSalesTaxMultiplier(salesTaxMultiplier);
     }
 
-    public Boolean itemIsgiftable(Product product) {
-        if (getAllItemsOfCart().contains(product))
-            return true;
-        return false;
+    public void userOptedItemForGift(Product product) {
+        for(ShoppingCartItem shoppingCartItem:getCart()){
+            if(shoppingCartItem.getName()==product.getName()  && product.getGift()){
+                shoppingCartItem.setUserChoiceForGift(true);
+                break;
+            }
+        }
     }
 }
