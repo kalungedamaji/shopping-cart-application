@@ -121,8 +121,46 @@ public class ShoppingCartTest {
 
         //then
         //assertEquals(EXPECTED_USER_CHOICE_FOR_GIFT,shoppingCart.getCart());
-        assertThat(shoppingCart.getCartItems(),containsInAnyOrder(hasProperty("userChoiceForGift",
+        assertThat(shoppingCart.getCartItems(),contains(hasProperty("userChoiceForGift",
                 is(EXPECTED_USER_CHOICE_FOR_GIFT))));
+
+    }
+
+    @Test
+    public void testUserHasAbilityToGiftTheMultipleProduct(){
+        //given
+        final int NO_OF_DOVE_SOAP=1;
+        final boolean doveProductGiftable=true;
+        final boolean EXPECTED_USER_CHOICE_FOR_DOVE_PRODUCT_AS_GIFT=true;
+
+        final int NO_OF_AXE_DEO=1;
+        final boolean deoProductGiftable=true;
+        final boolean EXPECTED_USER_CHOICE_FOR_DEO_PRODUCT_AS_GIFT=true;
+
+        Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
+        soapProduct.setGift(doveProductGiftable);
+
+        Product deoProduct=new Product(DEO_NAME,AXE_DEO_UNIT_PRICE);
+        deoProduct.setGift(deoProductGiftable);
+
+        //When
+        shoppingCart.addProducts(soapProduct,NO_OF_DOVE_SOAP);
+        shoppingCart.userOptedItemForGift(soapProduct);
+
+        shoppingCart.addProducts(deoProduct,NO_OF_AXE_DEO);
+        shoppingCart.userOptedItemForGift(deoProduct);
+
+        //then
+        assertThat(shoppingCart.getCartItems(),hasItems(allOf
+                (hasProperty("userChoiceForGift", is(EXPECTED_USER_CHOICE_FOR_DOVE_PRODUCT_AS_GIFT))
+                        ,hasProperty("name",is(SOAP_NAME))
+                )
+        ,allOf(
+                        hasProperty("userChoiceForGift",is(EXPECTED_USER_CHOICE_FOR_DEO_PRODUCT_AS_GIFT))
+                        ,hasProperty("name",is(DEO_NAME))
+                )
+        )
+        );
 
     }
 
