@@ -37,6 +37,12 @@ public class ShoppingCart {
     }
 
     public void optProductAsGift(CartItem cartItem) {
-        cartItem.optCartItemAsGift();
+        if(cartItem.getGiftAbility() == true) {
+            cartItem.optCartItemAsGift();
+        }
+        else {
+            throw new RuntimeException("Product is not giftable !!");
+        }
+
     }
 }

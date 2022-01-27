@@ -4,10 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ShoppingCartTest {
 
@@ -92,18 +95,7 @@ public class ShoppingCartTest {
              BigDecimal actualTotalSalesTax=shoppingCart.calculateTotalSalesTax();
              assertEquals(EXPECTED_TOTAL_SALES_TAX,actualTotalSalesTax);
          }
-    /*
-         @Test
-         public void testGiftAbilityOfProduct() {
-             boolean EXPECTED_GIFT_ABILITY_OF_PRODUCT = true;
-             boolean giftable = true; //private not working
-             Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
 
-             boolean actualGiftAbilityOfProduct = doveSoap.getGiftAbility();
-
-             assertEquals(EXPECTED_GIFT_ABILITY_OF_PRODUCT, actualGiftAbilityOfProduct);
-         }
-     */
     @Test
     public void testUserOptedProductAsGift() {
         boolean EXPECTED_GIFT_OPTIONALITY = true;                                                 //Review later
@@ -122,21 +114,59 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void testGetAllTheProductFromShoppingCart() {
-        String EXPECTED_SOAP_NAME = "Dove";
-        BigDecimal EXPECTED_DOVE_SOAP_UNIT_PRICE = BigDecimal.valueOf(39.99);
+    public void testUserNotOptedProductAsGift() {
+        boolean EXPECTED_GIFT_OPTIONALITY = false;                                                 //Review later
+        boolean giftable = true;
         final int NO_OF_DOVE_SOAP=1;
 
-        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE);
+        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
         ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
         CartItem cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
         shoppingCart.addProducts(cartItem, NO_OF_DOVE_SOAP);
-        Set<CartItem> cartItemList = shoppingCart.getCartItems();
-        String actualSoapName = cartItemList.iterator().next().getName();
-        BigDecimal actualSoapUnitPrice = cartItemList.iterator().next().getPrice();
 
-        assertEquals(EXPECTED_SOAP_NAME, actualSoapName);
-        assertEquals(EXPECTED_DOVE_SOAP_UNIT_PRICE, actualSoapUnitPrice);
+        Set<CartItem> cartItemList = shoppingCart.getCartItems();
+        boolean actualGiftOptionality = cartItemList.iterator().next().getIfGiftOpted();
+        assertEquals(EXPECTED_GIFT_OPTIONALITY, actualGiftOptionality);
     }
+
+    @Test
+    public void testProductIsNotOptableAsGiftWhenProductIsNotGiftable() {
+        boolean giftable = false;
+        final int NO_OF_DOVE_SOAP=1;
+
+        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
+        ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
+        CartItem cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
+        shoppingCart.addProducts(cartItem, NO_OF_DOVE_SOAP);
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            shoppingCart.optProductAsGift(cartItem);
+        });
+        assertEquals("Product is not giftable !!", exception.getMessage());
+    }
+
+    @Test
+    public void testGetAllTheProductFromShoppingCart() {
+        final int NO_OF_DOVE_SOAP=1;
+        final int NO_OF_AXE_DEO=2;
+
+        Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE);
+        Product axeDeo = new Product(DEO_NAME, AXE_DEO_UNIT_PRICE);
+        ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
+        CartItem cartItemDove = productToCartItemConvertor.convertProductToCartItem(doveSoap);
+        CartItem cartItemAxe = productToCartItemConvertor.convertProductToCartItem(axeDeo);
+        shoppingCart.addProducts(cartItemDove, NO_OF_DOVE_SOAP);
+        shoppingCart.addProducts(cartItemAxe, NO_OF_AXE_DEO);
+        shoppingCart.addProducts(cartItemDove, NO_OF_DOVE_SOAP);
+
+        Set<CartItem> actualCartItemList = shoppingCart.getCartItems();
+        assertThat(actualCartItemList, hasItems(allOf(hasProperty("name", is("Dove")),
+                        hasProperty("price", is(BigDecimal.valueOf(39.99))),
+                        hasProperty("quantity", is(2))),
+                        allOf(hasProperty("name", is("Axe")),
+                        hasProperty("price", is(BigDecimal.valueOf(99.99))),
+                        hasProperty("quantity", is(2)))));
+    }
+
+
 }
 

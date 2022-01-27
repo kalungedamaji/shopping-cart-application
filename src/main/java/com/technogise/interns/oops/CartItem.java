@@ -4,14 +4,15 @@ import java.math.BigDecimal;
 
 public class CartItem {
     private int quantity;
-    private boolean giftOpted;
+    private boolean giftOpted, giftAbility;
     private BigDecimal price;
     private String name;
 
 
-    CartItem(String name, BigDecimal price) {
+    CartItem(String name, BigDecimal price, boolean giftAbility) {
         this.price = price;
         this.name = name;
+        this.giftAbility = giftAbility;
     }
 
 
@@ -36,6 +37,10 @@ public class CartItem {
     }
 
     public void setNoOfProducts(int numberOfProducts) {
-        this.quantity = numberOfProducts;
+        this.quantity += numberOfProducts;
+    }
+
+    public boolean getGiftAbility() {
+        return giftAbility;
     }
 }
