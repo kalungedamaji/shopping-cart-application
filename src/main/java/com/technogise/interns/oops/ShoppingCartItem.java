@@ -5,59 +5,62 @@ import java.util.Objects;
 
 public class ShoppingCartItem {
 
-    private int quantity;
-    private Boolean userChoiceForGift=false;
-    private String name;
-    private BigDecimal price;
+  private int quantity;
+  private Boolean userChoiceForGift = false;
+  private String name;
+  private BigDecimal price;
 
-    ShoppingCartItem(final int quantity,final String name, final BigDecimal price){
-        this.quantity=quantity;
-        this.name=name;
-        this.price=price;
-    }
+  ShoppingCartItem(final int quantity, final String name, final BigDecimal price) {
+    this.quantity = quantity;
+    this.name = name;
+    this.price = price;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ShoppingCartItem that = (ShoppingCartItem) o;
-        return quantity == that.quantity && Objects.equals(userChoiceForGift, that.userChoiceForGift) && Objects.equals(name, that.name) && Objects.equals(price, that.price);
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ShoppingCartItem that = (ShoppingCartItem) o;
+    return quantity == that.quantity
+        && Objects.equals(userChoiceForGift, that.userChoiceForGift)
+        && Objects.equals(name, that.name)
+        && Objects.equals(price, that.price);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(quantity, userChoiceForGift, name, price);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(quantity, userChoiceForGift, name, price);
+  }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+  public BigDecimal getPrice() {
+    return price;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setPrice(BigDecimal price) {
+    this.price = price;
+  }
 
-    public int getQuantity() {
-        return quantity;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Boolean getUserChoiceForGift() {
-        return userChoiceForGift;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+  public int getQuantity() {
+    return quantity;
+  }
 
-    public void setUserChoiceForGift(Boolean userChoiceForGift) {
-        this.userChoiceForGift = userChoiceForGift;
-    }
+  public void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+  public Boolean getUserChoiceForGift() {
+    return userChoiceForGift;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setUserChoiceForGift(Boolean userChoiceForGift) {
+    this.userChoiceForGift = userChoiceForGift;
+  }
 }

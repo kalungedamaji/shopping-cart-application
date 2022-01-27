@@ -4,19 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 public class CustomerService {
-    private final CustomerDao customerDao;
-
+    private Dao dao;
     public CustomerService(CustomerDao customerDao) {
-        this.customerDao = customerDao;
+        this.dao = customerDao;
     }
 
     // standard constructor / getter
 
     public Optional<Customer> searchCustomer(int id) {
-        return customerDao.findById(id);
+        return dao.findById(id);
     }
 
     public List<Customer> listAllCustomer() {
-        return customerDao.findAll();
+        return dao.findAll();
     }
 }

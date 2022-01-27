@@ -2,11 +2,7 @@ package com.technogise.interns.intrfacesgragationprinciple;
 
 import java.util.List;
 
-public interface Payment {
+public interface Bank extends Payment{
 
-
-
-    Object status();
-    List<Object> getPayments();
-
+    public void initiatePayments();
 }
