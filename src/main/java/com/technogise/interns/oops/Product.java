@@ -8,6 +8,7 @@ public class Product {
     private boolean giftAbility;
 
 
+
     Product(final String name,final BigDecimal price){
         this.name = name;
         this.price = price;

@@ -9,9 +9,7 @@ public class CartItem {
     private String name;
 
 
-    CartItem(String name, BigDecimal price, int quantity, boolean giftOpted) {
-        this.quantity = quantity;
-        this.giftOpted = giftOpted;
+    CartItem(String name, BigDecimal price) {
         this.price = price;
         this.name = name;
     }
@@ -31,5 +29,13 @@ public class CartItem {
 
     public String getName() {
         return name;
+    }
+
+    public void optCartItemAsGift() {
+        this.giftOpted = true;
+    }
+
+    public void setNoOfProducts(int numberOfProducts) {
+        this.quantity = numberOfProducts;
     }
 }

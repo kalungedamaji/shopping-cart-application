@@ -7,36 +7,21 @@ public class ShoppingCart {
     final private ShoppingCartPriceCalculator shoppingCartPriceCalculator = new ShoppingCartPriceCalculator();
     final private Set<CartItem> cartItemsList = new HashSet<>();
 
-    public void addProducts(final Product product, final int numberOfProducts) {
-    //    addProductsMechanism(product,numberOfProducts);
-        CartItem cartItem = new CartItem(product.getName(), product.getPrice(),numberOfProducts, true);
+    public void addProducts(final CartItem cartItem, final int numberOfProducts) {
+        cartItem.setNoOfProducts(numberOfProducts);
         cartItemsList.add(cartItem);
     }
 
-    /*  private void addProductsMechanism(final Product product, final int numberOfProducts){
-        if(getCart().containsKey(product)) {
-            int productQuantity= getCart().get(product) + numberOfProducts;
-            getCart().put(product,productQuantity);
-        } else {
-            getCart().put(product,numberOfProducts);
-        }
-    }
-*/
-
     public BigDecimal calculateTotalPriceWithoutTaxes(){
-        return getShoppingCartPriceCalculator().calculateTotalPriceWithoutTaxes(getCart());
+        return getShoppingCartPriceCalculator().calculateTotalPriceWithoutTaxes(getCartItems());
     }
 
     public BigDecimal calculateTotalSalesTax(){
-        return getShoppingCartPriceCalculator().calculateTotalSalesTax(getCart());
+        return getShoppingCartPriceCalculator().calculateTotalSalesTax(getCartItems());
     }
 
     public BigDecimal calculateTotalPriceOfCartIncludingTaxes(){
-        return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCart());
-    }
-
-    public Set<CartItem> getCart() {  //changed from private to public
-        return cartItemsList;
+        return getShoppingCartPriceCalculator().calculateTotalPriceOfCartIncludingTaxes(getCartItems());
     }
 
     private ShoppingCartPriceCalculator getShoppingCartPriceCalculator() {
@@ -49,5 +34,9 @@ public class ShoppingCart {
 
     public Set<CartItem> getCartItems() {
         return cartItemsList;
+    }
+
+    public void optProductAsGift(CartItem cartItem) {
+        cartItem.optCartItemAsGift();
     }
 }
