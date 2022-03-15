@@ -1,16 +1,13 @@
-/*
+
 package com.technogise.interns.oops;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.math.BigDecimal;
-
+@SpringBootApplication
 public class ShoppingCartApplication {
     public static void main(String[] args) {
-        ShoppingCart cart = new ShoppingCart();
-        Product soap = new Product("Dove",BigDecimal.valueOf(39.99));
-        int numberOfProducts = 5;
-        cart.addProducts(soap, numberOfProducts);
-        System.out.println("Total price of the cart = $" + cart.calculateTotalPriceOfCartIncludingTaxes());
+    SpringApplication.run(ShoppingCartApplication.class, args);
     }
 }
-*/
+
