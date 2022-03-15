@@ -10,6 +10,6 @@ public class Executor {
 
         PaymentManager paymentManager = new PaymentManager();
 
-        paymentManager.pay(money,PaymentType.CREDIT_CARD);
+        paymentManager.pay(money,PaymentType.GOOGLE_PAY);
     }
 }
