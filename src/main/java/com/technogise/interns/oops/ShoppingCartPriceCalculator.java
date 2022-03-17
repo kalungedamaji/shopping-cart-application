@@ -1,7 +1,6 @@
 package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Set;
 
 class ShoppingCartPriceCalculator {
@@ -17,22 +16,22 @@ class ShoppingCartPriceCalculator {
         return salesTaxMultiplier.divide(BigDecimal.valueOf(100.00));
     }
 
-     BigDecimal calculateTotalPriceWithoutTaxes(Set<CartItem> cartItemsList) {
+     BigDecimal calculateTotalPriceWithoutTaxes(Set<Cart> cartItemsList) {
          BigDecimal currentTotalPrice = BigDecimal.valueOf(0.00);
-        for (CartItem cartItem : cartItemsList){
+        for (Cart cartItem : cartItemsList){
             currentTotalPrice = currentTotalPrice.add((cartItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())).setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP)));
         }
         return currentTotalPrice;
     }
 
-     BigDecimal calculateTotalSalesTax(Set<CartItem> cartItemsList) {
+     BigDecimal calculateTotalSalesTax(Set<Cart> cartItemsList) {
         BigDecimal totalSalesTaxRate= getSalesTaxMultiplier();
         BigDecimal totalSalesTax=totalSalesTaxRate.multiply(calculateTotalPriceWithoutTaxes(cartItemsList)).
                 setScale(TWO_DIGIT_PRECISION, BigDecimal.ROUND_HALF_UP);
         return totalSalesTax;
     }
 
-     BigDecimal calculateTotalPriceOfCartIncludingTaxes(Set<CartItem> cartItemsList){
+     BigDecimal calculateTotalPriceOfCartIncludingTaxes(Set<Cart> cartItemsList){
         BigDecimal totalPriceOfCartIncludingTaxes = calculateTotalPriceWithoutTaxes(cartItemsList).add(calculateTotalSalesTax(cartItemsList));
         return totalPriceOfCartIncludingTaxes;
     }

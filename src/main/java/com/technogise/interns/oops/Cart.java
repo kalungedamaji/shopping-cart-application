@@ -2,14 +2,14 @@ package com.technogise.interns.oops;
 
 import java.math.BigDecimal;
 
-public class CartItem {
+public class Cart {
     private int quantity;
     private boolean giftOpted, giftAbility;
     private BigDecimal price;
     private String name;
 
 
-    public CartItem(String name, BigDecimal price, boolean giftAbility) {
+    public Cart(String name, BigDecimal price, boolean giftAbility) {
         this.price = price;
         this.name = name;
         this.giftAbility = giftAbility;

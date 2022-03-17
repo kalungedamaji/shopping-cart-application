@@ -8,11 +8,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class Product {
+public class Cart {
 
     private UUID id;
     private String name;
-    private BigDecimal price;
     private String image;
-    private String description;
+    private BigDecimal price;
+    private int quantity;
 }

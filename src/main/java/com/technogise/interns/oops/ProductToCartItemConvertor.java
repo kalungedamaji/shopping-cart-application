@@ -1,8 +1,8 @@
 package com.technogise.interns.oops;
 
 public class ProductToCartItemConvertor {
-    public CartItem convertProductToCartItem(Product product) {
-        CartItem cartItem = new CartItem(product.getName(), product.getPrice(), product.getGiftAbility());
+    public Cart convertProductToCartItem(Product product) {
+        Cart cartItem = new Cart(product.getName(), product.getPrice(), product.getGiftAbility());
         return cartItem;
     }
 }

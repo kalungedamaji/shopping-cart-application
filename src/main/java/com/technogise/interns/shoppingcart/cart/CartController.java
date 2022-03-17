@@ -1,7 +1,6 @@
 package com.technogise.interns.shoppingcart.cart;
 
-import com.technogise.interns.oops.Product;
-import com.technogise.interns.shoppingcart.dto.CartItem;
+import com.technogise.interns.shoppingcart.dto.Cart;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,36 +15,47 @@ import java.util.UUID;
 
 @RestController
 public class CartController {
-    @GetMapping("/cart")
-    public ResponseEntity<List<Product>> getAllCartItems(){
-        List<CartItem> cartList = new ArrayList();
 
-        CartItem cartItem = new CartItem();
+    @GetMapping(value="/cart" ,produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Cart>> getAllProducts() {
+
+        List<Cart> productList = new ArrayList();
+
+        Cart cartItem = new Cart();
+
         cartItem.setId(UUID.randomUUID());
+        cartItem.setImage("image");
         cartItem.setName("Laptop");
         cartItem.setPrice(BigDecimal.TEN);
-        cartItem.setImage("Laptop Img");
-        cartItem.setQuantity(2);
-        cartList.add(cartItem);
+        cartItem.setQuantity(1);
 
-        CartItem cartItem1 = new CartItem();
+        productList.add(cartItem);
+
+        Cart cartItem1 = new Cart();
+
         cartItem1.setId(UUID.randomUUID());
-        cartItem1.setName("Mug");
+        cartItem1.setImage("image");
+        cartItem1.setName("Mobile");
         cartItem1.setPrice(BigDecimal.TEN);
-        cartItem1.setImage("Mug Img");
         cartItem1.setQuantity(2);
-        cartList.add(cartItem1);
-
-        return new ResponseEntity(cartList, HttpStatus.OK) ;
+        productList.add(cartItem1);
+        return new ResponseEntity(productList, HttpStatus.OK);
     }
+
     @GetMapping(value="/cart/{id}" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CartItem> getProduct(@PathVariable(value = "id") String id){
-        CartItem cartItem = new CartItem();
-        cartItem.setId(UUID.randomUUID());
+    public ResponseEntity<List<Cart>> getAllProducts(@PathVariable(value = "id") UUID productId) {
+
+        List<Cart> productList = new ArrayList();
+
+        Cart cartItem = new Cart();
+
+        cartItem.setId(productId);
+        cartItem.setImage("image");
         cartItem.setName("Laptop");
         cartItem.setPrice(BigDecimal.TEN);
-        cartItem.setImage("Laptop Img");
-        cartItem.setQuantity(2);
-        return new ResponseEntity(cartItem, HttpStatus.OK);
+        cartItem.setQuantity(1);
+        productList.add(cartItem);
+
+        return new ResponseEntity(productList, HttpStatus.OK);
     }
 }

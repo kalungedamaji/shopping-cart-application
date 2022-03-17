@@ -40,10 +40,10 @@ public class ShoppingCartTest {
 
            Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
            ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-           CartItem cartItemDove = productToCartItemConvertor.convertProductToCartItem(soapProduct);
+           Cart cartItemDove = productToCartItemConvertor.convertProductToCartItem(soapProduct);
            shoppingCart.addProducts(cartItemDove,NO_OF_DOVE_SOAP);
            Product deoProduct = new Product(DEO_NAME,AXE_DEO_UNIT_PRICE);
-           CartItem cartItemAxe = productToCartItemConvertor.convertProductToCartItem(deoProduct);
+           Cart cartItemAxe = productToCartItemConvertor.convertProductToCartItem(deoProduct);
            shoppingCart.addProducts(cartItemAxe,NO_OF_AXE_DEO);
 
            BigDecimal actualTotalPriceOfCartIncludingTaxes = shoppingCart.calculateTotalPriceOfCartIncludingTaxes();
@@ -59,10 +59,10 @@ public class ShoppingCartTest {
 
              Product soapProduct = new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
              ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-             CartItem cartItemDove = productToCartItemConvertor.convertProductToCartItem(soapProduct);
+             Cart cartItemDove = productToCartItemConvertor.convertProductToCartItem(soapProduct);
              shoppingCart.addProducts(cartItemDove,NO_OF_DOVE_SOAP);
              Product deoProduct = new Product(DEO_NAME,AXE_DEO_UNIT_PRICE);
-             CartItem cartItemAxe = productToCartItemConvertor.convertProductToCartItem(deoProduct);
+             Cart cartItemAxe = productToCartItemConvertor.convertProductToCartItem(deoProduct);
              shoppingCart.addProducts(cartItemAxe,NO_OF_AXE_DEO);
 
              BigDecimal actualTotalPriceWithoutTax= shoppingCart.calculateTotalPriceWithoutTaxes();
@@ -86,10 +86,10 @@ public class ShoppingCartTest {
 
              Product soapProduct=new Product(SOAP_NAME,DOVE_SOAP_UNIT_PRICE);
              ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-             CartItem cartItemDove = productToCartItemConvertor.convertProductToCartItem(soapProduct);
+             Cart cartItemDove = productToCartItemConvertor.convertProductToCartItem(soapProduct);
              shoppingCart.addProducts(cartItemDove,NO_OF_DOVE_SOAP);
              Product deoProduct=new Product(DEO_NAME,AXE_DEO_UNIT_PRICE);
-             CartItem cartItemAxe = productToCartItemConvertor.convertProductToCartItem(deoProduct);
+             Cart cartItemAxe = productToCartItemConvertor.convertProductToCartItem(deoProduct);
              shoppingCart.addProducts(cartItemAxe,NO_OF_AXE_DEO);
 
              BigDecimal actualTotalSalesTax=shoppingCart.calculateTotalSalesTax();
@@ -104,11 +104,11 @@ public class ShoppingCartTest {
 
         Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
         ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-        CartItem cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
+        Cart cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
         shoppingCart.addProducts(cartItem, NO_OF_DOVE_SOAP);
         shoppingCart.optProductAsGift(cartItem);
 
-        Set<CartItem> cartItemList = shoppingCart.getCartItems();
+        Set<Cart> cartItemList = shoppingCart.getCartItems();
         boolean actualGiftOptionality = cartItemList.iterator().next().getIfGiftOpted();
         assertEquals(EXPECTED_GIFT_OPTIONALITY, actualGiftOptionality);
     }
@@ -121,10 +121,10 @@ public class ShoppingCartTest {
 
         Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
         ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-        CartItem cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
+        Cart cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
         shoppingCart.addProducts(cartItem, NO_OF_DOVE_SOAP);
 
-        Set<CartItem> cartItemList = shoppingCart.getCartItems();
+        Set<Cart> cartItemList = shoppingCart.getCartItems();
         boolean actualGiftOptionality = cartItemList.iterator().next().getIfGiftOpted();
         assertEquals(EXPECTED_GIFT_OPTIONALITY, actualGiftOptionality);
     }
@@ -136,7 +136,7 @@ public class ShoppingCartTest {
 
         Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE, giftable);
         ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-        CartItem cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
+        Cart cartItem = productToCartItemConvertor.convertProductToCartItem(doveSoap);
         shoppingCart.addProducts(cartItem, NO_OF_DOVE_SOAP);
         Exception exception = assertThrows(RuntimeException.class, () -> {
             shoppingCart.optProductAsGift(cartItem);
@@ -152,13 +152,13 @@ public class ShoppingCartTest {
         Product doveSoap = new Product(SOAP_NAME, DOVE_SOAP_UNIT_PRICE);
         Product axeDeo = new Product(DEO_NAME, AXE_DEO_UNIT_PRICE);
         ProductToCartItemConvertor productToCartItemConvertor = new ProductToCartItemConvertor();
-        CartItem cartItemDove = productToCartItemConvertor.convertProductToCartItem(doveSoap);
-        CartItem cartItemAxe = productToCartItemConvertor.convertProductToCartItem(axeDeo);
+        Cart cartItemDove = productToCartItemConvertor.convertProductToCartItem(doveSoap);
+        Cart cartItemAxe = productToCartItemConvertor.convertProductToCartItem(axeDeo);
         shoppingCart.addProducts(cartItemDove, NO_OF_DOVE_SOAP);
         shoppingCart.addProducts(cartItemAxe, NO_OF_AXE_DEO);
         shoppingCart.addProducts(cartItemDove, NO_OF_DOVE_SOAP);
 
-        Set<CartItem> actualCartItemList = shoppingCart.getCartItems();
+        Set<Cart> actualCartItemList = shoppingCart.getCartItems();
         assertThat(actualCartItemList, hasItems(allOf(hasProperty("name", is("Dove")),
                         hasProperty("price", is(BigDecimal.valueOf(39.99))),
                         hasProperty("quantity", is(2))),
