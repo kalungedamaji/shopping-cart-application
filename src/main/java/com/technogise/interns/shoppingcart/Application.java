@@ -1,3 +1,4 @@
+
 package com.technogise.interns.shoppingcart;
 
 import org.springframework.boot.SpringApplication;
@@ -9,3 +10,4 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 }
+

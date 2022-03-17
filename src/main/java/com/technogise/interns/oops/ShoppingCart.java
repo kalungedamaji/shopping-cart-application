@@ -5,9 +5,9 @@ import java.util.*;
 
 public class ShoppingCart {
     final private ShoppingCartPriceCalculator shoppingCartPriceCalculator = new ShoppingCartPriceCalculator();
-    final private Set<CartItem> cartItemsList = new HashSet<>();
+    final private Set<Cart> cartItemsList = new HashSet<>();
 
-    public void addProducts(final CartItem cartItem, final int numberOfProducts) {
+    public void addProducts(final Cart cartItem, final int numberOfProducts) {
         cartItem.setNoOfProducts(numberOfProducts);
         cartItemsList.add(cartItem);
     }
@@ -32,11 +32,11 @@ public class ShoppingCart {
         getShoppingCartPriceCalculator().setSalesTaxMultiplier(salesTaxMultiplier);
     }
 
-    public Set<CartItem> getCartItems() {
+    public Set<Cart> getCartItems() {
         return cartItemsList;
     }
 
-    public void optProductAsGift(CartItem cartItem) {
+    public void optProductAsGift(Cart cartItem) {
         if(cartItem.getGiftAbility() == true) {
             cartItem.optCartItemAsGift();
         }
