@@ -30,10 +30,10 @@ public class ProductController {
 
         Product product1 = new Product();
         product.setId(UUID.randomUUID());
-        product1.setName("Laptop");
+        product1.setName("Mug");
         product1.setPrice(BigDecimal.TEN);
-        product1.setDescription("Your perfect pack for everyday use");
-        product1.setImage("laptop img");
+        product1.setDescription("Your perfect mug for everyday use");
+        product1.setImage("mug img");
         productList.add(product1);
 
         return new ResponseEntity(productList, HttpStatus.OK);
