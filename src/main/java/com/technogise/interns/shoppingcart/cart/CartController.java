@@ -1,4 +1,4 @@
-package com.technogise.interns.shoppingcart.store;
+package com.technogise.interns.shoppingcart.cart;
 
 import com.technogise.interns.oops.CartItem;
 import org.springframework.http.HttpStatus;
