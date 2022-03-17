@@ -9,7 +9,7 @@ public class CartItem {
     private String name;
 
 
-    CartItem(String name, BigDecimal price, boolean giftAbility) {
+    public CartItem(String name, BigDecimal price, boolean giftAbility) {
         this.price = price;
         this.name = name;
         this.giftAbility = giftAbility;

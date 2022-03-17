@@ -1,0 +1,30 @@
+package com.technogise.interns.shoppingcart.store;
+
+import com.technogise.interns.oops.Product;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.ArrayList;
+
+@RestController
+public class ProductController {
+
+    @GetMapping(value="/products" ,produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Product>> getAllProducts() {
+
+        List<Product> productList = new ArrayList();
+
+        Product product = new Product("Laptop", BigDecimal.TEN);
+        productList.add(product);
+
+        Product product1 = new Product("Laptop", BigDecimal.TEN);
+        productList.add(product1);
+
+        return new ResponseEntity(productList, HttpStatus.OK);
+    }
+}

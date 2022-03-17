@@ -1,13 +1,11 @@
-
-package com.technogise.interns.oops;
+package com.technogise.interns.shoppingcart;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShoppingCartApplication {
+public class Application {
     public static void main(String[] args) {
-    SpringApplication.run(ShoppingCartApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }
-
