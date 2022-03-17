@@ -1,6 +1,5 @@
 package com.technogise.interns.shoppingcart.store;
 
-//import com.technogise.interns.oops.Product;
 
 import com.technogise.interns.shoppingcart.dto.Product;
 import org.springframework.http.HttpStatus;
@@ -39,10 +38,7 @@ public class ProductController {
 
     }
     @GetMapping("/products/{id}")
-    public ResponseEntity<List<Product>> getAllProducts(@PathVariable(value = "id")UUID productId) {
-
-        List<Product> productList = new ArrayList<>();
-
+    public ResponseEntity<List<Product>> getProduct(@PathVariable(value = "id")UUID productId) {
         Product product1 = new Product();
 
         product1.setId(productId);
@@ -51,8 +47,6 @@ public class ProductController {
         product1.setDescription("It is a windows laptop.");
         product1.setImage("Laptop img");
 
-        productList.add(product1);
-
-        return new ResponseEntity(productList, HttpStatus.OK);
+        return new ResponseEntity(product1, HttpStatus.OK);
     }
 }

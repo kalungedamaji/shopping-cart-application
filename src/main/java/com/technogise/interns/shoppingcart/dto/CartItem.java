@@ -6,13 +6,13 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
 public class CartItem {
+
     private UUID id;
     private String name;
+    private String image;
     private BigDecimal price;
     private int quantity;
-    private String image;
 }
-
