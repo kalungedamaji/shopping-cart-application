@@ -1,30 +1,82 @@
 package com.technogise.interns.shoppingcart.cart;
 
-import com.technogise.interns.oops.CartItem;
+
+import com.technogise.interns.shoppingcart.dto.CartItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class CartController {
+    List<CartItem> cartItemList = new ArrayList();
 
-    @GetMapping(value="/cart" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CartItem>> getAllProducts() {
+    @GetMapping(value="/customers/{customerId}/cart" ,produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CartItem>> getAllCartItems() {
 
-        List<CartItem> productList = new ArrayList();
-
-        CartItem product = new CartItem("Laptop", BigDecimal.TEN, false);
-        productList.add(product);
-
-        CartItem product1 = new CartItem("Laptop", BigDecimal.TEN, false);
-        productList.add(product1);
-
-        return new ResponseEntity(productList, HttpStatus.OK);
+        return new ResponseEntity(cartItemList, HttpStatus.OK);
     }
+
+    @GetMapping(value="/customers/{customerId}/cart/{cartItemId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CartItem>> getCartItemById(@PathVariable(value = "cartItemId")UUID cartItemId) {
+
+        CartItem cartItem = findById(cartItemId);
+
+        return new ResponseEntity(cartItem, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/customers/{customerId}/cart",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem) {
+
+        cartItem.setId(UUID.randomUUID());
+        cartItemList.add(cartItem);
+        return new ResponseEntity(cartItem, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/customers/{customerId}/cart/{cartItemId}")
+    public ResponseEntity<CartItem> replaceCartItem(@RequestBody CartItem newCartItem, @PathVariable(value = "cartItemId")UUID cartItemId) {
+        CartItem cartItem = findById(cartItemId);
+        if (cartItem != null) {
+            //cartItem.setId(cartItemId);
+            cartItem.setImage(newCartItem.getImage());
+            cartItem.setName(newCartItem.getName());
+            cartItem.setQuantity(newCartItem.getQuantity());
+            cartItem.setPrice(newCartItem.getPrice());
+
+            return new ResponseEntity(cartItem, HttpStatus.OK);
+
+        } else {
+            newCartItem.setId(cartItemId);
+            cartItemList.add(newCartItem);
+            return new ResponseEntity(newCartItem, HttpStatus.OK);
+
+        }
+    }
+
+    @DeleteMapping("/customers/{customerId}/cart/{cartItemId}")
+    void deleteCartItem(@PathVariable(value = "cartItemId") UUID cartItemId) {
+        CartItem cartItem = findById(cartItemId);
+        if (cartItem != null) {
+            cartItemList.remove(cartItem);
+        }
+    }
+
+    public CartItem findById(UUID cartItemId){
+        for(CartItem cartItem : cartItemList)
+        {
+            if(cartItemId.equals(cartItem.getId()))
+            {
+                return cartItem;
+            }
+        }
+        return null;
+    }
+
 }
