@@ -15,39 +15,39 @@ import java.util.UUID;
 @RequestMapping("/customers/{customerId}")
 public class OrderController {
 
-    List<Order> orderList = new ArrayList();
+    final List<Order> orderList = new ArrayList<>();
 
     @GetMapping(value="/orders" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return new ResponseEntity(orderList, HttpStatus.OK);
+    public ResponseEntity<List<Order>> getAllOrders(@PathVariable UUID customerId) {
+        return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
     @GetMapping(value="/orders/{orderId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
+    public ResponseEntity<Order> getOrderById(@PathVariable(value = "orderId") UUID orderId, @PathVariable UUID customerId) {
         Order order = findById(orderId);
-        return new ResponseEntity(order, HttpStatus.OK);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
     @PostMapping(path = "/orders",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> createOrder(@RequestBody Order order, @PathVariable UUID customerId) {
 
         order.setId(UUID.randomUUID());
         Instant instant = Instant.now();
         order.setTimestamp(instant);
         orderList.add(order);
-        return new ResponseEntity(order, HttpStatus.CREATED);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @PutMapping("/orders/{orderId}")
-    public ResponseEntity<Order> replaceOrder(@RequestBody Order newOrder, @PathVariable(value = "orderId")UUID orderId) {
+    public ResponseEntity<Order> replaceOrder(@RequestBody Order newOrder, @PathVariable(value = "orderId")UUID orderId, @PathVariable UUID customerId) {
         Order order = findById(orderId);
         if (order != null) {
             order.setTimestamp(newOrder.getTimestamp());
             order.setOrderPaymentType(newOrder.getOrderPaymentType());
             order.setOrderPaymentStatus(newOrder.getOrderPaymentStatus());
-            return new ResponseEntity(order, HttpStatus.OK);
+            return new ResponseEntity<>(order, HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity deleteOrder(@PathVariable(value = "orderId") UUID orderId) {
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable(value = "orderId") UUID orderId, @PathVariable UUID customerId) {
         Order order = findById(orderId);
         if (order != null) {
             orderList.remove(order);
@@ -67,8 +67,7 @@ public class OrderController {
 
     public Order findById(UUID orderId){
         for(Order order : orderList)
-        {
-            if(orderId.equals(order.getId()))
+        {if(orderId.equals(order.getId()))
             {
                 return order;
             }

@@ -3,6 +3,7 @@ package com.technogise.interns.shoppingcart.dto;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -12,4 +13,5 @@ public class Order {
     private Instant timestamp;
     private String orderPaymentType;
     private String orderPaymentStatus;
+    private List<OrderItem> orderItems;
 }

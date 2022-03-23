@@ -11,30 +11,30 @@ import java.util.UUID;
 
 @RestController
 public class CartController {
-    List<CartItem> cartItemList = new ArrayList<>();
+    final List<CartItem> cartItemList = new ArrayList<>();
 
     @GetMapping(value="/customers/{customerId}/cart" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CartItem>> getAllCartItems() {
+    public ResponseEntity<List<CartItem>> getAllCartItems(@PathVariable UUID customerId) {
         return new ResponseEntity<>(cartItemList, HttpStatus.OK);
     }
 
     @GetMapping(value="/customers/{customerId}/cart/{cartItemId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CartItem>> getCartItemById(@PathVariable(value = "cartItemId")UUID cartItemId) {
+    public ResponseEntity<CartItem> getCartItemById(@PathVariable(value = "cartItemId")UUID cartItemId, @PathVariable UUID customerId) {
         CartItem cartItem = findById(cartItemId);
-        return new ResponseEntity(cartItem, HttpStatus.OK);
+        return new ResponseEntity<>(cartItem, HttpStatus.OK);
     }
 
     @PostMapping(path = "/customers/{customerId}/cart",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem) {
+    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem, @PathVariable UUID customerId) {
         cartItem.setId(UUID.randomUUID());
         cartItemList.add(cartItem);
-        return new ResponseEntity(cartItem, HttpStatus.CREATED);
+        return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
     }
 
     @PutMapping("/customers/{customerId}/cart/{cartItemId}")
-    public ResponseEntity<CartItem> replaceCartItem(@RequestBody CartItem newCartItem, @PathVariable(value = "cartItemId")UUID cartItemId) {
+    public ResponseEntity<CartItem> replaceCartItem(@RequestBody CartItem newCartItem, @PathVariable(value = "cartItemId")UUID cartItemId, @PathVariable UUID customerId) {
         CartItem cartItem = findById(cartItemId);
         if (cartItem != null) {
             cartItem.setId(cartItemId);
@@ -42,18 +42,18 @@ public class CartController {
             cartItem.setName(newCartItem.getName());
             cartItem.setQuantity(newCartItem.getQuantity());
             cartItem.setPrice(newCartItem.getPrice());
-            return new ResponseEntity(cartItem, HttpStatus.OK);
+            return new ResponseEntity<>(cartItem, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/customers/{customerId}/cart/{cartItemId}")
-    public ResponseEntity deleteCartItem(@PathVariable(value = "cartItemId") UUID cartItemId) {
+    public ResponseEntity<HttpStatus> deleteCartItem(@PathVariable(value = "cartItemId") UUID cartItemId,@PathVariable UUID customerId) {
         CartItem cartItem = findById(cartItemId);
         if (cartItem != null) {
             cartItemList.remove(cartItem);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

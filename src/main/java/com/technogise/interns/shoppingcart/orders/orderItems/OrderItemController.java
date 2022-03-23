@@ -12,24 +12,24 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/customers/{customerId}/orders/{orderId}")
 public class OrderItemController {
-    List<OrderItem> orderItemList = new ArrayList<>();
+    final List<OrderItem> orderItemList = new ArrayList<>();
     @GetMapping("/orderItems")
-    public ResponseEntity<List<OrderItem>> getAllOrderItems(){
+    public ResponseEntity<List<OrderItem>> getAllOrderItems(@PathVariable UUID customerId, @PathVariable UUID orderId){
         return new ResponseEntity<>(orderItemList,HttpStatus.OK);
     }
     @GetMapping("/orderItems/{orderItemId}")
-    public ResponseEntity<OrderItem> getOrderItem(@PathVariable UUID orderItemId){
+    public ResponseEntity<OrderItem> getOrderItem(@PathVariable UUID orderItemId, @PathVariable UUID customerId, @PathVariable UUID orderId){
         OrderItem orderItem = findById(orderItemId);
         return new ResponseEntity<>(orderItem,HttpStatus.OK);
     }
     @PostMapping("/orderItems")
-    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem newOrderItem){
+    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem newOrderItem, @PathVariable UUID customerId, @PathVariable UUID orderId){
         newOrderItem.setId(UUID.randomUUID());
         orderItemList.add(newOrderItem);
         return new ResponseEntity<>(newOrderItem,HttpStatus.CREATED);
     }
     @PutMapping("/orderItems/{orderItemId}")
-    public ResponseEntity<OrderItem> updateOrderItem(@RequestBody OrderItem newOrderItem , @PathVariable UUID orderItemId)
+    public ResponseEntity<OrderItem> updateOrderItem(@RequestBody OrderItem newOrderItem , @PathVariable UUID orderItemId, @PathVariable UUID customerId, @PathVariable UUID orderId)
     {
         OrderItem orderItem= findById(orderItemId);
         if(orderItem!=null)
@@ -44,14 +44,14 @@ public class OrderItemController {
         }
     }
     @DeleteMapping("/orderItems/{orderItemId}")
-    public ResponseEntity deleteOrderItem(@PathVariable UUID orderItemId){
+    public ResponseEntity<HttpStatus> deleteOrderItem(@PathVariable UUID orderItemId, @PathVariable UUID customerId, @PathVariable UUID orderId){
         OrderItem orderItem= findById(orderItemId);
         if(orderItem!=null){
             orderItemList.remove(orderItem);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        else{
-            return new ResponseEntity(HttpStatus.NOT_FOUND);        }
+        else
+        {  return new ResponseEntity<>(HttpStatus.NOT_FOUND);        }
     }
     public OrderItem findById(UUID orderItemId){
         for(OrderItem orderItem : orderItemList){
