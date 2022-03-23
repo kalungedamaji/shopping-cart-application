@@ -1,6 +1,6 @@
 package com.technogise.interns.shoppingcart.orders;
 
-import com.technogise.interns.shoppingcart.dto.Orders;
+import com.technogise.interns.shoppingcart.dto.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,70 +12,61 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/customers/{customerId}")
 public class OrderController {
 
-    List<Orders> orderList = new ArrayList();
+    List<Order> orderList = new ArrayList();
 
-    @GetMapping(value="/customers/{customerId}/orders" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Orders>> getAllOrders() {
-
+    @GetMapping(value="/orders" ,produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Order>> getAllOrders() {
         return new ResponseEntity(orderList, HttpStatus.OK);
     }
 
-    @GetMapping(value="/customers/{customerId}/orders/{orderId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Orders>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
-
-        Orders order = findById(orderId);
-
+    @GetMapping(value="/orders/{orderId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Order>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
+        Order order = findById(orderId);
         return new ResponseEntity(order, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/customers/{customerId}/orders",
+    @PostMapping(path = "/orders",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Orders> createOrder(@RequestBody Orders order) {
+    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
 
         order.setId(UUID.randomUUID());
-//        LocalDate localDate = LocalDate.now();
-//        order.setDate(localDate);
-//        LocalTime localTime = LocalTime.now();
-//        order.setTime(localTime);
-//        orderList.add(order);
         Instant instant = Instant.now();
         order.setTimestamp(instant);
         orderList.add(order);
         return new ResponseEntity(order, HttpStatus.CREATED);
     }
 
-    @PutMapping("/customers/{customerId}/orders/{orderId}")
-    public ResponseEntity<Orders> replaceOrder(@RequestBody Orders newOrder, @PathVariable(value = "orderId")UUID orderId) {
-        Orders order = findById(orderId);
+    @PutMapping("/orders/{orderId}")
+    public ResponseEntity<Order> replaceOrder(@RequestBody Order newOrder, @PathVariable(value = "orderId")UUID orderId) {
+        Order order = findById(orderId);
         if (order != null) {
             order.setTimestamp(newOrder.getTimestamp());
             order.setOrderPaymentType(newOrder.getOrderPaymentType());
             order.setOrderPaymentStatus(newOrder.getOrderPaymentStatus());
-
             return new ResponseEntity(order, HttpStatus.OK);
-
         }
         else {
-            throw new RuntimeException("Order Not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/customers/{customerId}/orders/{orderId}")
-    void deleteOrder(@PathVariable(value = "orderId") UUID orderId) {
-        Orders order = findById(orderId);
+    @DeleteMapping("/orders/{orderId}")
+    public ResponseEntity deleteOrder(@PathVariable(value = "orderId") UUID orderId) {
+        Order order = findById(orderId);
         if (order != null) {
             orderList.remove(order);
+            return new ResponseEntity<>(HttpStatus.OK);
         }else {
-            throw new RuntimeException("Order Not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
     }
 
-    public Orders findById(UUID orderId){
-        for(Orders order : orderList)
+    public Order findById(UUID orderId){
+        for(Order order : orderList)
         {
             if(orderId.equals(order.getId()))
             {
@@ -85,3 +76,8 @@ public class OrderController {
         return null;
     }
 }
+
+
+
+
+
