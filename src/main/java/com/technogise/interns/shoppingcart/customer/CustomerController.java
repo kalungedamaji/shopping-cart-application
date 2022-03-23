@@ -1,6 +1,8 @@
 package com.technogise.interns.shoppingcart.customer;
 
 import com.technogise.interns.shoppingcart.dto.Customer;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,11 @@ public class CustomerController {
         return new ResponseEntity(customerList, HttpStatus.OK);
     }
     @GetMapping("/customers/{id}")
-    public ResponseEntity<List<Customer>> getCustomer(@PathVariable(value = "id")UUID customerId) {
+    @ApiOperation(value = "Finds customer by id",
+            notes = "Provide an id to get specific customer detail from the shopping cart",
+            response = Customer.class)
+    public ResponseEntity<List<Customer>> getCustomer(@ApiParam(value = "ID value for the customer you need to retrieve", required = true)
+                                                          @PathVariable(value = "id")UUID customerId) {
         Customer customer = findById(customerId);
         return new ResponseEntity(customer, HttpStatus.OK);
     }
