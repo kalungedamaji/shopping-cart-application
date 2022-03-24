@@ -16,6 +16,4 @@ public class OrderItem {
     private int quantity;
     private BigDecimal price;
     private String image;
-    private int quantity;
-    private BigDecimal price;
 }
