@@ -10,7 +10,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Collections;
 
-
 @Configuration
 public class SpringFoxConfig {
     @Bean
@@ -29,7 +28,7 @@ public class SpringFoxConfig {
                 "Sample API for Technogise tutorial",
                 "1.0",
                 "Free to use",
-                new springfox.documentation.service.Contact("VISHAL RAJ", "http://technogise.com", "a@b.com"),
+                new springfox.documentation.service.Contact("Shrishti Jain", "http://technogise.com", "a@b.com"),
                 "API Licence",
                 "http://technogise.com",
                 Collections.emptyList());

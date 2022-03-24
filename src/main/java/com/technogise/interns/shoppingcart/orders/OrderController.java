@@ -83,7 +83,7 @@ public class OrderController {
             order.setTimestamp(newOrder.getTimestamp());
             order.setOrderPaymentType(newOrder.getOrderPaymentType());
             order.setOrderPaymentStatus(newOrder.getOrderPaymentStatus());
-            return new ResponseEntity(order, HttpStatus.OK);
+            return new ResponseEntity<>(order, HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -91,7 +91,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity deleteOrder(@PathVariable(value = "orderId") UUID orderId) {
+    public ResponseEntity<HttpStatus> deleteOrder(@PathVariable(value = "orderId") UUID orderId) {
         Order order = findById(orderId);
         if (order != null) {
             orderList.remove(order);

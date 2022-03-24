@@ -1,7 +1,6 @@
 package com.technogise.interns.shoppingcart.orders.orderItems;
 
 import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
-import com.technogise.interns.shoppingcart.dto.OrderItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
