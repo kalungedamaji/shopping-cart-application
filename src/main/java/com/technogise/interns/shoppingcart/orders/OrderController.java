@@ -1,10 +1,15 @@
 package com.technogise.interns.shoppingcart.orders;
 
 import com.technogise.interns.shoppingcart.dto.Order;
+import com.technogise.interns.shoppingcart.dto.Order2;
+import com.technogise.interns.shoppingcart.dto.OrderItem;
+import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
+import com.technogise.interns.shoppingcart.orders.orderItems.OrderItemController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,19 +29,50 @@ public class OrderController {
 
     @GetMapping(value="/orders/{orderId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Order>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
+
         Order order = findById(orderId);
-        return new ResponseEntity(order, HttpStatus.OK);
+        if (order == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+
+        Order2 newOrder = new Order2();
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        ordersOrderItemList = order.getOrderItems();
+        OrdersOrderItem ordersOrderItem = ordersOrderItemList.get(0);
+        OrderItem orderItem = new OrderItem();
+
+        orderItem.setId(ordersOrderItem.getId());
+        orderItem.setName(ordersOrderItem.getName());
+        orderItem.setImage(ordersOrderItem.getImage());
+        orderItem.setPrice(ordersOrderItem.getPrice());
+        orderItem.setQuantity(ordersOrderItem.getQuantity());
+
+        newOrder.setTimestamp(order.getTimestamp());
+        newOrder.setId(order.getId());
+        newOrder.setOrderPaymentType(order.getOrderPaymentType());
+        newOrder.setOrderPaymentStatus(order.getOrderPaymentStatus());
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+        orderItemList.add(orderItem);
+        newOrder.setOrderItems(orderItemList);
+
+        return new ResponseEntity(newOrder, HttpStatus.OK);
     }
 
     @PostMapping(path = "/orders",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        OrderItemController orderItemController  =new OrderItemController();
 
         order.setId(UUID.randomUUID());
         Instant instant = Instant.now();
         order.setTimestamp(instant);
+
+
         orderList.add(order);
+        // order.setOrderItems(orderItemController.getOrderItemList());
+      //  System.out.println(orderItemController.getOrderItemList());
         return new ResponseEntity(order, HttpStatus.CREATED);
     }
 
