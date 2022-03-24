@@ -1,8 +1,6 @@
 package com.technogise.interns.shoppingcart.customer;
 
 import com.technogise.interns.shoppingcart.dto.Customer;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +12,15 @@ import java.util.UUID;
 
 @RestController
 public class CustomerController {
-    List<Customer> customerList = new ArrayList();
+    final List<Customer> customerList = new ArrayList<>();
     @GetMapping(value = "/customers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Customer>> getAllCustomers() {
-        return new ResponseEntity(customerList, HttpStatus.OK);
+        return new ResponseEntity<>(customerList, HttpStatus.OK);
     }
     @GetMapping("/customers/{id}")
-    @ApiOperation(value = "Finds customer by id",
-            notes = "Provide an id to get specific customer detail from the shopping cart",
-            response = Customer.class)
-    public ResponseEntity<List<Customer>> getCustomer(@ApiParam(value = "ID value for the customer you need to retrieve", required = true)
-                                                          @PathVariable(value = "id")UUID customerId) {
+    public ResponseEntity<Customer> getCustomer(@PathVariable(value = "id")UUID customerId) {
         Customer customer = findById(customerId);
-        return new ResponseEntity(customer, HttpStatus.OK);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
     @PostMapping(path = "/customers")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer newCustomer) {
@@ -45,17 +39,17 @@ public class CustomerController {
             customer.setAddress(newCustomer.getAddress());
             customer.setEmail(newCustomer.getEmail());
             customer.setPassword(newCustomer.getPassword());
-            return new ResponseEntity(customer, HttpStatus.OK);
+            return new ResponseEntity<>(customer, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     @DeleteMapping("/customers/{id}")
-    public ResponseEntity deleteEmployee(@PathVariable(value = "id") UUID customerId) {
+    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable(value = "id") UUID customerId) {
         Customer customer = findById(customerId);
         if (customer != null) {
             customerList.remove(customer);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -65,7 +59,8 @@ public class CustomerController {
         for(Customer customer : customerList )
         {
             if (customerId.equals(customer.getId()))
-            {return customer;}
+            {return customer;
+            }
         }
         return null;
     }

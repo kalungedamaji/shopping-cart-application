@@ -13,6 +13,8 @@ import java.util.UUID;
 public class OrderItem {
     private UUID id;
     private String name;
+    private int quantity;
+    private BigDecimal price;
     private String image;
     private int quantity;
     private BigDecimal price;

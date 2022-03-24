@@ -8,15 +8,15 @@ import java.util.*;
 
 @RestController
 public class ProductController {
-    List<Product> productList = new ArrayList<>();
+    final List<Product> productList = new ArrayList<>();
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts(){
-        return new ResponseEntity(productList, HttpStatus.OK);
+        return new ResponseEntity<>(productList, HttpStatus.OK);
     }
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable(value = "id")UUID productId) {
         Product product1 = findById(productId);
-        return new ResponseEntity(product1, HttpStatus.OK);
+        return new ResponseEntity<>(product1, HttpStatus.OK);
     }
     @PostMapping(path = "/products")
     public ResponseEntity<Product> createProduct(@RequestBody Product newProduct) {
@@ -35,19 +35,21 @@ public class ProductController {
             product.setImage(newProduct.getImage());
             product.setPrice(newProduct.getPrice());
             product.setDescription(newProduct.getDescription());
-            return new ResponseEntity(product, HttpStatus.OK);
+            return new ResponseEntity<>(product, HttpStatus.OK);
         }
         else {
-            newProduct.setId(productId);
-            productList.add(newProduct);
-            return new ResponseEntity(newProduct, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     @DeleteMapping("/products/{id}")
-    void deleteProduct(@PathVariable(value = "id") UUID productID) {
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable(value = "id") UUID productID) {
         Product product = findById(productID);
         if (product != null) {
             productList.remove(product);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     public Product findById(UUID productID){

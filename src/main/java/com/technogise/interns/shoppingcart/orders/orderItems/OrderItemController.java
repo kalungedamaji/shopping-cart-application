@@ -1,6 +1,7 @@
 package com.technogise.interns.shoppingcart.orders.orderItems;
 
 import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
+import com.technogise.interns.shoppingcart.dto.OrderItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,24 +13,24 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/customers/{customerId}/orders/{orderId}")
 public class OrderItemController {
-    List<OrdersOrderItem> orderItemList = new ArrayList<>();
+    final List<OrdersOrderItem> orderItemList = new ArrayList<>();
     @GetMapping("/orderItems")
-    public ResponseEntity<List<OrdersOrderItem>> getAllOrderItems(){
+    public ResponseEntity<List<OrdersOrderItem>> getAllOrderItems(@PathVariable UUID customerId, @PathVariable UUID orderId){
         return new ResponseEntity<>(orderItemList,HttpStatus.OK);
     }
     @GetMapping("/orderItems/{orderItemId}")
-    public ResponseEntity<OrdersOrderItem> getOrderItem(@PathVariable UUID orderItemId){
+    public ResponseEntity<OrdersOrderItem> getOrderItem(@PathVariable UUID orderItemId, @PathVariable UUID customerId, @PathVariable UUID orderId){
         OrdersOrderItem orderItem = findById(orderItemId);
         return new ResponseEntity<>(orderItem,HttpStatus.OK);
     }
     @PostMapping("/orderItems")
-    public ResponseEntity<OrdersOrderItem> createOrderItem(@RequestBody OrdersOrderItem newOrderItem){
+    public ResponseEntity<OrdersOrderItem> createOrderItem(@RequestBody OrdersOrderItem newOrderItem, @PathVariable UUID customerId, @PathVariable UUID orderId){
         newOrderItem.setId(UUID.randomUUID());
         orderItemList.add(newOrderItem);
         return new ResponseEntity<>(newOrderItem,HttpStatus.CREATED);
     }
     @PutMapping("/orderItems/{orderItemId}")
-    public ResponseEntity<OrdersOrderItem> updateOrderItem(@RequestBody OrdersOrderItem newOrderItem , @PathVariable UUID orderItemId)
+    public ResponseEntity<OrdersOrderItem> updateOrderItem(@RequestBody OrdersOrderItem newOrderItem , @PathVariable UUID orderItemId, @PathVariable UUID customerId, @PathVariable UUID orderId)
     {
         OrdersOrderItem orderItem= findById(orderItemId);
         if(orderItem!=null)
@@ -44,14 +45,14 @@ public class OrderItemController {
         }
     }
     @DeleteMapping("/orderItems/{orderItemId}")
-    public ResponseEntity deleteOrderItem(@PathVariable UUID orderItemId){
+    public ResponseEntity<HttpStatus> deleteOrderItem(@PathVariable UUID orderItemId, @PathVariable UUID customerId, @PathVariable UUID orderId){
         OrdersOrderItem orderItem= findById(orderItemId);
         if(orderItem!=null){
             orderItemList.remove(orderItem);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        else{
-            return new ResponseEntity(HttpStatus.NOT_FOUND);        }
+        else
+        {  return new ResponseEntity<>(HttpStatus.NOT_FOUND);        }
     }
     public OrdersOrderItem findById(UUID orderItemId){
         for(OrdersOrderItem orderItem : orderItemList){
