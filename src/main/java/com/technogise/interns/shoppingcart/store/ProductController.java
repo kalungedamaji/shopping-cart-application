@@ -1,7 +1,9 @@
 package com.technogise.interns.shoppingcart.store;
 import com.technogise.interns.shoppingcart.dto.Product;
+import com.technogise.interns.shoppingcart.store.service.ProductStoreService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -18,19 +20,25 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class ProductController {
-    final List<Product> productList = new ArrayList<>();
+    @Autowired
+    private ProductStoreService productStoreService;
+
     @GetMapping("/products")
     @ApiOperation(value = "Get all the products",
             notes = "Returns all the products from the shopping cart",
             response = Product.class)
     public ResponseEntity<CollectionModel<EntityModel<Product>>>getAllProducts() {
         List<EntityModel<Product>> entityModelList= new ArrayList<>();
+
+        List<Product> productList= productStoreService.getAllProduct();
+
         for(Product product : productList){
             EntityModel<Product> resource = EntityModel.of(product);
             WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getProduct(product.getId()));
             resource.add(linkToSelf.withSelfRel());
             entityModelList.add(resource);
         }
+
         CollectionModel<EntityModel<Product>> resourceList = CollectionModel.of(entityModelList);
         WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllProducts());
         resourceList.add(linkToSelf.withSelfRel());
@@ -41,17 +49,22 @@ public class ProductController {
     @ApiOperation(value = "Get a single product by id",
             notes = "Returns a single product. Use the id to get the desired product.",
             response = Product.class)
-    public EntityModel<Product> getProduct(@ApiParam(value = "Enter Id of the product to be returned", required = true) @PathVariable(value = "id")UUID productId) {
-        Product product1 = findById(productId);
-        EntityModel<Product> resource = EntityModel.of(product1);
-        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
-        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getProduct(productId));
+    public ResponseEntity<EntityModel<Product>> getProduct(@ApiParam(value = "Enter Id of the product to be returned", required = true) @PathVariable(value = "id")UUID productId) {
 
-        resource.add(linkTo.withRel("all-products"));
-        resource.add(linkToSelf.withSelfRel());
+        Optional<Product> optionalProduct = productStoreService.getProductByID(productId);
 
-        return resource;
-        //return new ResponseEntity<>(product1, HttpStatus.OK);
+        if(optionalProduct.isPresent()) {
+            EntityModel<Product> resource = EntityModel.of(optionalProduct.get());
+            WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getProduct(productId));
+
+            resource.add(linkTo.withRel("all-products"));
+            resource.add(linkToSelf.withSelfRel());
+
+            return ResponseEntity.ok(resource);
+        }else{
+            return ResponseEntity.notFound().build();
+        }
     }
     @PostMapping(path = "/products")
     @ApiOperation(value = "Create new product",
@@ -59,8 +72,9 @@ public class ProductController {
                     "null value will be stored. Id will be auto-generated, so no need to add it.",
             response = Product.class)
     public EntityModel<Product> createProduct(@ApiParam(value = "Enter new product", required = true)@RequestBody Product newProduct) {
-        newProduct.setId(UUID.randomUUID());
-        productList.add(newProduct);
+
+        newProduct=productStoreService.createProduct(newProduct);
+
         EntityModel<Product> resource = EntityModel.of(newProduct);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
         WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getProduct(newProduct.getId()));
@@ -76,24 +90,18 @@ public class ProductController {
             notes = "Returns an updated product. Provide an id to Update specific product in the shopping cart and " +
                     "only specify the attributes which are to be updated, rest fields will remain unchanged" ,
             response = Product.class)
-    public ResponseEntity<Product> replaceCustomer(@ApiParam(value = "Enter product attributes to be updated.") @RequestBody Product newProduct, @ApiParam(value = "Enter id of the product to be updated.", required = true) @PathVariable(value = "id")UUID productId)
+    public EntityModel<Product>  replaceProduct(@ApiParam(value = "Enter product attributes to be updated.") @RequestBody Product newProduct, @ApiParam(value = "Enter id of the product to be updated.", required = true) @PathVariable(value = "id")UUID productId)
     {
-        Product product = findById(productId);
-        if (product != null)
-        {
-            if(newProduct.getName() != null)
-                product.setName(newProduct.getName());
-            if(newProduct.getImage() != null)
-                product.setImage(newProduct.getImage());
-            if(newProduct.getPrice() != null)
-                product.setPrice(newProduct.getPrice());
-            if(newProduct.getDescription() != null)
-                product.setDescription(newProduct.getDescription());
-            return new ResponseEntity<>(product, HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Product replacedProduct=productStoreService.replaceProduct(newProduct);
+        EntityModel<Product> resource = EntityModel.of(replacedProduct);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
+        WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getProduct(replacedProduct.getId()));
+
+        resource.add(linkTo.withRel("all-products"));
+        resource.add(linkToGetSelf.withSelfRel());
+
+        return resource;
+
     }
     @DeleteMapping("/products/{id}")
     @ApiOperation(value = "Delete a product by id",
@@ -101,21 +109,9 @@ public class ProductController {
                     "it and if Id doesn't match status NOT_found will be returned.",
             response = Product.class)
     public ResponseEntity<HttpStatus> deleteProduct(@ApiParam(value = "Enter the id of product to be deleted.", required = true) @PathVariable(value = "id") UUID productID) {
-        Product product = findById(productID);
-        if (product != null) {
-            productList.remove(product);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
+        productStoreService.deleteProduct(productID);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    public Product findById(UUID productID){
-        for(Product product : productList )
-        {
-            if (productID.equals(product.getId()))
-            {return product;}
-        }
-        return null;
-    }
+
 }
