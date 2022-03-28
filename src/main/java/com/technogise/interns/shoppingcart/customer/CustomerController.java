@@ -1,8 +1,14 @@
 package com.technogise.interns.shoppingcart.customer;
 
+import com.technogise.interns.shoppingcart.cart.CartController;
 import com.technogise.interns.shoppingcart.dto.Customer;
+import com.technogise.interns.shoppingcart.orders.OrderController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 @RestController
 public class CustomerController {
@@ -19,27 +30,55 @@ public class CustomerController {
     @ApiOperation(value = "Finds all customers",
             notes = "Returns all the customers",
             response = Customer.class)
-    public ResponseEntity<List<Customer>> getAllCustomers() {
-        return new ResponseEntity<>(customerList, HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<Customer>>>getAllCustomers() {
+        List<EntityModel<Customer>> entityModelList= new ArrayList<>();
+        for(Customer customer : customerList){
+            EntityModel<Customer> resource = EntityModel.of(customer);
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCustomer(customer.getId()));
+            resource.add(linkToSelf.withSelfRel());
+            entityModelList.add(resource);
+        }
+        CollectionModel<EntityModel<Customer>> resourceList = CollectionModel.of(entityModelList);
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllCustomers());
+        resourceList.add(linkToSelf.withSelfRel());
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
     @GetMapping("/customers/{id}")
     @ApiOperation(value = "Finds customer by id",
             notes = "Returns a single customer. Use the id to get the desired customer.",
             response = Customer.class)
-    public ResponseEntity<Customer> getCustomer(@ApiParam(value = "Enter Id of the customer to be returned",required = true)
-                                                @PathVariable(value = "id")UUID customerId) {
+    public ResponseEntity<EntityModel<Customer>> getCustomer(@ApiParam(value = "Enter Id of the customer to be returned",required = true)
+                                                @PathVariable(value = "id")UUID customerId)
+    {
         Customer customer = findById(customerId);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        EntityModel<Customer> resource = EntityModel.of(customer);
+        WebMvcLinkBuilder linkToAllCustomers = linkTo(methodOn(this.getClass()).getAllCustomers());
+        WebMvcLinkBuilder linkToOrders = linkTo(methodOn(OrderController.class).getAllOrders());
+        WebMvcLinkBuilder linkToCart = linkTo(methodOn(CartController.class).getAllCartItems());
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCustomer(customerId));
+        resource.add(linkToAllCustomers.withRel("all-customers"));
+        resource.add(linkToCart.withRel("cart-items"));
+        resource.add(linkToOrders.withRel("Orders"));
+        resource.add(linkToSelf.withSelfRel());
+
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
     }
     @PostMapping(path = "/customers")
     @ApiOperation(value = "Create new customer",
             notes = "Creates customer .Add the attributes of the new customer. Any attribute of customer if not added ,by default " +
                     "null value will be stored. Id will be auto-generated, so no need to add it.",
             response = Customer.class)
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer newCustomer) {
+    public ResponseEntity<EntityModel<Customer>> createCustomer(@RequestBody Customer newCustomer) {
         newCustomer.setId(UUID.randomUUID());
         customerList.add(newCustomer);
-        return new ResponseEntity<>(newCustomer, HttpStatus.CREATED);
+        EntityModel<Customer> resource = EntityModel.of(newCustomer);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCustomers());
+        WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(newCustomer.getId()));
+
+        resource.add(linkTo.withRel("all-customers"));
+        resource.add(linkToGetSelf.withSelfRel());
+
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
     }
     @PutMapping("/customers/{id}")
     @ApiOperation(value = "Updates cartItem by id",
