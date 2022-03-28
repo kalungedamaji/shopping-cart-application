@@ -1,6 +1,5 @@
 package com.technogise.interns.shoppingcart.dto;
 
-import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +8,11 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@ApiModel(description = "Details about the customer")
-public class OrderItem {
+public class OrdersOrderItem {
     private UUID id;
     private String name;
+    private String image;
+    private String description;
     private int quantity;
     private BigDecimal price;
-    private String image;
 }
