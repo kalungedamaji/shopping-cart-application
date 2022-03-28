@@ -8,6 +8,7 @@ public class ProductMapper {
     public static Product  map(ProductEntity   productEntity){
         Product  product=new Product();
         product.setId(productEntity.getId());
+        product.setName(productEntity.getName());
         product.setImage(productEntity.getImage());
         product.setDescription(productEntity.getDescription());
         product.setPrice(productEntity.getPrice());
@@ -18,6 +19,7 @@ public class ProductMapper {
 
         ProductEntity  productEntity=new ProductEntity();
         productEntity.setId(product.getId());
+        productEntity.setName(product.getName());
         productEntity.setImage(product.getImage());
         productEntity.setDescription(product.getDescription());
         productEntity.setPrice(product.getPrice());
