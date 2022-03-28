@@ -1,10 +1,12 @@
 package com.technogise.interns.shoppingcart.orders;
 
-import com.technogise.interns.shoppingcart.dto.Order;
-import com.technogise.interns.shoppingcart.dto.Order2;
-import com.technogise.interns.shoppingcart.dto.OrderItem;
-import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
+import com.technogise.interns.shoppingcart.dto.*;
 import com.technogise.interns.shoppingcart.orders.orderItems.OrderItemController;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/customers/{customerId}")
@@ -23,12 +29,29 @@ public class OrderController {
     List<Order> orderList = new ArrayList();
 
     @GetMapping(value="/orders" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return new ResponseEntity(orderList, HttpStatus.OK);
+    @ApiOperation(value = "Get all the orders",
+             notes = "Returns  all the orders from the shopping cart",
+             response = Order.class)
+    public ResponseEntity<CollectionModel<EntityModel<Order>>> getAllOrders() {
+        List<EntityModel<Order>> entityModelList = new ArrayList<>();
+        for(Order order : orderList){
+            EntityModel<Order> resource = EntityModel.of(order);
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId()));
+            resource.add(linkToSelf.withSelfRel());
+            entityModelList.add(resource);
+        }
+        CollectionModel<EntityModel<Order>> resourceList = CollectionModel.of((entityModelList));
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllOrders());
+        resourceList.add(linkToSelf.withSelfRel());
+
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
 
     @GetMapping(value="/orders/{orderId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
+    @ApiOperation(value = "Get individual order",
+            notes = "Returns the order information from the shopping cart",
+            response = Order.class)
+    public ResponseEntity<EntityModel<Order2>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
 
         Order order = findById(orderId);
         if (order == null) {
@@ -56,7 +79,13 @@ public class OrderController {
         orderItemList.add(orderItem);
         newOrder.setOrderItems(orderItemList);
 
-        return new ResponseEntity(newOrder, HttpStatus.OK);
+        EntityModel<Order2> resource = EntityModel.of(newOrder);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders());
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(orderId));
+        resource.add(linkTo.withRel("all-orders"));
+        resource.add(linkToSelf.withSelfRel());
+
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
     }
 
     @PostMapping(path = "/orders",
@@ -71,8 +100,6 @@ public class OrderController {
 
 
         orderList.add(order);
-        // order.setOrderItems(orderItemController.getOrderItemList());
-      //  System.out.println(orderItemController.getOrderItemList());
         return new ResponseEntity(order, HttpStatus.CREATED);
     }
 
