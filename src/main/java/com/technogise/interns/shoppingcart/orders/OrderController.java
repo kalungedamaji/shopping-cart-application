@@ -91,16 +91,19 @@ public class OrderController {
     @PostMapping(path = "/orders",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        OrderItemController orderItemController  =new OrderItemController();
+    public ResponseEntity<EntityModel<Order>> createOrder(@RequestBody Order order) {
 
         order.setId(UUID.randomUUID());
         Instant instant = Instant.now();
         order.setTimestamp(instant);
-
-
         orderList.add(order);
-        return new ResponseEntity(order, HttpStatus.CREATED);
+
+        EntityModel<Order> resource = EntityModel.of(order);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders());
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId()));
+        resource.add(linkTo.withRel("all-orders"));
+        resource.add(linkToSelf.withSelfRel());
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
     }
 
     @PutMapping("/orders/{orderId}")
