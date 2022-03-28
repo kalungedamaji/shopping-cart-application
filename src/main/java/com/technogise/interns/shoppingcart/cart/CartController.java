@@ -1,7 +1,12 @@
 package com.technogise.interns.shoppingcart.cart;
 import com.technogise.interns.shoppingcart.dto.CartItem;
+import com.technogise.interns.shoppingcart.store.ProductController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class CartController {
@@ -18,8 +27,18 @@ public class CartController {
     @GetMapping(value="/customers/{customerId}/cart" ,produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Finds all cartItems in the cart",
             response = CartItem.class)
-    public ResponseEntity<List<CartItem>> getAllCartItems(@PathVariable UUID customerId) {
-        return new ResponseEntity<>(cartItemList, HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<CartItem>>> getAllCartItems(@PathVariable UUID customerId) {
+        List<EntityModel<CartItem>> entityModelList= new ArrayList<>();
+        for(CartItem cartItem : cartItemList){
+            EntityModel<CartItem> resource = EntityModel.of(cartItem);
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCartItemById(cartItem.getId(),customerId));
+            resource.add(linkToSelf.withSelfRel());
+            entityModelList.add(resource);
+        }
+        CollectionModel<EntityModel<CartItem>> resourceList = CollectionModel.of(entityModelList);
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
+        resourceList.add(linkToSelf.withSelfRel());
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
 
     @GetMapping(value="/customers/{customerId}/cart/{cartItemId}" ,produces= MediaType.APPLICATION_JSON_VALUE)
@@ -27,11 +46,20 @@ public class CartController {
             notes = "Provide an id to get specific cart item detail from the shopping cart",
             response = CartItem.class)
 
-    public ResponseEntity<CartItem> getCartItemById(@ApiParam(value = "ID value for the cartItem you need to retrieve",required = true)
-                                                    @PathVariable(value = "cartItemId")UUID cartItemId) {
-        CartItem cartItem = findById(cartItemId);
-        return new ResponseEntity<>(cartItem, HttpStatus.OK);
-    }
+    public ResponseEntity<EntityModel<CartItem>> getCartItemById(@ApiParam(value = "ID value for the cartItem you need to retrieve", required = true)
+                                                 @PathVariable(value = "cartItemId") UUID cartItemId, @PathVariable UUID customerId)
+        {
+            CartItem cartItem = findById(cartItemId);
+            EntityModel<CartItem> resource = EntityModel.of(cartItem);
+            WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
+            WebMvcLinkBuilder linkToProducts = linkTo(methodOn(ProductController.class).getAllProducts());
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCartItemById(cartItemId,customerId));
+            resource.add(linkTo.withRel("all-cartItems"));
+            resource.add(linkToProducts.withRel("all-products"));
+            resource.add(linkToSelf.withSelfRel());
+
+            return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
+        }
 
     @PostMapping(path = "/customers/{customerId}/cart",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -39,18 +67,19 @@ public class CartController {
     @ApiOperation(value = "Creates cartItem",
             notes = "Provide values of the attributes to add a cartItem in the shopping cart",
             response = CartItem.class)
-
-    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem, @PathVariable UUID customerId) {
+    public ResponseEntity<EntityModel<CartItem>> createCartItem(@RequestBody CartItem cartItem, @PathVariable UUID customerId) {
         cartItem.setId(UUID.randomUUID());
         cartItemList.add(cartItem);
-        return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
+        EntityModel<CartItem> resource = EntityModel.of(cartItem);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
+        resource.add(linkTo.withRel("all-cartItems"));
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
     }
 
     @PutMapping("/customers/{customerId}/cart/{cartItemId}")
     @ApiOperation(value = "Updates cartItem by id",
             notes = "Provide an id and value of all the attributes of cartItem, you want to update",
             response = CartItem.class)
-
     public ResponseEntity<CartItem> replaceCartItem(@RequestBody CartItem newCartItem, @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "cartItemId")UUID cartItemId, @PathVariable UUID customerId) {
         CartItem cartItem = findById(cartItemId);
         if (cartItem != null) {

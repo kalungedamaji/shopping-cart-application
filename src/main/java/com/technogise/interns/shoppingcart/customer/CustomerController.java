@@ -54,7 +54,7 @@ public class CustomerController {
         EntityModel<Customer> resource = EntityModel.of(customer);
         WebMvcLinkBuilder linkToAllCustomers = linkTo(methodOn(this.getClass()).getAllCustomers());
         WebMvcLinkBuilder linkToOrders = linkTo(methodOn(OrderController.class).getAllOrders());
-        WebMvcLinkBuilder linkToCart = linkTo(methodOn(CartController.class).getAllCartItems());
+        WebMvcLinkBuilder linkToCart = linkTo(methodOn(CartController.class).getAllCartItems(customerId));
         WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCustomer(customerId));
         resource.add(linkToAllCustomers.withRel("all-customers"));
         resource.add(linkToCart.withRel("cart-items"));
