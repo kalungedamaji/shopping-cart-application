@@ -16,11 +16,8 @@ import java.util.UUID;
 public class CustomerController {
     final List<Customer> customerList = new ArrayList<>();
     @GetMapping(value = "/customers", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Finds all customers",
-            notes = "Returns all the customers",
-            response = Customer.class)
     public ResponseEntity<List<Customer>> getAllCustomers() {
-        return new ResponseEntity<>(customerList, HttpStatus.OK);
+        return new ResponseEntity(customerList, HttpStatus.OK);
     }
     @GetMapping("/customers/{id}")
     @ApiOperation(value = "Finds customer by id",
