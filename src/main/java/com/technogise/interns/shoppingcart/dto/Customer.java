@@ -14,15 +14,15 @@ public class Customer {
     @ApiModelProperty(notes = "The unique id of the customer")
     private UUID id;
     @ApiModelProperty(notes = "The first name of the customer")
-    private String first_name;
+    private String firstName;
     @ApiModelProperty(notes = "The last name of the customer")
-    private String last_name;
+    private String lastName;
     @ApiModelProperty(notes = "The phone number of the customer")
-    private String phone_number;
+    private String phoneNumber;
     @ApiModelProperty(notes = "The address of the customer")
     private String address;
     @ApiModelProperty(notes = "The email id of the customer")
-    private String email;
+    private String emailId;
     @ApiModelProperty(notes = "The password of the customer")
     private String password;
 }
