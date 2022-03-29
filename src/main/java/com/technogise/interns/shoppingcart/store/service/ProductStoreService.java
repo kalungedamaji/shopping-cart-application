@@ -35,11 +35,7 @@ public class ProductStoreService {
 
         Optional<ProductEntity> optionalProductEntity= productRepository.findById(productId);
 
-        if(optionalProductEntity.isPresent()){
-          return Optional.of(ProductMapper.map(optionalProductEntity.get()));
-        }
-
-        return Optional.empty();
+        return optionalProductEntity.map(ProductMapper::map);
 
     }
 
@@ -53,13 +49,25 @@ public class ProductStoreService {
 
     }
 
-    public void deleteProduct(UUID productID) {
-        productRepository.deleteById(productID);
+    public boolean deleteProduct(UUID productID) {
+        if(productRepository.findById(productID).isPresent()) {
+
+            productRepository.deleteById(productID);
+            return  true;
+        }
+        return  false;
     }
 
-    public Product replaceProduct(Product newProduct) {
-        ProductEntity   productEntity= productRepository.save(ProductMapper.mapToEntity(newProduct));
-        return ProductMapper.map(productEntity);
+    public Optional<Product> replaceProduct(Product newProduct, UUID productID) {
+
+        if(productRepository.findById(productID).isPresent()) {
+            newProduct.setId(productID);
+            ProductEntity productEntity = productRepository.save(ProductMapper.mapToEntity(newProduct));
+            return Optional.of(ProductMapper.map(productEntity));
+
+        }else{
+            return  Optional.empty();
+        }
 
     }
 }

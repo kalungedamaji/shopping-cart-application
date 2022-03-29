@@ -90,17 +90,21 @@ public class ProductController {
             notes = "Returns an updated product. Provide an id to Update specific product in the shopping cart and " +
                     "only specify the attributes which are to be updated, rest fields will remain unchanged" ,
             response = Product.class)
-    public EntityModel<Product>  replaceProduct(@ApiParam(value = "Enter product attributes to be updated.") @RequestBody Product newProduct, @ApiParam(value = "Enter id of the product to be updated.", required = true) @PathVariable(value = "id")UUID productId)
+    public ResponseEntity<EntityModel<Product>>  replaceProduct(@ApiParam(value = "Enter product attributes to be updated.") @RequestBody Product newProduct, @ApiParam(value = "Enter id of the product to be updated.", required = true) @PathVariable(value = "id")UUID productId)
     {
-        Product replacedProduct=productStoreService.replaceProduct(newProduct);
-        EntityModel<Product> resource = EntityModel.of(replacedProduct);
-        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
-        WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getProduct(replacedProduct.getId()));
+       Optional<Product> replacedProduct=productStoreService.replaceProduct(newProduct,productId);
+       if(replacedProduct.isPresent()) {
+           EntityModel<Product> resource = EntityModel.of(replacedProduct.get());
+           WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
+           WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getProduct(replacedProduct.get().getId()));
 
-        resource.add(linkTo.withRel("all-products"));
-        resource.add(linkToGetSelf.withSelfRel());
+           resource.add(linkTo.withRel("all-products"));
+           resource.add(linkToGetSelf.withSelfRel());
 
-        return resource;
+           return ResponseEntity.ok(resource);
+       }else{
+           return ResponseEntity.notFound().build();
+       }
 
     }
     @DeleteMapping("/products/{id}")
@@ -109,9 +113,13 @@ public class ProductController {
                     "it and if Id doesn't match status NOT_found will be returned.",
             response = Product.class)
     public ResponseEntity<HttpStatus> deleteProduct(@ApiParam(value = "Enter the id of product to be deleted.", required = true) @PathVariable(value = "id") UUID productID) {
+        boolean status=productStoreService.deleteProduct(productID);
+        if(status) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return ResponseEntity.notFound().build();
 
-        productStoreService.deleteProduct(productID);
-        return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
 }
