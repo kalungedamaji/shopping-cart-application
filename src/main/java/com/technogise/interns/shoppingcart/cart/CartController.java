@@ -1,8 +1,10 @@
 package com.technogise.interns.shoppingcart.cart;
+import com.technogise.interns.shoppingcart.cart.service.CartService;
 import com.technogise.interns.shoppingcart.dto.CartItem;
 import com.technogise.interns.shoppingcart.store.ProductController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -22,6 +24,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class CartController {
+    @Autowired
+    private CartService cartService;
     final List<CartItem> cartItemList = new ArrayList<>();
 
     @GetMapping(value="/customers/{customerId}/cart" ,produces= MediaType.APPLICATION_JSON_VALUE)
@@ -29,6 +33,7 @@ public class CartController {
             response = CartItem.class)
     public ResponseEntity<CollectionModel<EntityModel<CartItem>>> getAllCartItems(@PathVariable UUID customerId) {
         List<EntityModel<CartItem>> entityModelList= new ArrayList<>();
+        List<CartItem> cartItemList= cartService.getAllCartItems();
         for(CartItem cartItem : cartItemList){
             EntityModel<CartItem> resource = EntityModel.of(cartItem);
             WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCartItemById(cartItem.getId(),customerId));
