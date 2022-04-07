@@ -71,7 +71,7 @@ public class ProductController {
             notes = "Creates product and add it in the shopping cart.Add the attributes of the new product. Any attribute of product if not added ,by default " +
                     "null value will be stored. Id will be auto-generated, so no need to add it.",
             response = Product.class)
-    public EntityModel<Product> createProduct(@ApiParam(value = "Enter new product", required = true)@RequestBody Product newProduct) {
+    public ResponseEntity<EntityModel<Product>> createProduct(@ApiParam(value = "Enter new product", required = true)@RequestBody Product newProduct) {
 
         newProduct=productStoreService.createProduct(newProduct);
 
@@ -82,8 +82,7 @@ public class ProductController {
         resource.add(linkTo.withRel("all-products"));
         resource.add(linkToGetSelf.withSelfRel());
 
-        return resource;
-        //return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+        return ResponseEntity.ok(resource);
     }
     @PutMapping("/products/{id}")
     @ApiOperation(value = "Update a product by id",

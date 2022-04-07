@@ -3,7 +3,6 @@ package com.technogise.interns.shoppingcart.customer;
 import com.technogise.interns.shoppingcart.cart.CartController;
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
 import com.technogise.interns.shoppingcart.dto.Customer;
-import com.technogise.interns.shoppingcart.dto.Product;
 import com.technogise.interns.shoppingcart.orders.OrderController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -37,7 +36,7 @@ public class CustomerController {
     @ApiOperation(value = "Finds all customers",
             notes = "Returns all the customers",
             response = Customer.class)
-    public ResponseEntity<CollectionModel<EntityModel<Customer>>>getAllCustomers() {
+    public ResponseEntity<?>getAllCustomers() {
         List<EntityModel<Customer>> entityModelList= new ArrayList<>();
         final List<Customer> customerList = customerService.getAllCustomer();
 

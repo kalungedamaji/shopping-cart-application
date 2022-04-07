@@ -3,6 +3,7 @@ package com.technogise.interns.shoppingcart.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Setter
 @ApiModel(description = "Details about cartItem")
 
+@EqualsAndHashCode
 public class CartItem {
     @ApiModelProperty(notes = "Unique id for the cart item")
     private UUID id;
