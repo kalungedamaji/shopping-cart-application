@@ -72,13 +72,13 @@ public class CartController {
     @ApiOperation(value = "Creates cartItem",
             notes = "Provide values of the attributes to add a cartItem in the shopping cart",
             response = CartItem.class)
-    public ResponseEntity<EntityModel<CartItem>> createCartItem(@RequestBody CartItem cartItem, @PathVariable UUID customerId) {
+    public ResponseEntity<EntityModel<CartItem>> createCartItem(@RequestBody CartItem newCartItem, @PathVariable UUID customerId) {
+        CartItem cartItem=cartService.createCartItem(newCartItem);
         cartItem.setId(UUID.randomUUID());
-        cartItemList.add(cartItem);
         EntityModel<CartItem> resource = EntityModel.of(cartItem);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
         resource.add(linkTo.withRel("all-cartItems"));
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
+        return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
     @PutMapping("/customers/{customerId}/cart/{cartItemId}")

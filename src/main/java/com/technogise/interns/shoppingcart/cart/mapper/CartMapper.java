@@ -15,4 +15,16 @@ public class CartMapper {
 
         return cartItem;
     }
+
+    public static CartItemEntity cartItemToEntityConvertor(CartItem cartItem){
+
+        CartItemEntity cartItemEntity = new CartItemEntity();
+        cartItemEntity.setId(cartItem.getId());
+        cartItemEntity.setName(cartItem.getName());
+        cartItemEntity.setImage(cartItem.getImage());
+        cartItemEntity.setPrice(cartItem.getPrice());
+        cartItemEntity.setQuantity(cartItem.getQuantity());
+
+        return cartItemEntity;
+    }
 }
