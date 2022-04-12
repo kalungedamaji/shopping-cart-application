@@ -85,6 +85,7 @@ public class CustomerController {
     public ResponseEntity<EntityModel<Customer>> createCustomer(@RequestBody Customer newCustomer) {
         newCustomer = customerService.createCustomer(newCustomer);
         newCustomer.setId(UUID.randomUUID());
+        System.out.println("id is"+newCustomer.getId());
         EntityModel<Customer> resource = EntityModel.of(newCustomer);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCustomers());
         WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(newCustomer.getId()));
