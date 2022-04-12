@@ -4,26 +4,31 @@ import com.technogise.interns.shoppingcart.cart.service.CartService;
 import com.technogise.interns.shoppingcart.dto.CartItem;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(value= CartController.class)
 
 public class CartControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private CartService cartService;
@@ -33,31 +38,67 @@ public class CartControllerTest {
         List<CartItem> cart = new ArrayList<>();
         Mockito.when(
                 cartService.getAllCartItems()).thenReturn(cart);
+
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
                 "http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart").accept(MediaType.APPLICATION_JSON);
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-        String expected = "{\"_links\":{\"self\":{\"href\":\"http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart\"}}}";
-        JSONAssert.assertEquals(expected, result.getResponse()
-                .getContentAsString(), false);
+
+        mockMvc.perform(requestBuilder).andExpect(status().isOk());
     }
     @Test
-    public void viewCartItem() throws Exception{
+    public void viewCart() throws Exception{
         List<CartItem> cart = new ArrayList<>();
-        CartItem mockCartItem = new CartItem();
-        mockCartItem.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
-        mockCartItem.setQuantity(5);
-        mockCartItem.setPrice(BigDecimal.valueOf(10.00));
-        mockCartItem.setImage("image");
-        mockCartItem.setName("Dove");
-        cart.add(mockCartItem);
-        Mockito.when(
-                cartService.getAllCartItems()).thenReturn(cart);
-        RequestBuilder requestBuilderGet = MockMvcRequestBuilders.get(
-                "http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart").accept(MediaType.APPLICATION_JSON);
-        MvcResult result = mockMvc.perform(requestBuilderGet).andReturn();
+        CartItem newCartItem = new CartItem();
+        newCartItem.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+        newCartItem.setQuantity(5);
+        newCartItem.setPrice(BigDecimal.valueOf(10.00));
+        newCartItem.setImage("image");
+        newCartItem.setName("Dove");
+        cart.add(newCartItem);
 
-        String expected = "{\"_embedded\":{\"cartItemList\":[{\"id\":\"cf7f42d3-42d1-4727-97dd-4a086ecc0060\",\"name\":\"Dove\",\"price\":10.00,\"quantity\":5,\"image\":\"image\",\"_links\":{\"self\":{\"href\":\"http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart/cf7f42d3-42d1-4727-97dd-4a086ecc0060\"}}}]},\"_links\":{\"self\":{\"href\":\"http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart\"}}}";
-        JSONAssert.assertEquals(expected, result.getResponse()
-                .getContentAsString(), false);
+        Mockito.when(cartService.getAllCartItems()).thenReturn(cart);
+
+        RequestBuilder requestBuilderGet = MockMvcRequestBuilders.get("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart")
+                .accept(MediaType.APPLICATION_JSON);
+
+        List<CartItem> expectedCart = new ArrayList<>();
+        CartItem expectedCartItem = new CartItem();
+        expectedCartItem.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+        expectedCartItem.setQuantity(5);
+        expectedCartItem.setPrice(BigDecimal.valueOf(10.00));
+        expectedCartItem.setImage("image");
+        expectedCartItem.setName("Dove");
+        expectedCart.add(expectedCartItem);
+
+        mockMvc.perform(requestBuilderGet)
+                .andExpect(status().isOk());//yet to check body
+    }
+
+    @Test
+    public void shouldAddAProductToCart() throws Exception{
+        CartItem newCartItem = new CartItem();
+        newCartItem.setQuantity(5);
+        newCartItem.setPrice(BigDecimal.valueOf(10.00));
+        newCartItem.setImage("image");
+        newCartItem.setName("Dove");
+
+        Mockito.when(cartService.createCartItem(any(CartItem.class))).thenReturn(newCartItem);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newCartItem))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        CartItem expectedCartItem = new CartItem();
+        expectedCartItem.setQuantity(5);
+        expectedCartItem.setPrice(BigDecimal.valueOf(10.00));
+        expectedCartItem.setImage("image");
+        expectedCartItem.setName("Dove");
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.quantity").value(expectedCartItem.getQuantity()))
+                .andExpect(jsonPath("$.price").value(expectedCartItem.getPrice()))
+                .andExpect(jsonPath("$.image").value(expectedCartItem.getImage()))
+                .andExpect(jsonPath("$.name").value(expectedCartItem.getName()));
     }
 }

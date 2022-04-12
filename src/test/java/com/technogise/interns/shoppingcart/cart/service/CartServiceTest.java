@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.hamcrest.CoreMatchers.*;
-import org.hamcrest.MatcherAssert;
-
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @SpringBootTest
 public class CartServiceTest {
@@ -52,7 +52,7 @@ public class CartServiceTest {
         Mockito.when(cartRepository.findAll()).thenReturn(cartItemEntityList);
         List<CartItem> actualCartItemList = cartService.getAllCartItems();
 
-        MatcherAssert.assertThat(actualCartItemList, is(expectedCartItemList));
+        assertThat(actualCartItemList, is(expectedCartItemList));
 
     }
 

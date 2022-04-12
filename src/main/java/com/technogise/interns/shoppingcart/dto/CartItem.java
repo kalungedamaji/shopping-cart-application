@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @ApiModel(description = "Details about cartItem")
-
 @EqualsAndHashCode
 public class CartItem {
     @ApiModelProperty(notes = "Unique id for the cart item")
