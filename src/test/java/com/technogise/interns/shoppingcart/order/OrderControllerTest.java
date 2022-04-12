@@ -1,22 +1,17 @@
 package com.technogise.interns.shoppingcart.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import com.technogise.interns.shoppingcart.dto.Order;
 import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -26,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +34,67 @@ public class OrderControllerTest {
 
     @MockBean
     private OrderService orderService;
+
+    public OrdersOrderItem getOrdersOrderItem() {
+        OrdersOrderItem ordersOrderItem = new OrdersOrderItem();
+        ordersOrderItem.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0067"));
+        ordersOrderItem.setName("dove");
+        ordersOrderItem.setPrice(BigDecimal.valueOf(49.99));
+        ordersOrderItem.setQuantity(5);
+        ordersOrderItem.setImage("Dove Image");
+        ordersOrderItem.setDescription("Its a good soap and used by most actress");
+
+        return ordersOrderItem;
+    }
+
+    @Test
+    public void shouldReturnEmptyOrderWhenNoOrderItemIsAdded() throws Exception{
+        List<Order> orderList = new ArrayList<>();
+        Mockito.when(orderService.getAllOrders()).thenReturn(orderList);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isEmpty());
+    }
+
+    @Test
+    public void shouldReturnOrderWhenSingleOrderItemIsAdded() throws Exception {
+        List<Order> orderList = new ArrayList<>();
+        Order order = new Order();
+        order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
+        order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
+        order.setOrderPaymentType("cash");
+        order.setOrderPaymentStatus("done");
+
+        OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        ordersOrderItemList.add(ordersOrderItem);
+        order.setOrderItems(ordersOrderItemList);
+        orderList.add(order);
+
+        Mockito.when(orderService.getAllOrders()).thenReturn(orderList);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].timestamp").value(order.getTimestamp().toString()))
+                .andExpect(jsonPath("$.content[0].orderPaymentType").value(order.getOrderPaymentType()))
+                .andExpect(jsonPath("$.content[0].orderPaymentStatus").value(order.getOrderPaymentStatus()))
+                .andExpect(jsonPath("$.content[0].orderItems[0].name").value(ordersOrderItem.getName()))
+                .andExpect(jsonPath("$.content[0].orderItems[0].price").value(ordersOrderItem.getPrice()))
+                .andExpect(jsonPath("$.content[0].orderItems[0]quantity").value(ordersOrderItem.getQuantity()))
+                .andExpect(jsonPath("$.content[0].orderItems[0].image").value(ordersOrderItem.getImage()))
+                .andExpect(jsonPath("$.content[0].orderItems[0].description").value(ordersOrderItem.getDescription()))
+                .andExpect(jsonPath("$.links[0].rel").value("self"))
+                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders"))
+                .andExpect(jsonPath("$.links[1].rel").value("product-store"))
+                .andExpect(jsonPath("$.links[1].href").value("http://localhost:9000/products"));
+    }
 
     @Test
     public void shouldCreateOrderAndReturnCreatedOrder() throws Exception {
@@ -100,15 +154,3 @@ public class OrderControllerTest {
                         .andExpect(jsonPath("$.orderItems[0].price").value(expectedOrderItem.getPrice()));
     }
 }
-
-
-//                String mockOrderJson = "{\"orderPaymentType\":\"Cash\",\"orderPaymentStatus\":\"Done\"}";
-//        orderData.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
-//        orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-
-
-//        String expectedOrder ="{\"id\":\"a0217f70-7123-45bc-a1b6-f9d392579401\",\"timestamp\":\"2022-04-08T11:31:20.846Z\",\"orderPaymentType\":\"Cash\",\"orderPaymentStatus\":\"Done\",\"orderItems\":[{\"id\":\"a0217f70-7123-45bc-a1b3-f9d392579401\",\"name\":\"mug\",\"image\":\"mug image\",\"description\":\"A mug to be sold\",\"quantity\":2,\"price\":10}],\"links\":[{\"rel\":\"all-orders\",\"href\":\"http://localhost:9000/customers/{customerId}/orders\"},{\"rel\":\"self\",\"href\":\"http://localhost:9000/customers/{customerId}/orders/a0217f70-7123-45bc-a1b6-f9d392579401\"}]}";
-//        MockHttpServletResponse response = result.getResponse();
-//        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-//        JSONAssert.assertEquals(expectedOrder, result.getResponse()
-//                .getContentAsString(), false);

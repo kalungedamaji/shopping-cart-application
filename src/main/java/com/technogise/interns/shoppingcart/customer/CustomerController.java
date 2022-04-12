@@ -3,7 +3,8 @@ package com.technogise.interns.shoppingcart.customer;
 import com.technogise.interns.shoppingcart.cart.CartController;
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
 import com.technogise.interns.shoppingcart.dto.Customer;
-import com.technogise.interns.shoppingcart.orders.OrderController;
+import com.technogise.interns.shoppingcart.orders.order.OrderController;
+import com.technogise.interns.shoppingcart.store.ProductController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,11 @@ public class CustomerController {
         }
         CollectionModel<EntityModel<Customer>> resourceList = CollectionModel.of(entityModelList);
         WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllCustomers());
+        WebMvcLinkBuilder linkToStore = linkTo(methodOn(ProductController.class).getAllProducts());
+
         resourceList.add(linkToSelf.withSelfRel());
+        resourceList.add(linkToStore.withRel("product-store"));
+
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
     @GetMapping("/customers/{id}")
@@ -63,7 +68,7 @@ public class CustomerController {
         if(optionalCustomer.isPresent()) {
             EntityModel<Customer> resource = EntityModel.of(optionalCustomer.get());
             WebMvcLinkBuilder linkToAllCustomers = linkTo(methodOn(this.getClass()).getAllCustomers());
-            WebMvcLinkBuilder linkToOrders = linkTo(methodOn(OrderController.class).getAllOrders());
+            WebMvcLinkBuilder linkToOrders = linkTo(methodOn(OrderController.class).getAllOrders(customerId));
             WebMvcLinkBuilder linkToCart = linkTo(methodOn(CartController.class).getAllCartItems(customerId));
             WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCustomer(customerId));
             resource.add(linkToAllCustomers.withRel("all-customers"));

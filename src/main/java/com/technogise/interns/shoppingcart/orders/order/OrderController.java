@@ -2,6 +2,7 @@ package com.technogise.interns.shoppingcart.orders.order;
 
 import com.technogise.interns.shoppingcart.dto.*;
 import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
+import com.technogise.interns.shoppingcart.store.ProductController;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -35,17 +36,19 @@ public class OrderController {
     @ApiOperation(value = "Get all the orders",
              notes = "Returns  all the orders from the shopping cart",
              response = Order.class)
-    public ResponseEntity<CollectionModel<EntityModel<Order>>> getAllOrders() {
+    public ResponseEntity<CollectionModel<EntityModel<Order>>> getAllOrders(@PathVariable(value = "customerId") UUID customerId) {
         List<EntityModel<Order>> entityModelList = new ArrayList<>();
-        for(Order order : orderList){
+        for(Order order : orderService.getAllOrders()){
             EntityModel<Order> resource = EntityModel.of(order);
-            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId()));
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId(), customerId));
             resource.add(linkToSelf.withSelfRel());
             entityModelList.add(resource);
         }
         CollectionModel<EntityModel<Order>> resourceList = CollectionModel.of((entityModelList));
-        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllOrders());
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(ProductController.class).getAllProducts());
         resourceList.add(linkToSelf.withSelfRel());
+        resourceList.add(linkTo.withRel("product-store"));
 
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
@@ -54,7 +57,7 @@ public class OrderController {
     @ApiOperation(value = "Get individual order",
             notes = "Returns the order information from the shopping cart",
             response = Order.class)
-    public ResponseEntity<EntityModel<Order2>> getOrderById(@PathVariable(value = "orderId") UUID orderId) {
+    public ResponseEntity<EntityModel<Order2>> getOrderById(@PathVariable(value = "orderId") UUID orderId, @PathVariable(value = "customerId") UUID customerId) {
 
         Order order = findById(orderId);
         if (order == null) {
@@ -83,8 +86,8 @@ public class OrderController {
         newOrder.setOrderItems(orderItemList);
 
         EntityModel<Order2> resource = EntityModel.of(newOrder);
-        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders());
-        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(orderId));
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(orderId, customerId));
         resource.add(linkTo.withRel("all-orders"));
         resource.add(linkToSelf.withSelfRel());
 
@@ -94,13 +97,13 @@ public class OrderController {
     @PostMapping(path = "/orders",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<Order>> createOrder(@RequestBody Order order) {
+    public ResponseEntity<EntityModel<Order>> createOrder(@RequestBody Order order, @PathVariable(value = "customerId") UUID customerId) {
 
 
         order = orderService.createOrder(order);
         EntityModel<Order> resource = EntityModel.of(order);
-        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders());
-        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId()));
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId(), customerId));
         resource.add(linkTo.withRel("all-orders"));
         resource.add(linkToSelf.withSelfRel());
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
