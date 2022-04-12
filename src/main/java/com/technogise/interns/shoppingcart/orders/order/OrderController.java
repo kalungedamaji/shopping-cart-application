@@ -1,8 +1,9 @@
-package com.technogise.interns.shoppingcart.orders;
+package com.technogise.interns.shoppingcart.orders.order;
 
 import com.technogise.interns.shoppingcart.dto.*;
-import com.technogise.interns.shoppingcart.orders.orderItems.OrderItemController;
+import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -25,8 +26,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/customers/{customerId}")
 public class OrderController {
+    @Autowired
+    private OrderService orderService;
 
-    List<Order> orderList = new ArrayList();
+    List<Order> orderList = new ArrayList<>();
 
     @GetMapping(value="/orders" ,produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get all the orders",
@@ -55,11 +58,11 @@ public class OrderController {
 
         Order order = findById(orderId);
         if (order == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Order2 newOrder = new Order2();
-        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        List<OrdersOrderItem> ordersOrderItemList;
         ordersOrderItemList = order.getOrderItems();
         OrdersOrderItem ordersOrderItem = ordersOrderItemList.get(0);
         OrderItem orderItem = new OrderItem();
@@ -93,17 +96,14 @@ public class OrderController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<Order>> createOrder(@RequestBody Order order) {
 
-        order.setId(UUID.randomUUID());
-        Instant instant = Instant.now();
-        order.setTimestamp(instant);
-        orderList.add(order);
 
+        order = orderService.createOrder(order);
         EntityModel<Order> resource = EntityModel.of(order);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders());
         WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId()));
         resource.add(linkTo.withRel("all-orders"));
         resource.add(linkToSelf.withSelfRel());
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
+        return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
     @PutMapping("/orders/{orderId}")
