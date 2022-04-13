@@ -12,7 +12,7 @@ public class OrderService {
         return order;
     }
 
-    public List<Order>  getAllOrders() {
-        return new ArrayList<Order>();
+    public List<Order> getAllOrders() {
+        return new ArrayList<>();
     }
 }

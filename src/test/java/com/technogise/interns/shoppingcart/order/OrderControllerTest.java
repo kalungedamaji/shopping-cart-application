@@ -1,17 +1,22 @@
 package com.technogise.interns.shoppingcart.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import com.technogise.interns.shoppingcart.dto.Order;
 import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -21,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -151,6 +158,24 @@ public class OrderControllerTest {
                         .andExpect(jsonPath("$.orderItems[0].name").value(expectedOrderItem.getName()))
                         .andExpect(jsonPath("$.orderItems[0].description").value(expectedOrderItem.getDescription()))
                         .andExpect(jsonPath("$.orderItems[0].quantity").value(expectedOrderItem.getQuantity()))
-                        .andExpect(jsonPath("$.orderItems[0].price").value(expectedOrderItem.getPrice()));
+                        .andExpect(jsonPath("$.orderItems[0].price").value(expectedOrderItem.getPrice()))
+                        .andExpect(jsonPath("$.links[0].rel").value("all-orders"))
+                        .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/b2ac79f2-c4ed-409d-9eb6-5d9fc1890bc7/orders"))
+                        .andExpect(jsonPath("$.links[1].rel").value("self"))
+                        .andExpect(jsonPath("$.links[1].href").value("http://localhost:9000/customers/b2ac79f2-c4ed-409d-9eb6-5d9fc1890bc7/orders/a0217f70-7123-45bc-a1b6-f9d392579401"))
+        ;
     }
 }
+
+//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+//                String mockOrderJson = "{\"orderPaymentType\":\"Cash\",\"orderPaymentStatus\":\"Done\"}";
+//        orderData.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
+//        orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
+
+
+//        String expectedOrder ="{\"id\":\"a0217f70-7123-45bc-a1b6-f9d392579401\",\"timestamp\":\"2022-04-08T11:31:20.846Z\",\"orderPaymentType\":\"Cash\",\"orderPaymentStatus\":\"Done\",\"orderItems\":[{\"id\":\"a0217f70-7123-45bc-a1b3-f9d392579401\",\"name\":\"mug\",\"image\":\"mug image\",\"description\":\"A mug to be sold\",\"quantity\":2,\"price\":10}],\"links\":[{\"rel\":\"all-orders\",\"href\":\"http://localhost:9000/customers/{customerId}/orders\"},{\"rel\":\"self\",\"href\":\"http://localhost:9000/customers/{customerId}/orders/a0217f70-7123-45bc-a1b6-f9d392579401\"}]}";
+//        MockHttpServletResponse response = result.getResponse();
+//        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+//        JSONAssert.assertEquals(expectedOrder, result.getResponse()
+//                .getContentAsString(), false);

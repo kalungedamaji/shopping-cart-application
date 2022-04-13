@@ -9,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class ProductController {
     @Autowired
     private ProductStoreService productStoreService;
 
-    @GetMapping("/products")
+    @GetMapping(value= "/products", produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get all the products",
             notes = "Returns all the products from the shopping cart",
             response = Product.class)
@@ -45,7 +46,7 @@ public class ProductController {
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping(value = "/products/{id}" , produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get a single product by id",
             notes = "Returns a single product. Use the id to get the desired product.",
             response = Product.class)
@@ -66,7 +67,7 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
-    @PostMapping(path = "/products")
+    @PostMapping(path = "/products", produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create new product",
             notes = "Creates product and add it in the shopping cart.Add the attributes of the new product. Any attribute of product if not added ,by default " +
                     "null value will be stored. Id will be auto-generated, so no need to add it.",
@@ -82,9 +83,9 @@ public class ProductController {
         resource.add(linkTo.withRel("all-products"));
         resource.add(linkToGetSelf.withSelfRel());
 
-        return ResponseEntity.ok(resource);
+        return new ResponseEntity<>(resource , HttpStatus.CREATED);
     }
-    @PutMapping("/products/{id}")
+    @PutMapping(value = "/products/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Update a product by id",
             notes = "Returns an updated product. Provide an id to Update specific product in the shopping cart and " +
                     "only specify the attributes which are to be updated, rest fields will remain unchanged" ,
@@ -106,7 +107,7 @@ public class ProductController {
        }
 
     }
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping(value = "/products/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Delete a product by id",
             notes = "Returns OK status on successfully deletion of the product. Use the Id of the specific product to delete " +
                     "it and if Id doesn't match status NOT_found will be returned.",
