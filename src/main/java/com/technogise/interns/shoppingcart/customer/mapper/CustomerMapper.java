@@ -2,9 +2,12 @@ package com.technogise.interns.shoppingcart.customer.mapper;
 
 import com.technogise.interns.shoppingcart.customer.entity.CustomerEntity;
 import com.technogise.interns.shoppingcart.dto.Customer;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomerMapper {
-    public static Customer map(CustomerEntity customerEntity){
+
+    public Customer map(CustomerEntity customerEntity){
         Customer customer = new Customer();
         customer.setId(customerEntity.getId());
         customer.setFirstName(customerEntity.getFirstName());
@@ -17,7 +20,7 @@ public class CustomerMapper {
         return customer;
     }
 
-    public static CustomerEntity mapToEntity(Customer customer){
+    public CustomerEntity mapToEntity(Customer customer){
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setId(customer.getId());
         customerEntity.setFirstName(customer.getFirstName());

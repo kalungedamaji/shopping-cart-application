@@ -11,11 +11,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+
 import java.util.UUID;
 
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +39,7 @@ public class CustomerControllerTest {
     public void shouldCreateCreateCustomer() throws Exception {
 
         Customer newCustomer = new Customer();
+        newCustomer.setId(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
         newCustomer.setFirstName("Pranay");
         newCustomer.setLastName("Jain");
         newCustomer.setPhoneNumber("9999999999");
@@ -51,6 +55,7 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON);
 
         Customer expectedCustomer = new Customer();
+        expectedCustomer.setId(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
         expectedCustomer.setFirstName("Pranay");
         expectedCustomer.setLastName("Jain");
         expectedCustomer.setPhoneNumber("9999999999");
@@ -60,13 +65,17 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.address").value(expectedCustomer.getAddress()))
-                .andExpect(jsonPath("$.firstName").value(expectedCustomer.getFirstName()))
-                .andExpect(jsonPath("$.lastName").value(expectedCustomer.getLastName()))
-                .andExpect(jsonPath("$.phoneNumber").value(expectedCustomer.getPhoneNumber()))
-                .andExpect(jsonPath("$.emailId").value(expectedCustomer.getEmailId()))
-                .andExpect(jsonPath("$.password").value(expectedCustomer.getPassword()));
-
+                .andExpect(jsonPath("$.id",is(expectedCustomer.getId().toString())))
+                .andExpect(jsonPath("$.address",is(expectedCustomer.getAddress())))
+                .andExpect(jsonPath("$.firstName",is(expectedCustomer.getFirstName())))
+                .andExpect(jsonPath("$.lastName",is(expectedCustomer.getLastName())))
+                .andExpect(jsonPath("$.phoneNumber",is(expectedCustomer.getPhoneNumber())))
+                .andExpect(jsonPath("$.emailId", is(expectedCustomer.getEmailId())))
+                .andExpect(jsonPath("password", is(expectedCustomer.getPassword())))
+                .andExpect(jsonPath("$.links[0].rel", is("all-customers")))
+                .andExpect(jsonPath("$.links[0].href", is("http://localhost:9000/customers")))
+                .andExpect(jsonPath("$.links[1].rel", is("store")))
+                .andExpect(jsonPath("$.links[1].href", is("http://localhost:9000/products")))
+                .andExpect(jsonPath("links[2].rel", is("self")));
     }
 }

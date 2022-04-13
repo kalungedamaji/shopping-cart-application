@@ -2,6 +2,7 @@ package com.technogise.interns.shoppingcart.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.UUID;
@@ -9,8 +10,8 @@ import java.util.UUID;
 @Setter
 @Getter
 @ApiModel(description = "Details about the customer")
+@EqualsAndHashCode
 public class Customer {
-
     @ApiModelProperty(notes = "The unique id of the customer")
     private UUID id;
     @ApiModelProperty(notes = "The first name of the customer")

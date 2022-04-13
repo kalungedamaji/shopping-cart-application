@@ -61,7 +61,7 @@ public class CustomerController {
             notes = "Returns a single customer. Use the id to get the desired customer.",
             response = Customer.class)
     public ResponseEntity<EntityModel<Customer>> getCustomer(@ApiParam(value = "Enter Id of the customer to be returned",required = true)
-                                                @PathVariable(value = "id")UUID customerId)
+                                                             @PathVariable(value = "id")UUID customerId)
     {
         Optional<Customer> optionalCustomer = customerService.getCustomerById(customerId);
 
@@ -89,13 +89,12 @@ public class CustomerController {
             response = Customer.class)
     public ResponseEntity<EntityModel<Customer>> createCustomer(@RequestBody Customer newCustomer) {
         newCustomer = customerService.createCustomer(newCustomer);
-        newCustomer.setId(UUID.randomUUID());
-        System.out.println("id is"+newCustomer.getId());
         EntityModel<Customer> resource = EntityModel.of(newCustomer);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCustomers());
         WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(newCustomer.getId()));
-
+        WebMvcLinkBuilder linkToStore = linkTo(methodOn(ProductController.class).getAllProducts());
         resource.add(linkTo.withRel("all-customers"));
+        resource.add(linkToStore.withRel("store"));
         resource.add(linkToGetSelf.withSelfRel());
 
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
@@ -105,7 +104,7 @@ public class CustomerController {
             notes = "Provide an id and value of all the attributes of cartItem, you want to update",
             response = Customer.class)
     public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
-                                                              @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
+                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
     {
         Optional<Customer> replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
         if (replacedCustomer.isPresent()) {

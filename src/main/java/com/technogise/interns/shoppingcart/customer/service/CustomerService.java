@@ -4,6 +4,7 @@ import com.technogise.interns.shoppingcart.customer.entity.CustomerEntity;
 import com.technogise.interns.shoppingcart.customer.mapper.CustomerMapper;
 import com.technogise.interns.shoppingcart.customer.repository.CustomerRepository;
 import com.technogise.interns.shoppingcart.dto.Customer;
+import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,33 +19,34 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Autowired
+    private CustomerMapper customerMapper;
+
     public List<Customer> getAllCustomer() {
 
         return customerRepository.findAll()
                 .stream()
-                .map(CustomerMapper::map)
+                .map(customerMapper::map)
                 .collect(Collectors.toList());
     }
 
     public Optional<Customer> getCustomerById(UUID customerId) {
         Optional<CustomerEntity> optionalCustomerEntity = customerRepository.findById(customerId);
 
-        return optionalCustomerEntity.map(CustomerMapper::map);
+        return optionalCustomerEntity.map(customerMapper::map);
     }
-
     public Customer createCustomer(Customer newCustomer) {
         newCustomer.setId(UUID.randomUUID());
-
-        CustomerEntity customerEntity = customerRepository.save(CustomerMapper.mapToEntity(newCustomer));
-        return CustomerMapper.map(customerEntity);
+        CustomerEntity customerEntity = customerRepository.save(customerMapper.mapToEntity(newCustomer));  //generates id,map to entity,save in rep, returns java object
+        return customerMapper.map(customerEntity);
     }
 
     public Optional<Customer> replaceCustomer(Customer existingCustomer, UUID customerId) {
         if(customerRepository.findById(customerId).isPresent()) {
             existingCustomer.setId(customerId);
-            CustomerEntity customerEntity = customerRepository.save(CustomerMapper.mapToEntity(existingCustomer));
+            CustomerEntity customerEntity = customerRepository.save(customerMapper.mapToEntity(existingCustomer));
 
-            return Optional.of(CustomerMapper.map(customerEntity));
+            return Optional.of(customerMapper.map(customerEntity));
         }
         else{
             return Optional.empty();
