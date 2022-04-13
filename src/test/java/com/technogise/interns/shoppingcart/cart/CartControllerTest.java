@@ -42,7 +42,9 @@ public class CartControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
                 "http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart").accept(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(requestBuilder).andExpect(status().isOk());
+        mockMvc.perform(requestBuilder).andExpect(status().isOk())
+                .andExpect(jsonPath("$.links[0].rel").value("self"))
+                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart"));
     }
     @Test
     public void viewCart() throws Exception{
@@ -70,7 +72,16 @@ public class CartControllerTest {
         expectedCart.add(expectedCartItem);
 
         mockMvc.perform(requestBuilderGet)
-                .andExpect(status().isOk());//yet to check body
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(expectedCartItem.getId().toString()))
+                .andExpect(jsonPath("$.content[0].name").value(expectedCartItem.getName()))
+                .andExpect(jsonPath("$.content[0].quantity").value(expectedCartItem.getQuantity()))
+                .andExpect(jsonPath("$.content[0].image").value(expectedCartItem.getImage()))
+                .andExpect(jsonPath("$.content[0].price").value(expectedCartItem.getPrice()))
+                .andExpect(jsonPath("$.content[0].links[0].rel").value("self"))
+                .andExpect(jsonPath("$.content[0].links[0].href").value("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart/cf7f42d3-42d1-4727-97dd-4a086ecc0060"))
+                .andExpect(jsonPath("$.links[0].rel").value("self"))
+                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart"));
     }
 
     @Test
@@ -96,9 +107,12 @@ public class CartControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.quantity").value(expectedCartItem.getQuantity()))
                 .andExpect(jsonPath("$.price").value(expectedCartItem.getPrice()))
                 .andExpect(jsonPath("$.image").value(expectedCartItem.getImage()))
-                .andExpect(jsonPath("$.name").value(expectedCartItem.getName()));
+                .andExpect(jsonPath("$.name").value(expectedCartItem.getName()))
+                .andExpect(jsonPath("$.links[0].rel").value("all-cartItems"))
+                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart"));
     }
 }

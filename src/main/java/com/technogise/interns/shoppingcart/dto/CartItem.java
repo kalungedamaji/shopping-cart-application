@@ -1,6 +1,7 @@
 
 package com.technogise.interns.shoppingcart.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
@@ -15,7 +16,8 @@ import java.util.UUID;
 @ApiModel(description = "Details about cartItem")
 @EqualsAndHashCode
 public class CartItem {
-    @ApiModelProperty(notes = "Unique id for the cart item")
+    @JsonProperty(access = JsonProperty.Access. READ_ONLY)
+    @ApiModelProperty(notes = "Unique id for the cart item")//, hidden = true)
     private UUID id;
     @ApiModelProperty(notes = "name of the cart item")
     private String name;
