@@ -4,6 +4,7 @@ import com.technogise.interns.shoppingcart.customer.entity.CustomerEntity;
 import com.technogise.interns.shoppingcart.customer.mapper.CustomerMapper;
 import com.technogise.interns.shoppingcart.customer.repository.CustomerRepository;
 import com.technogise.interns.shoppingcart.dto.Customer;
+import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,9 +32,15 @@ public class CustomerService {
     }
 
     public Optional<Customer> getCustomerById(UUID customerId) {
-        Optional<CustomerEntity> optionalCustomerEntity = customerRepository.findById(customerId);
 
-        return optionalCustomerEntity.map(customerMapper::map);
+            Optional<CustomerEntity> optionalCustomerEntity = customerRepository.findById(customerId);
+
+            if(optionalCustomerEntity.isPresent()) {
+                return optionalCustomerEntity.map(customerMapper::map);
+            }
+            else {
+                throw new EntityNotFoundException(Customer.class, "id", customerId.toString());
+            }
     }
     public Customer createCustomer(Customer newCustomer) {
         newCustomer.setId(UUID.randomUUID());
