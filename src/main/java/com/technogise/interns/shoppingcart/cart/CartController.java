@@ -4,6 +4,8 @@ import com.technogise.interns.shoppingcart.dto.CartItem;
 import com.technogise.interns.shoppingcart.store.ProductController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -32,6 +34,9 @@ public class CartController {
     @ApiOperation(value = "Finds all cartItems in the cart",
             response = CartItem.class)
     public ResponseEntity<CollectionModel<EntityModel<CartItem>>> getAllCartItems(@PathVariable UUID customerId) {
+
+        Logger logger = LoggerFactory.getLogger(CartController.class);
+        logger.info("some message");
         List<EntityModel<CartItem>> entityModelList= new ArrayList<>();
         List<CartItem> cartItemList= cartService.getAllCartItems();
         for(CartItem cartItem : cartItemList){
@@ -54,7 +59,7 @@ public class CartController {
     public ResponseEntity<EntityModel<CartItem>> getCartItemById(@ApiParam(value = "ID value for the cartItem you need to retrieve", required = true)
                                                  @PathVariable(value = "cartItemId") UUID cartItemId, @PathVariable UUID customerId)
         {
-            CartItem cartItem = findById(cartItemId);
+            CartItem cartItem = cartService.getCartItemById(cartItemId);
             EntityModel<CartItem> resource = EntityModel.of(cartItem);
             WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
             WebMvcLinkBuilder linkToProducts = linkTo(methodOn(ProductController.class).getAllProducts());
@@ -73,7 +78,7 @@ public class CartController {
             notes = "Provide values of the attributes to add a cartItem in the shopping cart",
             response = CartItem.class)
     public ResponseEntity<EntityModel<CartItem>> createCartItem(@RequestBody CartItem newCartItem, @PathVariable UUID customerId) {
-        CartItem cartItem=cartService.createCartItem(newCartItem);
+        CartItem cartItem=cartService.addProductToCart(newCartItem);
         cartItem.setId(UUID.randomUUID());
         EntityModel<CartItem> resource = EntityModel.of(cartItem);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
@@ -85,18 +90,19 @@ public class CartController {
     @ApiOperation(value = "Updates cartItem by id",
             notes = "Provide an id and value of all the attributes of cartItem, you want to update",
             response = CartItem.class)
-    public ResponseEntity<CartItem> replaceCartItem(@RequestBody CartItem newCartItem, @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "cartItemId")UUID cartItemId, @PathVariable UUID customerId) {
-        CartItem cartItem = findById(cartItemId);
-        if (cartItem != null) {
-            cartItem.setId(cartItemId);
-            cartItem.setImage(newCartItem.getImage());
-            cartItem.setName(newCartItem.getName());
-            cartItem.setQuantity(newCartItem.getQuantity());
-            cartItem.setPrice(newCartItem.getPrice());
-            return new ResponseEntity<>(cartItem, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> replaceCartItem(@RequestBody CartItem newCartItem, @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "cartItemId")UUID cartItemId, @PathVariable UUID customerId) {
+
+        CartItem replacedCartItem = cartService.updateCartItem(newCartItem, cartItemId);
+
+        EntityModel<CartItem> resource = EntityModel.of(replacedCartItem);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCartItems(customerId));
+        WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCartItemById(replacedCartItem.getId(),customerId));
+
+        resource.add(linkTo.withRel("all-cartItems"));
+        resource.add(linkToGetSelf.withSelfRel());
+
+        return new ResponseEntity<>(resource, HttpStatus.OK);
+
     }
 
     @DeleteMapping("/customers/{customerId}/cart/{cartItemId}")
@@ -105,14 +111,9 @@ public class CartController {
             response = CartItem.class)
     public ResponseEntity<HttpStatus> deleteCartItem(@ApiParam(value = "ID value for the cartItem you need to delete",required = true)
                                                      @PathVariable(value = "cartItemId") UUID cartItemId,@PathVariable UUID customerId) {
-        CartItem cartItem = findById(cartItemId);
-        if (cartItem != null) {
-            cartItemList.remove(cartItem);
+            cartService.deleteCartItemById(cartItemId);
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+
     }
 
     public CartItem findById(UUID cartItemId){

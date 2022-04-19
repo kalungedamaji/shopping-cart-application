@@ -2,10 +2,12 @@ package com.technogise.interns.shoppingcart.cart.mapper;
 
 import com.technogise.interns.shoppingcart.cart.entity.CartItemEntity;
 import com.technogise.interns.shoppingcart.dto.CartItem;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CartMapper {
 
-    public static CartItem entityToCartItemConvertor (CartItemEntity cartItemEntity) {
+    public CartItem entityToCartItemConvertor (CartItemEntity cartItemEntity) {
         CartItem cartItem = new CartItem();
         cartItem.setId(cartItemEntity.getId());
         cartItem.setName(cartItemEntity.getName());
@@ -16,7 +18,7 @@ public class CartMapper {
         return cartItem;
     }
 
-    public static CartItemEntity cartItemToEntityConvertor(CartItem cartItem){
+    public CartItemEntity cartItemToEntityConvertor(CartItem cartItem){
 
         CartItemEntity cartItemEntity = new CartItemEntity();
         cartItemEntity.setId(cartItem.getId());
