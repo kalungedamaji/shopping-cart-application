@@ -27,12 +27,12 @@ public class CustomerService {
                 .map(customerMapper::map)
                 .collect(Collectors.toList());
     }
-    public Optional<Customer> getCustomerById(UUID customerId) {
+    public Customer getCustomerById(UUID customerId) {
 
             Optional<CustomerEntity> optionalCustomerEntity = customerRepository.findById(customerId);
 
             if(optionalCustomerEntity.isPresent()) {
-                return optionalCustomerEntity.map(customerMapper::map);
+                return customerMapper.map(optionalCustomerEntity.get());
             }
             else {
                 throw new EntityNotFoundException(Customer.class, "id", customerId.toString());
@@ -44,14 +44,13 @@ public class CustomerService {
         return customerMapper.map(customerEntity);
     }
 
-    public Optional<Customer> replaceCustomer(Customer customerDetail, UUID customerId) {
+    public Customer replaceCustomer(Customer customerDetail, UUID customerId) {
 
         Optional<CustomerEntity> optionalCustomerEntity = customerRepository.findById(customerId);
         if(optionalCustomerEntity.isPresent()) {
             customerDetail.setId(customerId);
             CustomerEntity customerEntity = customerRepository.save(customerMapper.mapToEntity(customerDetail));
-
-            return Optional.of(customerMapper.map(customerEntity));
+            return customerMapper.map(customerEntity);
         }
         else{
             throw new EntityNotFoundException(Customer.class,"id",customerId.toString());

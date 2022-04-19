@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -64,10 +63,9 @@ public class CustomerController {
     public ResponseEntity<EntityModel<Customer>> getCustomer(@ApiParam(value = "Enter Id of the customer to be returned",required = true)
                                                              @PathVariable(value = "id")UUID customerId)
     {
-        Optional<Customer> optionalCustomer = customerService.getCustomerById(customerId);
+        Customer customer = customerService.getCustomerById(customerId);
 
-        assert optionalCustomer.orElse(null) != null;
-        EntityModel<Customer> resource = EntityModel.of(optionalCustomer.orElse(null));
+        EntityModel<Customer> resource = EntityModel.of(customer);
             WebMvcLinkBuilder linkToAllCustomers = linkTo(methodOn(this.getClass()).getAllCustomers());
             WebMvcLinkBuilder linkToOrders = linkTo(methodOn(OrderController.class).getAllOrders(customerId));
             WebMvcLinkBuilder linkToCart = linkTo(methodOn(CartController.class).getAllCartItems(customerId));
@@ -98,12 +96,11 @@ public class CustomerController {
     public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
                                                                  @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
     {
-        Optional<Customer> replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
+        Customer replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
 
-        assert replacedCustomer.orElse(null) != null;
-        EntityModel<Customer> resource = EntityModel.of(replacedCustomer.orElse(null));
+        EntityModel<Customer> resource = EntityModel.of(replacedCustomer);
             WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCustomers());
-            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(replacedCustomer.get().getId()));
+            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(replacedCustomer.getId()));
 
             resource.add(linkTo.withRel("all-customers"));
             resource.add(linkToGetSelf.withSelfRel());

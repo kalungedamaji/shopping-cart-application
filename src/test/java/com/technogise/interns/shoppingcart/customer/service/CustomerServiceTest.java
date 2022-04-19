@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -152,9 +153,9 @@ public class CustomerServiceTest {
      Mockito.when(customerRepository.findById(any(UUID.class))).thenReturn(Optional.of(customerEntity));
      Mockito.when(customerMapper.map(any(CustomerEntity.class))).thenReturn(customer);
 
-     Optional<Customer> actualRequiredCustomer = customerService.getCustomerById(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
+     Customer actualRequiredCustomer = customerService.getCustomerById(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
 
-     assertThat(actualRequiredCustomer,is(Optional.of(expectedRequiredCustomer)));
+     assertThat(actualRequiredCustomer,is(expectedRequiredCustomer));
  }
 
     @Test
@@ -252,9 +253,9 @@ public class CustomerServiceTest {
         Mockito.when(customerMapper.mapToEntity(any(Customer.class))).thenReturn(newCustomerEntity);
         Mockito.when(customerMapper.map(newCustomerEntity)).thenReturn(newCustomerDetail);
 
-        Optional<Customer> actualReplacedCustomer = customerService.replaceCustomer(newCustomerDetail,UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
+        Customer actualReplacedCustomer = customerService.replaceCustomer(newCustomerDetail,UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
 
-        assertThat(actualReplacedCustomer,is(Optional.of(newCustomerDetail)));
+        assertThat(actualReplacedCustomer,is(newCustomerDetail));
     }
 }
 

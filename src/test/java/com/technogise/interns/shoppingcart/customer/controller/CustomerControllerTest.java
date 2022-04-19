@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -146,7 +145,7 @@ public class CustomerControllerTest {
         newCustomer.setEmailId("abc@xyz.com");
         newCustomer.setPassword("123abcd@");
 
-        Mockito.when(customerService.getCustomerById(any(UUID.class))).thenReturn(Optional.of(newCustomer));
+        Mockito.when(customerService.getCustomerById(any(UUID.class))).thenReturn(newCustomer);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("http://localhost:9000/customers/676ea10c-537b-4861-b27b-f3b8cbc0dc36")
                 .accept(MediaType.APPLICATION_JSON);
@@ -204,7 +203,7 @@ public class CustomerControllerTest {
         newCustomerDetail.setEmailId("abc@123.com");
         newCustomerDetail.setPassword("123@qaz");
 
-        Mockito.when(customerService.replaceCustomer(newCustomerDetail, UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"))).thenReturn(Optional.of(newCustomerDetail));
+        Mockito.when(customerService.replaceCustomer(newCustomerDetail, UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"))).thenReturn(newCustomerDetail);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("http://localhost:9000/customers/676ea10c-537b-4861-b27b-f3b8cbc0dc36")
                 .accept(MediaType.APPLICATION_JSON)
