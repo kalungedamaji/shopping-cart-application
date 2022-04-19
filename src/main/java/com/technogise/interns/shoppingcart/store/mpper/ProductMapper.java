@@ -2,10 +2,12 @@ package com.technogise.interns.shoppingcart.store.mpper;
 
 import com.technogise.interns.shoppingcart.dto.Product;
 import com.technogise.interns.shoppingcart.store.entity.ProductEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
 
-    public static Product  map(ProductEntity   productEntity){
+    public Product  map(ProductEntity   productEntity){
         Product  product=new Product();
         product.setId(productEntity.getId());
         product.setName(productEntity.getName());
@@ -15,7 +17,7 @@ public class ProductMapper {
         return  product;
     }
 
-    public static ProductEntity mapToEntity(Product product){
+    public ProductEntity mapToEntity(Product product){
 
         ProductEntity  productEntity=new ProductEntity();
         productEntity.setId(product.getId());

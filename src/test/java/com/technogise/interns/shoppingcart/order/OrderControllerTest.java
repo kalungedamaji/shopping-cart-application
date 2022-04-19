@@ -1,35 +1,40 @@
 package com.technogise.interns.shoppingcart.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
+import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.dto.Order;
 import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
+import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.isNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.core.Is.is;
 
 @WebMvcTest(value= OrderController.class)
 public class OrderControllerTest {
@@ -64,7 +69,7 @@ public class OrderControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isEmpty());
+                .andExpect(jsonPath("content").isEmpty());
     }
 
     @Test
@@ -89,18 +94,18 @@ public class OrderControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].timestamp").value(order.getTimestamp().toString()))
-                .andExpect(jsonPath("$.content[0].orderPaymentType").value(order.getOrderPaymentType()))
-                .andExpect(jsonPath("$.content[0].orderPaymentStatus").value(order.getOrderPaymentStatus()))
-                .andExpect(jsonPath("$.content[0].orderItems[0].name").value(ordersOrderItem.getName()))
+                .andExpect(jsonPath("content[0].timestamp", is(order.getTimestamp().toString())))
+                .andExpect(jsonPath("content[0].orderPaymentType", is(order.getOrderPaymentType())))
+                .andExpect(jsonPath("content[0].orderPaymentStatus", is(order.getOrderPaymentStatus())))
+                .andExpect(jsonPath("content[0].orderItems[0].name", is(ordersOrderItem.getName())))
                 .andExpect(jsonPath("$.content[0].orderItems[0].price").value(ordersOrderItem.getPrice()))
-                .andExpect(jsonPath("$.content[0].orderItems[0]quantity").value(ordersOrderItem.getQuantity()))
-                .andExpect(jsonPath("$.content[0].orderItems[0].image").value(ordersOrderItem.getImage()))
-                .andExpect(jsonPath("$.content[0].orderItems[0].description").value(ordersOrderItem.getDescription()))
-                .andExpect(jsonPath("$.links[0].rel").value("self"))
-                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders"))
-                .andExpect(jsonPath("$.links[1].rel").value("product-store"))
-                .andExpect(jsonPath("$.links[1].href").value("http://localhost:9000/products"));
+                .andExpect(jsonPath("content[0].orderItems[0]quantity", is(ordersOrderItem.getQuantity())))
+                .andExpect(jsonPath("content[0].orderItems[0].image", is(ordersOrderItem.getImage())))
+                .andExpect(jsonPath("content[0].orderItems[0].description", is(ordersOrderItem.getDescription())))
+                .andExpect(jsonPath("links[0].rel", is("self")))
+                .andExpect(jsonPath("links[0].href", is("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders")))
+                .andExpect(jsonPath("links[1].rel", is("product-store")))
+                .andExpect(jsonPath("links[1].href", is("http://localhost:9000/products")));
     }
 
     @Test
@@ -162,20 +167,211 @@ public class OrderControllerTest {
                         .andExpect(jsonPath("$.links[0].rel").value("all-orders"))
                         .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/b2ac79f2-c4ed-409d-9eb6-5d9fc1890bc7/orders"))
                         .andExpect(jsonPath("$.links[1].rel").value("self"))
-                        .andExpect(jsonPath("$.links[1].href").value("http://localhost:9000/customers/b2ac79f2-c4ed-409d-9eb6-5d9fc1890bc7/orders/a0217f70-7123-45bc-a1b6-f9d392579401"))
-        ;
+                        .andExpect(jsonPath("$.links[1].href").value("http://localhost:9000/customers/b2ac79f2-c4ed-409d-9eb6-5d9fc1890bc7/orders/a0217f70-7123-45bc-a1b6-f9d392579401"));
+    }
+
+    @Test
+    public void shouldUpdateOrderWhenOrderIsUpdated() throws Exception {
+
+        Order existingOrder = new Order();
+        existingOrder.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
+        existingOrder.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
+        existingOrder.setOrderPaymentType("Cash");
+        existingOrder.setOrderPaymentStatus("Done");
+
+        OrdersOrderItem existingOrderItem = new OrdersOrderItem();
+        existingOrderItem.setImage("mug image");
+        existingOrderItem.setName("mug");
+        existingOrderItem.setDescription("A mug to be sold");
+        existingOrderItem.setQuantity(2);
+        existingOrderItem.setPrice(BigDecimal.TEN);
+        existingOrderItem.setId(UUID.fromString("a0217f70-7123-45bc-a1b3-f9d392579401"));
+
+        Order newOrder = new Order();
+        newOrder.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
+        newOrder.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
+        newOrder.setOrderPaymentType("gpay");
+        newOrder.setOrderPaymentStatus("in-progress");
+
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        OrdersOrderItem newOrderItem = new OrdersOrderItem();
+        newOrderItem.setImage("mug image");
+        newOrderItem.setName("mug");
+        newOrderItem.setDescription("A mug to be sold");
+        newOrderItem.setQuantity(2);
+        newOrderItem.setPrice(BigDecimal.TEN);
+        newOrderItem.setId(UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678"));
+        ordersOrderItemList.add(newOrderItem);
+
+        newOrder.setOrderItems(ordersOrderItemList);
+
+        Mockito.when(orderService.replaceOrder(any(Order.class), any(UUID.class))).thenReturn(Optional.of(newOrder));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders/a0217f70-7123-45bc-a1b6-f9d392579401")
+                .accept(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(newOrder))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.orderPaymentStatus").value(newOrder.getOrderPaymentStatus()))
+                .andExpect(jsonPath("$.orderPaymentType").value(newOrder.getOrderPaymentType()))
+                .andExpect(jsonPath("$.orderItems[0].id").isNotEmpty())
+                .andExpect(jsonPath("$.orderItems[0].image").value(newOrderItem.getImage()))
+                .andExpect(jsonPath("$.orderItems[0].name").value(newOrderItem.getName()))
+                .andExpect(jsonPath("$.orderItems[0].description").value(newOrderItem.getDescription()))
+                .andExpect(jsonPath("$.orderItems[0].quantity").value(newOrderItem.getQuantity()))
+                .andExpect(jsonPath("$.orderItems[0].price").value(newOrderItem.getPrice()))
+                .andExpect(jsonPath("$.links[0].rel").value("all-orders"))
+                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders"))
+                .andExpect(jsonPath("$.links[1].rel").value("self"))
+                .andExpect(jsonPath("$.links[1].href").value("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders/a0217f70-7123-45bc-a1b6-f9d392579401"));
+
+
+    }
+
+    @Test
+    public void shouldDeleteOrderWhenOrderIsDeleted() throws Exception {
+
+        Order order = new Order();
+        order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
+        order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
+        order.setOrderPaymentType("cash");
+        order.setOrderPaymentStatus("done");
+
+        OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        ordersOrderItemList.add(ordersOrderItem);
+        order.setOrderItems(ordersOrderItemList);
+
+        Mockito.doNothing().when(orderService).deleteOrder(any(UUID.class));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("http://localhost:9000/customers/b2ac79f2-c4ed-409d-9eb6-5d9fc1890bc7/orders/a0217f70-7123-45bc-a1b6-f9d392579401")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder);
+
+        verify(orderService,Mockito.times(1)).deleteOrder(any(UUID.class));
+
+    }
+
+    @Test
+    public void shouldReturnNotFoundErrorWhenCustomerIsNotPresent() throws Exception {
+
+        UUID orderId = UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678");
+
+
+        Mockito.when(orderService.getOrderById(any(UUID.class))).thenThrow(new EntityNotFoundException(Order.class, "id", orderId.toString()));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders/43668cf2-6ce4-4238-b32e-dfadafb98678")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", is("NOT_FOUND")))
+                .andExpect(jsonPath("$.timestamp").value(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss"))))
+                .andExpect(jsonPath("$.message", is("Order was not found for parameters {id=43668cf2-6ce4-4238-b32e-dfadafb98678}")))
+                .andExpect(jsonPath("$.debugMessage").isEmpty());
+    }
+
+    @Test
+    public void shouldReturnNotFoundErrorWhenCustomerIsNotPresentForReplacement() throws Exception {
+
+        Order orderData = new Order();
+        orderData.setId(UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678"));
+        orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
+        orderData.setOrderPaymentType("Cash");
+        orderData.setOrderPaymentStatus("Done");
+
+        OrdersOrderItem orderItem = new OrdersOrderItem();
+        orderItem.setImage("mug image");
+        orderItem.setName("mug");
+        orderItem.setDescription("A mug to be sold");
+        orderItem.setQuantity(2);
+        orderItem.setPrice(BigDecimal.TEN);
+        orderItem.setId(UUID.fromString("a0217f70-7123-45bc-a1b3-f9d392579401"));
+
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        ordersOrderItemList.add(orderItem);
+        orderData.setOrderItems(ordersOrderItemList);
+
+        Mockito.when(orderService.replaceOrder(any(Order.class), any(UUID.class))).thenThrow(new EntityNotFoundException(Order.class, "id", orderData.getId().toString()));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders/43668cf2-6ce4-4238-b32e-dfadafb98678")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orderData))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", is("NOT_FOUND")))
+                .andExpect(jsonPath("$.timestamp").value(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss"))))
+                .andExpect(jsonPath("$.message", is("Order was not found for parameters {id=43668cf2-6ce4-4238-b32e-dfadafb98678}")))
+                .andExpect(jsonPath("$.debugMessage").isEmpty());
+    }
+
+    @Test
+    public void shouldReturnNotFoundErrorWhenCustomerIsNotPresentForDeletion() throws Exception {
+
+        Order orderData = new Order();
+        orderData.setId(UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678"));
+        orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
+        orderData.setOrderPaymentType("Cash");
+        orderData.setOrderPaymentStatus("Done");
+
+        OrdersOrderItem orderItem = new OrdersOrderItem();
+        orderItem.setImage("mug image");
+        orderItem.setName("mug");
+        orderItem.setDescription("A mug to be sold");
+        orderItem.setQuantity(2);
+        orderItem.setPrice(BigDecimal.TEN);
+        orderItem.setId(UUID.fromString("a0217f70-7123-45bc-a1b3-f9d392579401"));
+
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        ordersOrderItemList.add(orderItem);
+        orderData.setOrderItems(ordersOrderItemList);
+
+        Mockito.doThrow(new EntityNotFoundException(Order.class, "id", orderData.getId().toString())).when(orderService).deleteOrder(any(UUID.class));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders/43668cf2-6ce4-4238-b32e-dfadafb98678")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status", is("NOT_FOUND")))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.message", is("Order was not found for parameters {id=43668cf2-6ce4-4238-b32e-dfadafb98678}")))
+                .andExpect(jsonPath("$.debugMessage").isEmpty());
+    }
+
+    @Test
+    public void shouldReturnUnprocessableEntityWhenThereIsConstraintViolation() throws Exception {
+
+        Order order = new Order();
+        order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
+        order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
+        order.setOrderPaymentType("cash");
+        order.setOrderPaymentStatus("done");
+
+        OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
+        List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
+        ordersOrderItemList.add(ordersOrderItem);
+        order.setOrderItems(ordersOrderItemList);
+
+        Mockito.when(orderService.createOrder(any(Order.class))).thenThrow(new ConstraintViolationException("could not execute statement", new SQLException("ERROR: order date value cannot be null - violates null constraint") , "order_date"));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98679/orders")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(order))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.status", is("UNPROCESSABLE_ENTITY")))
+                .andExpect(jsonPath("$.timestamp", is(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")))))
+                .andExpect(jsonPath("$.message", is("could not execute statement")))
+                .andExpect(jsonPath("$.debugMessage[0]", is("ERROR: order date value cannot be null - violates null constraint")));
     }
 }
 
-//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-
-//                String mockOrderJson = "{\"orderPaymentType\":\"Cash\",\"orderPaymentStatus\":\"Done\"}";
-//        orderData.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
-//        orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-
-
-//        String expectedOrder ="{\"id\":\"a0217f70-7123-45bc-a1b6-f9d392579401\",\"timestamp\":\"2022-04-08T11:31:20.846Z\",\"orderPaymentType\":\"Cash\",\"orderPaymentStatus\":\"Done\",\"orderItems\":[{\"id\":\"a0217f70-7123-45bc-a1b3-f9d392579401\",\"name\":\"mug\",\"image\":\"mug image\",\"description\":\"A mug to be sold\",\"quantity\":2,\"price\":10}],\"links\":[{\"rel\":\"all-orders\",\"href\":\"http://localhost:9000/customers/{customerId}/orders\"},{\"rel\":\"self\",\"href\":\"http://localhost:9000/customers/{customerId}/orders/a0217f70-7123-45bc-a1b6-f9d392579401\"}]}";
-//        MockHttpServletResponse response = result.getResponse();
-//        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-//        JSONAssert.assertEquals(expectedOrder, result.getResponse()
-//                .getContentAsString(), false);

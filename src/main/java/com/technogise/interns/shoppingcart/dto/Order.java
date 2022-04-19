@@ -17,5 +17,6 @@ public class Order {
     private Instant timestamp;
     private String orderPaymentType;
     private String orderPaymentStatus;
+    private String orderStatus;
     private List<OrdersOrderItem> orderItems;
 }

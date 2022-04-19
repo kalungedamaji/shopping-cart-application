@@ -54,7 +54,6 @@ public class ProductController {
 
         Optional<Product> optionalProduct = productStoreService.getProductByID(productId);
 
-        if(optionalProduct.isPresent()) {
             EntityModel<Product> resource = EntityModel.of(optionalProduct.get());
             WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
             WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getProduct(productId));
@@ -63,9 +62,7 @@ public class ProductController {
             resource.add(linkToSelf.withSelfRel());
 
             return ResponseEntity.ok(resource);
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+
     }
     @PostMapping(path = "/products", produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Create new product",
@@ -93,7 +90,6 @@ public class ProductController {
     public ResponseEntity<EntityModel<Product>>  replaceProduct(@ApiParam(value = "Enter product attributes to be updated.") @RequestBody Product newProduct, @ApiParam(value = "Enter id of the product to be updated.", required = true) @PathVariable(value = "id")UUID productId)
     {
        Optional<Product> replacedProduct=productStoreService.replaceProduct(newProduct,productId);
-       if(replacedProduct.isPresent()) {
            EntityModel<Product> resource = EntityModel.of(replacedProduct.get());
            WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllProducts());
            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getProduct(replacedProduct.get().getId()));
@@ -102,9 +98,6 @@ public class ProductController {
            resource.add(linkToGetSelf.withSelfRel());
 
            return ResponseEntity.ok(resource);
-       }else{
-           return ResponseEntity.notFound().build();
-       }
 
     }
     @DeleteMapping(value = "/products/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
@@ -113,13 +106,8 @@ public class ProductController {
                     "it and if Id doesn't match status NOT_found will be returned.",
             response = Product.class)
     public ResponseEntity<HttpStatus> deleteProduct(@ApiParam(value = "Enter the id of product to be deleted.", required = true) @PathVariable(value = "id") UUID productID) {
-        boolean status=productStoreService.deleteProduct(productID);
-        if(status) {
+        productStoreService.deleteProduct(productID);
             return new ResponseEntity<>(HttpStatus.OK);
-        }else{
-            return ResponseEntity.notFound().build();
 
-        }
     }
-
 }

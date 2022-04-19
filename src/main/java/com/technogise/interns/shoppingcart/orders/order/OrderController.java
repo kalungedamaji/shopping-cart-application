@@ -15,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +30,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    List<Order> orderList = new ArrayList<>();
 
     @GetMapping(value="/orders" ,produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get all the orders",
@@ -59,90 +58,69 @@ public class OrderController {
             response = Order.class)
     public ResponseEntity<EntityModel<Order2>> getOrderById(@PathVariable(value = "orderId") UUID orderId, @PathVariable(value = "customerId") UUID customerId) {
 
-        Order order = findById(orderId);
-        if (order == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Optional<Order> optionalOrder = orderService.getOrderById(orderId);
 
-        Order2 newOrder = new Order2();
-        List<OrdersOrderItem> ordersOrderItemList;
-        ordersOrderItemList = order.getOrderItems();
-        OrdersOrderItem ordersOrderItem = ordersOrderItemList.get(0);
-        OrderItem orderItem = new OrderItem();
+            Order2 newOrder = new Order2();
+            List<OrdersOrderItem> ordersOrderItemList;
+            ordersOrderItemList = optionalOrder.get().getOrderItems();
+            OrdersOrderItem ordersOrderItem = ordersOrderItemList.get(0);
+            OrderItem orderItem = new OrderItem();
 
-        orderItem.setId(ordersOrderItem.getId());
-        orderItem.setName(ordersOrderItem.getName());
-        orderItem.setImage(ordersOrderItem.getImage());
-        orderItem.setPrice(ordersOrderItem.getPrice());
-        orderItem.setQuantity(ordersOrderItem.getQuantity());
+            orderItem.setId(ordersOrderItem.getId());
+            orderItem.setName(ordersOrderItem.getName());
+            orderItem.setImage(ordersOrderItem.getImage());
+            orderItem.setPrice(ordersOrderItem.getPrice());
+            orderItem.setQuantity(ordersOrderItem.getQuantity());
 
-        newOrder.setTimestamp(order.getTimestamp());
-        newOrder.setId(order.getId());
-        newOrder.setOrderPaymentType(order.getOrderPaymentType());
-        newOrder.setOrderPaymentStatus(order.getOrderPaymentStatus());
+            newOrder.setTimestamp(optionalOrder.get().getTimestamp());
+            newOrder.setId(optionalOrder.get().getId());
+            newOrder.setOrderPaymentType(optionalOrder.get().getOrderPaymentType());
+            newOrder.setOrderPaymentStatus(optionalOrder.get().getOrderPaymentStatus());
 
-        List<OrderItem> orderItemList = new ArrayList<>();
-        orderItemList.add(orderItem);
-        newOrder.setOrderItems(orderItemList);
+            List<OrderItem> orderItemList = new ArrayList<>();
+            orderItemList.add(orderItem);
+            newOrder.setOrderItems(orderItemList);
 
-        EntityModel<Order2> resource = EntityModel.of(newOrder);
-        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
-        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(orderId, customerId));
-        resource.add(linkTo.withRel("all-orders"));
-        resource.add(linkToSelf.withSelfRel());
+            EntityModel<Order2> resource = EntityModel.of(newOrder);
+            WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(orderId, customerId));
+            resource.add(linkTo.withRel("all-orders"));
+            resource.add(linkToSelf.withSelfRel());
 
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
+            return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resource);
     }
 
     @PostMapping(path = "/orders",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<Order>> createOrder(@RequestBody Order order, @PathVariable(value = "customerId") UUID customerId) {
+    public ResponseEntity<EntityModel<Order>> createOrder(@RequestBody Order optionalOrder, @PathVariable(value = "customerId") UUID customerId) {
 
 
-        order = orderService.createOrder(order);
-        EntityModel<Order> resource = EntityModel.of(order);
+        optionalOrder = orderService.createOrder(optionalOrder);
+        EntityModel<Order> resource = EntityModel.of(optionalOrder);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
-        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(order.getId(), customerId));
+        WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(optionalOrder.getId(), customerId));
         resource.add(linkTo.withRel("all-orders"));
         resource.add(linkToSelf.withSelfRel());
         return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
     @PutMapping("/orders/{orderId}")
-    public ResponseEntity<Order> replaceOrder(@RequestBody Order newOrder, @PathVariable(value = "orderId")UUID orderId) {
-        Order order = findById(orderId);
-        if (order != null) {
-            order.setTimestamp(newOrder.getTimestamp());
-            order.setOrderPaymentType(newOrder.getOrderPaymentType());
-            order.setOrderPaymentStatus(newOrder.getOrderPaymentStatus());
-            return new ResponseEntity<>(order, HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<EntityModel<Optional<Order>>> replaceOrder(@RequestBody Order newOrder, @PathVariable(value = "orderId")UUID orderId, @PathVariable(value = "customerId") UUID customerId) {
+        Optional<Order> optionalReplacedOrder = orderService.replaceOrder(newOrder, orderId);
+            EntityModel<Optional<Order>> resource = EntityModel.of(optionalReplacedOrder);
+            WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllOrders(customerId));
+            WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getOrderById(orderId, customerId));
+            resource.add(linkTo.withRel("all-orders"));
+            resource.add(linkToSelf.withSelfRel());
+
+            return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @DeleteMapping("/orders/{orderId}")
     public ResponseEntity<HttpStatus> deleteOrder(@PathVariable(value = "orderId") UUID orderId) {
-        Order order = findById(orderId);
-        if (order != null) {
-            orderList.remove(order);
+         orderService.deleteOrder(orderId);
             return new ResponseEntity<>(HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    public Order findById(UUID orderId){
-        for(Order order : orderList)
-        {
-            if(orderId.equals(order.getId()))
-            {
-                return order;
-            }
-        }
-        return null;
     }
 }
 

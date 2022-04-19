@@ -1,6 +1,7 @@
 package com.technogise.interns.shoppingcart.store.service;
 
 import com.technogise.interns.shoppingcart.dto.Product;
+import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.store.entity.ProductEntity;
 import com.technogise.interns.shoppingcart.store.mpper.ProductMapper;
 import com.technogise.interns.shoppingcart.store.repository.ProductRepository;
@@ -18,15 +19,15 @@ public class ProductStoreService {
     @Autowired
     private ProductRepository  productRepository;
 
+    @Autowired
+    private ProductMapper productMapper;
+
+
     public List<Product> getAllProduct() {
 
-      /* return productRepository.findAll()
-                                  .stream()
-                                     .map(productEntity1 -> ProductMapper.map(productEntity1))
-                                        .collect(Collectors.toList());*/
         return productRepository.findAll()
                 .stream()
-                .map(ProductMapper::map)
+                .map(productMapper::map)
                 .collect(Collectors.toList());
 
     }
@@ -34,40 +35,43 @@ public class ProductStoreService {
     public Optional<Product> getProductByID(UUID productId) {
 
         Optional<ProductEntity> optionalProductEntity= productRepository.findById(productId);
-
-        return optionalProductEntity.map(ProductMapper::map);
+        if(optionalProductEntity.isPresent()) {
+            return optionalProductEntity.map(productMapper::map);
+        } else{
+            throw new EntityNotFoundException(Product.class, "id", productId.toString());
+        }
 
     }
 
     public Product createProduct(Product newProduct) {
-
         newProduct.setId(UUID.randomUUID());
-
-        ProductEntity   productEntity =productRepository.save(ProductMapper.mapToEntity(newProduct));
-
-       return ProductMapper.map(productEntity);
-
+        ProductEntity   productEntity =productRepository.save(productMapper.mapToEntity(newProduct));
+        return productMapper.map(productEntity);
     }
 
-    public boolean deleteProduct(UUID productID) {
-        if(productRepository.findById(productID).isPresent()) {
 
-            productRepository.deleteById(productID);
-            return  true;
-        }
-        return  false;
-    }
+    public Optional<Product> replaceProduct(Product newProduct, UUID productId) {
 
-    public Optional<Product> replaceProduct(Product newProduct, UUID productID) {
+        Optional<ProductEntity> optionalProduct = productRepository.findById(productId);
 
-        if(productRepository.findById(productID).isPresent()) {
-            newProduct.setId(productID);
-            ProductEntity productEntity = productRepository.save(ProductMapper.mapToEntity(newProduct));
-            return Optional.of(ProductMapper.map(productEntity));
+        if(optionalProduct.isPresent()) {
+            newProduct.setId(productId);
+            ProductEntity productEntity = productRepository.save(productMapper.mapToEntity(newProduct));
+            return Optional.of(productMapper.map(productEntity));
 
         }else{
-            return  Optional.empty();
+            throw new EntityNotFoundException(Product.class, "id", productId.toString());
         }
 
+    }
+
+    public void deleteProduct(UUID productId) {
+        Optional<ProductEntity> optionalProduct = productRepository.findById(productId);
+        if(optionalProduct.isPresent()) {
+            productRepository.deleteById(productId);
+        }
+        else {
+            throw new EntityNotFoundException(Product.class, "id", productId.toString());
+        }
     }
 }

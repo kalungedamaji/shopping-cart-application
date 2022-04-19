@@ -1,15 +1,25 @@
 package com.technogise.interns.shoppingcart.orders.order.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-
 import lombok.Data;
 
-import javax.persistence.*;
-import java.time.Instant;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.util.UUID;
 
+@Data
+@Entity(name="OrdersOrderItem")
+public class OrdersOrderItemEntity {
+        @Id
+        private UUID id;
+        private String name;
+        private String image;
+        private String description;
+        private int quantity;
+        private BigDecimal price;
+}
+
+/*
 @Data
 @Entity(name="Order")
 public class OrderEntity {
@@ -24,7 +34,6 @@ public class OrderEntity {
     private String orderPaymentStatus;
     @Column(name="order_status")
     private String orderStatus;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    private List<OrdersOrderItemEntity> orderItems;
+    private List<OrdersOrderItem> orderItems;
 }
+ */
