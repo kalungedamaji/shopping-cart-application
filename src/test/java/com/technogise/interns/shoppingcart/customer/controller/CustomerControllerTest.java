@@ -2,7 +2,8 @@ package com.technogise.interns.shoppingcart.customer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.technogise.interns.shoppingcart.customer.CustomerController;
-import com.technogise.interns.shoppingcart.customer.representation.CustomerRepresentation;
+
+import com.technogise.interns.shoppingcart.customer.hateosLinksProvider.CustomerHateosLinksProvider;
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
 import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
@@ -44,7 +45,7 @@ public class CustomerControllerTest {
     private CustomerService customerService;
 
     @MockBean
-    private CustomerRepresentation customerRepresentation;
+    private CustomerHateosLinksProvider customerHateosLinksProvider;
 
     @Test
     public void shouldCreateCustomer() throws Exception {
@@ -66,7 +67,7 @@ public class CustomerControllerTest {
 
 
         Mockito.when(customerService.createCustomer(any(Customer.class))).thenReturn(newCustomer);
-        Mockito.when(customerRepresentation.getForPost(newCustomer)).thenReturn(resource);
+        Mockito.when(customerHateosLinksProvider.getForPost(newCustomer)).thenReturn(resource);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("http://localhost:9000/customers")
                 .accept(MediaType.APPLICATION_JSON)
@@ -203,7 +204,12 @@ public class CustomerControllerTest {
         newCustomerDetail.setEmailId("abc@123.com");
         newCustomerDetail.setPassword("123@qaz");
 
+        EntityModel<Customer> resource = EntityModel.of(newCustomerDetail);
+        resource.add(linkTo(methodOn(CustomerController.class).getCustomer(newCustomerDetail.getId())).withSelfRel());
+        resource.add(linkTo(methodOn(CustomerController.class).getAllCustomers()).withRel("all-customers"));
+
         Mockito.when(customerService.replaceCustomer(newCustomerDetail, UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"))).thenReturn(newCustomerDetail);
+        Mockito.when(customerHateosLinksProvider.getForPut(newCustomerDetail)).thenReturn(resource);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.put("http://localhost:9000/customers/676ea10c-537b-4861-b27b-f3b8cbc0dc36")
                 .accept(MediaType.APPLICATION_JSON)

@@ -1,10 +1,11 @@
 package com.technogise.interns.shoppingcart.customer;
 
 import com.technogise.interns.shoppingcart.cart.CartController;
-import com.technogise.interns.shoppingcart.customer.representation.CustomerRepresentation;
+import com.technogise.interns.shoppingcart.customer.hateosLinksProvider.CustomerHateosLinksProvider;
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
 import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
+
 import com.technogise.interns.shoppingcart.store.ProductController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,7 +32,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @Autowired
-    private CustomerRepresentation customerRepresentation;
+    private CustomerHateosLinksProvider customerHateosLinksProvider;
 
     @GetMapping(value = "/customers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Finds all customers",
@@ -86,26 +87,31 @@ public class CustomerController {
 
     public ResponseEntity<EntityModel<Customer>> createCustomer(@RequestBody Customer newCustomer) {
         newCustomer = customerService.createCustomer(newCustomer);
-        return new ResponseEntity<>(customerRepresentation.getForPost(newCustomer), HttpStatus.CREATED);
+        return new ResponseEntity<>(customerHateosLinksProvider.getForPost(newCustomer), HttpStatus.CREATED);
     }
 
     @PutMapping("/customers/{id}")
     @ApiOperation(value = "Updates cartItem by id",
             notes = "Provide an id and value of all the attributes of cartItem, you want to update",
             response = Customer.class)
+//    public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
+//                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
+//    {
+//        Customer replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
+//
+//        EntityModel<Customer> resource = EntityModel.of(replacedCustomer);
+//            WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCustomers());
+//            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(replacedCustomer.getId()));
+//
+//            resource.add(linkTo.withRel("all-customers"));
+//            resource.add(linkToGetSelf.withSelfRel());
+//
+//            return new ResponseEntity<>(resource, HttpStatus.OK);
+//    }
     public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
-                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
-    {
+                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId) {
         Customer replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
-
-        EntityModel<Customer> resource = EntityModel.of(replacedCustomer);
-            WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCustomers());
-            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(replacedCustomer.getId()));
-
-            resource.add(linkTo.withRel("all-customers"));
-            resource.add(linkToGetSelf.withSelfRel());
-
-            return new ResponseEntity<>(resource, HttpStatus.OK);
+        return new ResponseEntity<>(customerHateosLinksProvider.getForPut(replacedCustomer),HttpStatus.OK);
 
     }
     @DeleteMapping("/customers/{id}")
