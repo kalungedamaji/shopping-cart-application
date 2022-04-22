@@ -1,7 +1,6 @@
 package com.technogise.interns.shoppingcart.customer;
 
 import com.technogise.interns.shoppingcart.cart.CartController;
-import com.technogise.interns.shoppingcart.customer.hateosLinksProvider.CustomerHateosLinksProvider;
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
 import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -30,9 +30,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
-
-    @Autowired
-    private CustomerHateosLinksProvider customerHateosLinksProvider;
 
     @GetMapping(value = "/customers", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Finds all customers",
@@ -84,35 +81,39 @@ public class CustomerController {
             notes = "Creates customer .Add the attributes of the new customer. Any attribute of customer if not added ,by default " +
                     "null value will be stored. Id will be auto-generated, so no need to add it.",
             response = Customer.class)
-
     public ResponseEntity<EntityModel<Customer>> createCustomer(@RequestBody Customer newCustomer) {
         newCustomer = customerService.createCustomer(newCustomer);
-        return new ResponseEntity<>(customerHateosLinksProvider.getForPost(newCustomer), HttpStatus.CREATED);
-    }
+        newCustomer.setId(UUID.randomUUID());
+        System.out.println("id is"+newCustomer.getId());
+        EntityModel<Customer> resource = EntityModel.of(newCustomer);
+        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCustomers());
+        WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(newCustomer.getId()));
 
+        resource.add(linkTo.withRel("all-customers"));
+        resource.add(linkToGetSelf.withSelfRel());
+
+        return new ResponseEntity<>(resource, HttpStatus.CREATED);
+    }
     @PutMapping("/customers/{id}")
     @ApiOperation(value = "Updates cartItem by id",
             notes = "Provide an id and value of all the attributes of cartItem, you want to update",
             response = Customer.class)
-//    public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
-//                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
-//    {
-//        Customer replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
-//
-//        EntityModel<Customer> resource = EntityModel.of(replacedCustomer);
-//            WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCustomers());
-//            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(replacedCustomer.getId()));
-//
-//            resource.add(linkTo.withRel("all-customers"));
-//            resource.add(linkToGetSelf.withSelfRel());
-//
-//            return new ResponseEntity<>(resource, HttpStatus.OK);
-//    }
     public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
-                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId) {
-        Customer replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
-        return new ResponseEntity<>(customerHateosLinksProvider.getForPut(replacedCustomer),HttpStatus.OK);
+                                                                 @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId)
+    {
+        Optional<Customer> replacedCustomer = Optional.ofNullable(customerService.replaceCustomer(newCustomer, customerId));
+        if (replacedCustomer.isPresent()) {
+            EntityModel<Customer> resource = EntityModel.of(replacedCustomer.get());
+            WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCustomers());
+            WebMvcLinkBuilder linkToGetSelf = linkTo(methodOn(this.getClass()).getCustomer(replacedCustomer.get().getId()));
 
+            resource.add(linkTo.withRel("all-customers"));
+            resource.add(linkToGetSelf.withSelfRel());
+
+            return new ResponseEntity<>(resource, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     @DeleteMapping("/customers/{id}")
     @ApiOperation(value = "Delete customer by id",

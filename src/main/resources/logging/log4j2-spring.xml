@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property mame="filename">./logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="[%d{MM:dd HH:mm:ss.SSS}] [%level] [%logger{36}] - %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFile"
+                     fileName="${filename}/log-one.log"
+                     filePattern="${filename}/Logs-%d{MM:dd HH:mm:ss.SSS}.log">
+            <PatternLayout>
+                <Pattern>[%d{MM:dd HH:mm:ss.SSS}] [%level] [%logger{36}] - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+<!--        <logger name="com.technogise.interns.shoppingcart" level="debug"/>-->
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+
