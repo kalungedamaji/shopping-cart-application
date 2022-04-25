@@ -1,11 +1,19 @@
 server:
   port: 9000
 
+logging:
+#  file: /Users/apple/Desktop/LogFile/logs.log
+  level:
+    com:
+      technogise:
+        interns:
+          shoppingcart: trace
+
 spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/shoppingcart  #port numbers may vary for all, please write your own port
+    url: jdbc:postgresql://localhost:5432/shoppingcart
   # JPA properties
   jpa:
     hibernate:

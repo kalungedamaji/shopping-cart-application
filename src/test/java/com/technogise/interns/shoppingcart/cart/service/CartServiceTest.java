@@ -20,8 +20,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -36,8 +34,6 @@ public class CartServiceTest {
 
     @MockBean
     private CartMapper cartMapper;
-
-
 
     @Test
     public void testGetAllCartItemsShouldReturnAllCartItems() {
@@ -191,7 +187,6 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
         newCartItem.setPrice(BigDecimal.valueOf(10.00));
         newCartItem.setQuantity(5);
 
-
         Mockito.when(cartRepository.findById(any(UUID.class))).thenReturn(Optional.of(cartItemEntity));
         Mockito.when(cartRepository.save(any(CartItemEntity.class))).thenReturn(newCartItemEntity);
         Mockito.when(cartMapper.cartItemToEntityConvertor(any(CartItem.class))).thenReturn(newCartItemEntity);
@@ -211,7 +206,6 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
         EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.getCartItemById(cartItemId), "EntityNotFoundException was expected");
 
         MatcherAssert.assertThat(thrown.getMessage(), is("CartItem was not found for parameters {id=43668cf2-6ce4-4238-b32e-dfadafb98678}"));
-        //(jsonPath("$.status",is("UNPROCESSABLE_ENTITY")));
 
     }
 
