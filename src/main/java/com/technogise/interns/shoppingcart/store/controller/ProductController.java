@@ -1,8 +1,11 @@
-package com.technogise.interns.shoppingcart.store;
+package com.technogise.interns.shoppingcart.store.controller;
+import com.technogise.interns.shoppingcart.cart.CartController;
 import com.technogise.interns.shoppingcart.dto.Product;
 import com.technogise.interns.shoppingcart.store.service.ProductStoreService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -24,6 +27,8 @@ public class ProductController {
     @Autowired
     private ProductStoreService productStoreService;
 
+    private final Logger logger = LoggerFactory.getLogger(ProductController.class);
+
     @GetMapping(value= "/products", produces= MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get all the products",
             notes = "Returns all the products from the shopping cart",
@@ -31,6 +36,7 @@ public class ProductController {
     public ResponseEntity<CollectionModel<EntityModel<Product>>>getAllProducts() {
         List<EntityModel<Product>> entityModelList= new ArrayList<>();
 
+        logger.info("Getting all the product items from product Service...");
         List<Product> productList= productStoreService.getAllProduct();
 
         for(Product product : productList){
@@ -39,10 +45,10 @@ public class ProductController {
             resource.add(linkToSelf.withSelfRel());
             entityModelList.add(resource);
         }
-
         CollectionModel<EntityModel<Product>> resourceList = CollectionModel.of(entityModelList);
         WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getAllProducts());
         resourceList.add(linkToSelf.withSelfRel());
+        logger.info("Retrieved all products From product store Service");
         return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
     }
 
@@ -70,6 +76,9 @@ public class ProductController {
                     "null value will be stored. Id will be auto-generated, so no need to add it.",
             response = Product.class)
     public ResponseEntity<EntityModel<Product>> createProduct(@ApiParam(value = "Enter new product", required = true)@RequestBody Product newProduct) {
+
+        logger.info("Adding product to product service...");
+        logger.debug("createProduct() is called with product: "+newProduct);
 
         newProduct=productStoreService.createProduct(newProduct);
 
