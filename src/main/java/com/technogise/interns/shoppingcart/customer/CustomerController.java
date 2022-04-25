@@ -87,7 +87,7 @@ public class CustomerController {
 
     public ResponseEntity<EntityModel<Customer>> createCustomer(@RequestBody Customer newCustomer) {
         newCustomer = customerService.createCustomer(newCustomer);
-        return new ResponseEntity<>(customerLinks.getHateosLinks(newCustomer,"post"), HttpStatus.CREATED);
+        return new ResponseEntity(customerLinks.getHateosLinks(newCustomer,"post"), HttpStatus.CREATED);
     }
 
     @PutMapping("/customers/{id}")
@@ -98,7 +98,7 @@ public class CustomerController {
     public ResponseEntity<EntityModel<Customer>> replaceCustomer(@RequestBody Customer newCustomer,
                                                                  @ApiParam(value = "ID value for the cartItem you need to update",required = true) @PathVariable(value = "id")UUID customerId) {
         Customer replacedCustomer = customerService.replaceCustomer(newCustomer, customerId);
-        return new ResponseEntity<>(customerLinks.getHateosLinks(replacedCustomer,"put"),HttpStatus.OK);
+        return new ResponseEntity(customerLinks.getHateosLinks(replacedCustomer,"put"),HttpStatus.OK);
 
     }
     @DeleteMapping("/customers/{id}")

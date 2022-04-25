@@ -22,6 +22,3 @@ public class CustomerLinks extends HateosLinks {
     }
 
 }
-/*map.add(k1,v1)
-map.add(k1,v2)
-map.add(k2,v3)*/

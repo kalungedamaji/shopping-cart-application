@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class HateosLinks {
 
-    private LinkedMultiValueMap<String,Link> linksByHttpMethodMap = new LinkedMultiValueMap<>();
+    private final LinkedMultiValueMap<String,Link> linksByHttpMethodMap = new LinkedMultiValueMap<>();
 
     /**
      add method name and respective links in EntityLinksMap as key-value pairs, one key can have multiple values.
@@ -26,7 +26,7 @@ public abstract class HateosLinks {
         EntityModel entityModel = EntityModel.of(resource);
         List<Link> links = getLinksFromMap(httpMethod);
         links.stream()
-                .forEach(link -> entityModel.add(link));
+                .forEach(entityModel::add);
         getlinksByHttpMethodMap().clear();
         return entityModel;
     }
@@ -39,18 +39,3 @@ public abstract class HateosLinks {
         return linksByHttpMethodMap.get(httpMethod);
     }
 }
-
-/*k->v
-post->link1
-post->link2
-post->link3
-
-put->link1
-put->link2
-
-get
-
-delete
-
-map.get(key)==>value
- */
