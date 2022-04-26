@@ -1,10 +1,13 @@
 package com.technogise.interns.shoppingcart.store.service;
 
+import com.technogise.interns.shoppingcart.cart.service.CartService;
 import com.technogise.interns.shoppingcart.dto.Product;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.store.entity.ProductEntity;
 import com.technogise.interns.shoppingcart.store.mpper.ProductMapper;
 import com.technogise.interns.shoppingcart.store.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +25,21 @@ public class ProductStoreService {
     @Autowired
     private ProductMapper productMapper;
 
+    private final Logger logger = LoggerFactory.getLogger(ProductStoreService.class);
+
 
     public List<Product> getAllProduct() {
+        logger.info("Getting all the products from Repository...");
 
-        return productRepository.findAll()
+        List<Product> productList = productRepository.findAll()
                 .stream()
                 .map(productMapper::map)
                 .collect(Collectors.toList());
 
+        logger.debug("Returned productList as: "+productList.toString());
+        logger.info("Retrieved all products From Repository");
+
+        return productList;
     }
 
     public Optional<Product> getProductByID(UUID productId) {
@@ -44,9 +54,15 @@ public class ProductStoreService {
     }
 
     public Product createProduct(Product newProduct) {
+        logger.info("Adding product to Repository...");
+
         newProduct.setId(UUID.randomUUID());
         ProductEntity   productEntity =productRepository.save(productMapper.mapToEntity(newProduct));
-        return productMapper.map(productEntity);
+        Product addedProduct= productMapper.map(productEntity);
+        logger.debug("Product added to product repository as: "+addedProduct);
+        logger.info("Added cart item in repository");
+
+        return addedProduct;
     }
 
 
