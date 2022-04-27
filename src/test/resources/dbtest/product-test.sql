@@ -1,1 +1,2 @@
 insert into product (id, image, name, description,  price) values (uuid_generate_v4() ,'mug image' , 'Mug-test' , 'This is mug' ,10.00);
+insert into product (id, image, name, description,  price) values ('62ecbdf5-4107-4d04-980b-d20323d2cd6c' ,'Axe Image' , 'Axe-test' , 'This is axe' ,10.00);

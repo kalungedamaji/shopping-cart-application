@@ -136,9 +136,9 @@ public class ProductServiceTest {
         Mockito.when(productRepository.save(any(ProductEntity.class))).thenReturn(newProductEntity);
         Mockito.when(productMapper.map(newProductEntity)).thenReturn(newProduct);
 
-        Optional<Product> actualUpdatedProduct = productStoreService.replaceProduct(newProduct, UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc39"));
+        Product actualUpdatedProduct = productStoreService.replaceProduct(newProduct, UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc39"));
 
-        assertThat(actualUpdatedProduct, is(Optional.of(newProduct)));
+        assertThat(actualUpdatedProduct, is(newProduct));
     }
 
     @Test

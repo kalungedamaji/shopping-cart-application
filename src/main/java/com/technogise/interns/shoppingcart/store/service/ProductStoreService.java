@@ -42,12 +42,19 @@ public class ProductStoreService {
         return productList;
     }
 
-    public Optional<Product> getProductByID(UUID productId) {
+    public Product getProductByID(UUID productId) {
+
+        logger.info("Getting product by id from Repository...");
+        logger.debug("getProductById() is called with productID as: "+productId);
 
         Optional<ProductEntity> optionalProductEntity= productRepository.findById(productId);
         if(optionalProductEntity.isPresent()) {
-            return optionalProductEntity.map(productMapper::map);
+            Product product =productMapper.map(optionalProductEntity.get());
+            logger.debug("retrieved product is"+product);
+            logger.info("retrieved product from product repository");
+            return product;
         } else{
+            logger.error("product for Product id : "+productId+" is not present in the repository.");
             throw new EntityNotFoundException(Product.class, "id", productId.toString());
         }
 
@@ -57,36 +64,46 @@ public class ProductStoreService {
         logger.info("Adding product to Repository...");
 
         newProduct.setId(UUID.randomUUID());
-        ProductEntity   productEntity =productRepository.save(productMapper.mapToEntity(newProduct));
+        ProductEntity  productEntity =productRepository.save(productMapper.mapToEntity(newProduct));
         Product addedProduct= productMapper.map(productEntity);
         logger.debug("Product added to product repository as: "+addedProduct);
-        logger.info("Added cart item in repository");
+        logger.info("Added products in repository");
 
         return addedProduct;
     }
 
 
-    public Optional<Product> replaceProduct(Product newProduct, UUID productId) {
+    public Product replaceProduct(Product newProduct, UUID productId) {
 
+        logger.info("Updating product from Repository...");
+        logger.debug("replaceProduct() is called with productID as: "+productId);
         Optional<ProductEntity> optionalProduct = productRepository.findById(productId);
 
         if(optionalProduct.isPresent()) {
             newProduct.setId(productId);
             ProductEntity productEntity = productRepository.save(productMapper.mapToEntity(newProduct));
-            return Optional.of(productMapper.map(productEntity));
+            Product updatedProduct = productMapper.map(productEntity);
+            logger.debug("updated product in repository as"+updatedProduct);
+            logger.info("retrieved updated product from product repository");
+            return updatedProduct;
 
         }else{
+            logger.error("product for Product id : "+productId+" is not present in the repository.");
             throw new EntityNotFoundException(Product.class, "id", productId.toString());
         }
 
     }
 
     public void deleteProduct(UUID productId) {
+        logger.info("Deleting product from repository...");
+        logger.debug("deleteProduct() is called with productId as: "+productId);
         Optional<ProductEntity> optionalProduct = productRepository.findById(productId);
         if(optionalProduct.isPresent()) {
             productRepository.deleteById(productId);
-        }
+            logger.debug("deleted product for productId as: "+productId);
+            logger.info(" Removed product from repository");        }
         else {
+            logger.error("product for Product id : "+productId+" is not present in the repository.");
             throw new EntityNotFoundException(Product.class, "id", productId.toString());
         }
     }

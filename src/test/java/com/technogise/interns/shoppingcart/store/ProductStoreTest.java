@@ -71,4 +71,34 @@ public class ProductStoreTest {
                 .assertThat().body("links[1].rel",equalTo("self"))
                 .assertThat().body("links[1].href",notNullValue());
     }
+    @Test
+    public void testUpdateProduct() throws JsonProcessingException {
+        Product product = new Product();
+        product.setName("Axe");
+        product.setPrice(BigDecimal.valueOf(49.99));
+        product.setImage("Axe image");
+        product.setDescription("This is axe");
+
+        RestAssured.given().accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .and()
+                .body(objectMapper.writeValueAsString(product))
+                .when()
+                .put("/products/62ecbdf5-4107-4d04-980b-d20323d2cd6c")
+                .then()
+                .assertThat().statusCode(200)
+                .assertThat().body("id", notNullValue())
+                .assertThat().body("name",equalTo("Axe"))
+                .assertThat().body("image",equalTo("Axe image"))
+                .assertThat().body("description",equalTo("This is axe"))
+                .assertThat().body("links[0].rel",equalTo("all-products"))
+                .assertThat().body("links[0].href",equalTo("http://localhost:9000/products"))
+                .assertThat().body("links[1].rel",equalTo("self"))
+                .assertThat().body("links[1].href",notNullValue());
+    }
+    @Test
+    public void testDeleteProduct() throws JsonProcessingException {
+        RestAssured.delete("/products/62ecbdf5-4107-4d04-980b-d20323d2cd6c").then()
+                .statusCode(200);
+    }
 }
