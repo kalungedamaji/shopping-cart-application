@@ -9,7 +9,7 @@ import com.technogise.interns.shoppingcart.customer.hateosLinksProvider.Customer
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
 import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
-import com.technogise.interns.shoppingcart.store.ProductController;
+import com.technogise.interns.shoppingcart.store.controller.ProductController;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

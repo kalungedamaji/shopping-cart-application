@@ -213,10 +213,9 @@ public class CustomerServiceTest {
         Mockito.when(customerRepository.findById(any(UUID.class))).thenReturn(Optional.of(customerEntity));
         Mockito.doNothing().when(customerRepository).deleteById(any(UUID.class));
 
-        customerService.deleteCustomer(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
+        customerService.deleteCustomer(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc39"));
 
         verify(customerRepository,Mockito.times(1)).deleteById(any(UUID.class));
-
     }
     @Test
     public void shouldReturnUpdatedCustomerFromRepository(){

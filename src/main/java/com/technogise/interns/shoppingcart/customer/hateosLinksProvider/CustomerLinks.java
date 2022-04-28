@@ -6,7 +6,7 @@ import com.technogise.interns.shoppingcart.representation.HttpMethods;
 import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.representation.HateosLinks;
-import com.technogise.interns.shoppingcart.store.ProductController;
+import com.technogise.interns.shoppingcart.store.controller.ProductController;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

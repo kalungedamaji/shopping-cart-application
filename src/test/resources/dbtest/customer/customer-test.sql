@@ -1,0 +1,2 @@
+insert into customer (id, first_name, last_name, phone_number, address, email_id, password) values (uuid_generate_v4() ,'Pranay' , 'Jain' , '0999999999', 'Indore', 'abc@123.com', 'qaz123' );
+insert into customer (id, first_name, last_name, phone_number, address, email_id, password) values ('62ecbdf5-4107-4d04-980b-d20323d2cd6c' ,'Parth' , 'Deshmukh' , '9999999909', 'India', 'abc@1234.com', 'abc123' );
