@@ -11,8 +11,7 @@ import com.technogise.interns.shoppingcart.enums.PaymentType;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.placeorder.controller.PlaceOrderController;
-import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.PlaceOrderLinks;
-import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.Representation;
+import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.LinkGenerator;
 import com.technogise.interns.shoppingcart.placeorder.service.PlaceOrderService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,14 +48,12 @@ public class PlaceOrderControllerTest {
     @MockBean
     private PlaceOrderService placeOrderService;
     @MockBean
-    private Representation representation;
-    @MockBean
-    private PlaceOrderLinks placeOrderLinks;
+    private LinkGenerator linkGenerator;
 
     @Test
     public void shouldPlaceOrder() throws Exception {
         UUID customerId = UUID.fromString("62ecbdf5-4107-4d04-980b-d20323d2cd6c");
-        PaymentType paymentType = PaymentType.COD;
+        PaymentType paymentType = PaymentType.UPI;
 
         Order order = new Order();
         order.setId(UUID.fromString("62ecbdf5-4107-4d04-980b-d20323d2cd6c"));
@@ -80,9 +77,7 @@ public class PlaceOrderControllerTest {
         orderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders(customerId)).withRel("all-orders"));
 
         Mockito.when(placeOrderService.placeOrder(customerId,paymentType)).thenReturn(order);
-        Mockito.when(placeOrderLinks.prepareLink(customerId))
-                .thenReturn(linkTo(methodOn(OrderController.class).getAllOrders(customerId)).withRel("all-orders"));
-        doReturn(orderEntityModel).when(representation).placeOrderRepresentation(order,customerId);
+        doReturn(orderEntityModel).when(linkGenerator).addLinks(order,customerId);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/pay")
@@ -92,7 +87,7 @@ public class PlaceOrderControllerTest {
 
         mockMvc.perform(requestBuilder).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.orderPaymentType").value("COD"))
+                .andExpect(jsonPath("$.orderPaymentType").value("UPI"))
                 .andExpect(jsonPath("$.orderPaymentStatus").value("COMPLETED"))
                 .andExpect(jsonPath("$.orderStatus").value("COMPLETED"))
                 .andExpect(jsonPath("$.orderItems[0].id").isNotEmpty())
@@ -104,7 +99,7 @@ public class PlaceOrderControllerTest {
     @Test
     public void shouldThrowNotFoundExceptionWhenCustomerIsNotPresent() throws Exception{
         UUID customerId = UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678");
-        PaymentType paymentType = PaymentType.COD;
+        PaymentType paymentType = PaymentType.UPI;
 
         Mockito.when(placeOrderService.placeOrder(customerId, paymentType)).thenThrow(new EntityNotFoundException(Customer.class, "id", customerId.toString()));
 
@@ -124,7 +119,7 @@ public class PlaceOrderControllerTest {
     @Test
     public void shouldThrowNotFoundExceptionWhenCartItemIsNotPresentForGivenCustomer() throws Exception{
         UUID customerId = UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678");
-        PaymentType paymentType = PaymentType.COD;
+        PaymentType paymentType = PaymentType.UPI;
 
         Mockito.when(placeOrderService.placeOrder(customerId, paymentType)).thenThrow(new EntityNotFoundException(CartItem.class, "customerId", customerId.toString()));
 

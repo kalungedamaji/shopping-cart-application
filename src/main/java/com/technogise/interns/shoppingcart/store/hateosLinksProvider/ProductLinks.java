@@ -23,7 +23,7 @@ public class ProductLinks extends HateosLinks {
         getlinksByHttpMethodMap().add(HttpMethods.GET_WITH_ID, linkTo(methodOn(ProductController.class).getAllProducts()).withRel("store"));
         getlinksByHttpMethodMap().add(HttpMethods.GET_WITH_ID, linkTo(methodOn(ProductController.class).getProduct(((Product)resource).getId())).withSelfRel());
         getlinksByHttpMethodMap().add(HttpMethods.PUT, linkTo(methodOn(ProductController.class).getProduct(((Product)resource).getId())).withSelfRel());
-        getlinksByHttpMethodMap().add(HttpMethods.PUT, linkTo(methodOn(ProductController.class).getAllProducts()).withRel("all-customers"));
+        getlinksByHttpMethodMap().add(HttpMethods.PUT, linkTo(methodOn(ProductController.class).getAllProducts()).withRel("all-products"));
         getlinksByHttpMethodMap().add(HttpMethods.GET, linkTo(methodOn(ProductController.class).getProduct(((Product)resource).getId())).withSelfRel());
 
     }

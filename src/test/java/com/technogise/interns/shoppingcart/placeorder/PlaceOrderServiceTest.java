@@ -78,7 +78,7 @@ public class PlaceOrderServiceTest {
         orderDetail.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
         orderDetail.setOrderStatus(OrderStatus.COMPLETED);
         orderDetail.setOrderPaymentStatus(PaymentStatus.COMPLETED);
-        orderDetail.setOrderPaymentType(PaymentType.COD);
+        orderDetail.setOrderPaymentType(PaymentType.UPI);
         orderDetail.setTimestamp(Instant.now());
         orderDetail.setOrderItems(orderItemList);
 
@@ -88,13 +88,13 @@ public class PlaceOrderServiceTest {
         Mockito.when(orderService.createOrder(any(Order.class))).thenReturn(orderDetail);
         Mockito.doNothing().when(cartService).deleteAllCartItems(customer.getId());
 
-        Order placedOrder = placeOrderService.placeOrder(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"),PaymentType.COD);
+        Order placedOrder = placeOrderService.placeOrder(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"),PaymentType.UPI);
 
         Order expectedOrder = new Order();
         expectedOrder.setOrderItems(orderItemList);
         expectedOrder.setOrderStatus(OrderStatus.COMPLETED);
         expectedOrder.setOrderPaymentStatus(PaymentStatus.COMPLETED);
-        expectedOrder.setOrderPaymentType(PaymentType.COD);
+        expectedOrder.setOrderPaymentType(PaymentType.UPI);
 
         Assertions.assertNotNull(placedOrder);
         verify(cartService,Mockito.times(1)).getAllCartItems(customer.getId());

@@ -80,7 +80,7 @@ public class OrderControllerTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentType(PaymentType.UPI);
         order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
@@ -97,8 +97,8 @@ public class OrderControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content[0].timestamp", is(order.getTimestamp().toString())))
-                .andExpect(jsonPath("content[0].orderPaymentType", is(order.getOrderPaymentType())))
-                .andExpect(jsonPath("content[0].orderPaymentStatus", is(order.getOrderPaymentStatus())))
+                .andExpect(jsonPath("content[0].orderPaymentType", is(order.getOrderPaymentType().toString())))
+                .andExpect(jsonPath("content[0].orderPaymentStatus", is(order.getOrderPaymentStatus().toString())))
                 .andExpect(jsonPath("content[0].orderItems[0].name", is(ordersOrderItem.getName())))
                 .andExpect(jsonPath("$.content[0].orderItems[0].price").value(ordersOrderItem.getPrice()))
                 .andExpect(jsonPath("content[0].orderItems[0]quantity", is(ordersOrderItem.getQuantity())))
@@ -115,7 +115,7 @@ public class OrderControllerTest {
         Order orderData = new Order();
         orderData.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-        orderData.setOrderPaymentType(PaymentType.COD);
+        orderData.setOrderPaymentType(PaymentType.UPI);
         orderData.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem orderItem = new OrdersOrderItem();
@@ -139,7 +139,7 @@ public class OrderControllerTest {
         Order expectedOrderData = new Order();
         expectedOrderData.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         expectedOrderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-        expectedOrderData.setOrderPaymentType(PaymentType.COD);
+        expectedOrderData.setOrderPaymentType(PaymentType.UPI);
         expectedOrderData.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem expectedOrderItem = new OrdersOrderItem();
@@ -158,8 +158,8 @@ public class OrderControllerTest {
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id").isNotEmpty())
                         .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                        .andExpect(jsonPath("$.orderPaymentStatus").value(expectedOrderData.getOrderPaymentStatus()))
-                        .andExpect(jsonPath("$.orderPaymentType").value(expectedOrderData.getOrderPaymentType()))
+                        .andExpect(jsonPath("$.orderPaymentStatus").value(expectedOrderData.getOrderPaymentStatus().toString()))
+                        .andExpect(jsonPath("$.orderPaymentType").value(expectedOrderData.getOrderPaymentType().toString()))
                         .andExpect(jsonPath("$.orderItems[0].id").isNotEmpty())
                         .andExpect(jsonPath("$.orderItems[0].image").value(expectedOrderItem.getImage()))
                         .andExpect(jsonPath("$.orderItems[0].name").value(expectedOrderItem.getName()))
@@ -178,7 +178,7 @@ public class OrderControllerTest {
         Order existingOrder = new Order();
         existingOrder.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         existingOrder.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-        existingOrder.setOrderPaymentType(PaymentType.COD);
+        existingOrder.setOrderPaymentType(PaymentType.UPI);
         existingOrder.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem existingOrderItem = new OrdersOrderItem();
@@ -192,7 +192,7 @@ public class OrderControllerTest {
         Order newOrder = new Order();
         newOrder.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         newOrder.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-        newOrder.setOrderPaymentType(PaymentType.COD);
+        newOrder.setOrderPaymentType(PaymentType.UPI);
         newOrder.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
@@ -217,8 +217,8 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.orderPaymentStatus").value(newOrder.getOrderPaymentStatus()))
-                .andExpect(jsonPath("$.orderPaymentType").value(newOrder.getOrderPaymentType()))
+                .andExpect(jsonPath("$.orderPaymentStatus").value(newOrder.getOrderPaymentStatus().toString()))
+                .andExpect(jsonPath("$.orderPaymentType").value(newOrder.getOrderPaymentType().toString()))
                 .andExpect(jsonPath("$.orderItems[0].id").isNotEmpty())
                 .andExpect(jsonPath("$.orderItems[0].image").value(newOrderItem.getImage()))
                 .andExpect(jsonPath("$.orderItems[0].name").value(newOrderItem.getName()))
@@ -239,7 +239,7 @@ public class OrderControllerTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentType(PaymentType.UPI);
         order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
@@ -283,7 +283,7 @@ public class OrderControllerTest {
         Order orderData = new Order();
         orderData.setId(UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678"));
         orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-        orderData.setOrderPaymentType(PaymentType.COD);
+        orderData.setOrderPaymentType(PaymentType.UPI);
         orderData.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem orderItem = new OrdersOrderItem();
@@ -319,7 +319,7 @@ public class OrderControllerTest {
         Order orderData = new Order();
         orderData.setId(UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678"));
         orderData.setTimestamp(Instant.parse("2022-04-08T11:31:20.846Z"));
-        orderData.setOrderPaymentType(PaymentType.COD);
+        orderData.setOrderPaymentType(PaymentType.UPI);
         orderData.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem orderItem = new OrdersOrderItem();
@@ -353,7 +353,7 @@ public class OrderControllerTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentType(PaymentType.UPI);
         order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();

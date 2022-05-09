@@ -20,6 +20,7 @@ public class Order {
     @JsonProperty(access = JsonProperty.Access. READ_ONLY)
     private Instant timestamp;
     private PaymentType orderPaymentType;
+    //private PayOrderDetail payOrderDetail;
     private PaymentStatus orderPaymentStatus;
     private OrderStatus orderStatus;
     private List<OrdersOrderItem> orderItems;

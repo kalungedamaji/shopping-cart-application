@@ -17,7 +17,7 @@ public class CustomerRepositoryTest {
     private TestEntityManager entityManager;
 
     @Autowired
-    CustomerRepository customerRepository;
+    private CustomerRepository customerRepository;
 
     @Test
     public void shouldBeEmptyIfNoCustomersArePresent(){

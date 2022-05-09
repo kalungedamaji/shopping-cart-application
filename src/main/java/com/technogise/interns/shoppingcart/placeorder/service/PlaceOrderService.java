@@ -28,9 +28,9 @@ public class PlaceOrderService {
     @Autowired
     private OrderService orderService;
 
-    public Order prepareOrderDetails(PayOrderDetail payOrderDetail, List<CartItem> cartItemList){
+    public Order prepareOrderDetails(PaymentType paymentType, List<CartItem> cartItemList){
         Order orderDetails = new Order();
-        orderDetails.setOrderPaymentType(payOrderDetail.getPaymentType());
+        orderDetails.setOrderPaymentType(paymentType);
         orderDetails.setOrderPaymentStatus(PaymentStatus.COMPLETED);
         orderDetails.setOrderStatus(OrderStatus.COMPLETED);
         List<OrdersOrderItem> orderItemList= listConvertor.cartItemListToOrderItemListConvertor(cartItemList);
@@ -38,7 +38,7 @@ public class PlaceOrderService {
         return orderDetails;
     }
     @Transactional
-    public Order placeOrder(UUID customerId, PayOrderDetail payOrderDetail) {
+    public Order placeOrder(UUID customerId, PaymentType paymentType) {
         Optional<Customer> customer = Optional.ofNullable(customerService.getCustomerById(customerId));
 
         if(!customer.isPresent()){
@@ -50,13 +50,12 @@ public class PlaceOrderService {
                 throw new EntityNotFoundException(CartItem.class, "customerId",customerId.toString());
             }
             else{
-                Order orderDetails = prepareOrderDetails(payOrderDetail, cartItemList);
+                Order orderDetails = prepareOrderDetails(paymentType, cartItemList);
 
                 Order order = orderService.createOrder(orderDetails);
                 cartService.deleteAllCartItems(customerId);
                 return order;
             }
-
         }
     }
 }
