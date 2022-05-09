@@ -1,13 +1,10 @@
 package com.technogise.interns.shoppingcart.placeorder.service;
 
 import com.technogise.interns.shoppingcart.customer.service.CustomerService;
-import com.technogise.interns.shoppingcart.dto.Customer;
+import com.technogise.interns.shoppingcart.dto.*;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.placeorder.convertor.ListConvertor;
 import com.technogise.interns.shoppingcart.cart.service.CartService;
-import com.technogise.interns.shoppingcart.dto.CartItem;
-import com.technogise.interns.shoppingcart.dto.Order;
-import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
 import com.technogise.interns.shoppingcart.enums.OrderStatus;
 import com.technogise.interns.shoppingcart.enums.PaymentStatus;
 import com.technogise.interns.shoppingcart.enums.PaymentType;
@@ -31,9 +28,9 @@ public class PlaceOrderService {
     @Autowired
     private OrderService orderService;
 
-    public Order prepareOrderDetails(PaymentType paymentType, List<CartItem> cartItemList){
+    public Order prepareOrderDetails(PayOrderDetail payOrderDetail, List<CartItem> cartItemList){
         Order orderDetails = new Order();
-        orderDetails.setOrderPaymentType(paymentType);
+        orderDetails.setOrderPaymentType(payOrderDetail.getPaymentType());
         orderDetails.setOrderPaymentStatus(PaymentStatus.COMPLETED);
         orderDetails.setOrderStatus(OrderStatus.COMPLETED);
         List<OrdersOrderItem> orderItemList= listConvertor.cartItemListToOrderItemListConvertor(cartItemList);
@@ -41,7 +38,7 @@ public class PlaceOrderService {
         return orderDetails;
     }
     @Transactional
-    public Order placeOrder(UUID customerId, PaymentType paymentType) {
+    public Order placeOrder(UUID customerId, PayOrderDetail payOrderDetail) {
         Optional<Customer> customer = Optional.ofNullable(customerService.getCustomerById(customerId));
 
         if(!customer.isPresent()){
@@ -53,7 +50,7 @@ public class PlaceOrderService {
                 throw new EntityNotFoundException(CartItem.class, "customerId",customerId.toString());
             }
             else{
-                Order orderDetails = prepareOrderDetails(paymentType, cartItemList);
+                Order orderDetails = prepareOrderDetails(payOrderDetail, cartItemList);
 
                 Order order = orderService.createOrder(orderDetails);
                 cartService.deleteAllCartItems(customerId);
