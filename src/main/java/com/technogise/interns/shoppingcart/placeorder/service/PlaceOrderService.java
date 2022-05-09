@@ -28,17 +28,8 @@ public class PlaceOrderService {
     @Autowired
     private OrderService orderService;
 
-    public Order prepareOrderDetails(PayOrderDetail payOrderDetail, List<CartItem> cartItemList){
-        Order orderDetails = new Order();
-        orderDetails.setOrderPaymentType(payOrderDetail.getPaymentType());
-        orderDetails.setOrderPaymentStatus(PaymentStatus.COMPLETED);
-        orderDetails.setOrderStatus(OrderStatus.COMPLETED);
-        List<OrdersOrderItem> orderItemList= listConvertor.cartItemListToOrderItemListConvertor(cartItemList);
-        orderDetails.setOrderItems(orderItemList);
-        return orderDetails;
-    }
     @Transactional
-    public Order placeOrder(UUID customerId, PayOrderDetail payOrderDetail) {
+    public Order placeOrder(final UUID customerId,final PayOrderDetail payOrderDetail) {
         Optional<Customer> customer = Optional.ofNullable(customerService.getCustomerById(customerId));
 
         if(!customer.isPresent()){
@@ -56,7 +47,15 @@ public class PlaceOrderService {
                 cartService.deleteAllCartItems(customerId);
                 return order;
             }
-
         }
+    }
+    private Order prepareOrderDetails(final PayOrderDetail payOrderDetail,final  List<CartItem> cartItemList){
+        Order orderDetails = new Order();
+        orderDetails.setOrderPaymentType(payOrderDetail.getPaymentType());
+        orderDetails.setOrderPaymentStatus(PaymentStatus.COMPLETED);
+        orderDetails.setOrderStatus(OrderStatus.COMPLETED);
+        List<OrdersOrderItem> orderItemList= listConvertor.cartItemListToOrderItemListConvertor(cartItemList);
+        orderDetails.setOrderItems(orderItemList);
+        return orderDetails;
     }
 }

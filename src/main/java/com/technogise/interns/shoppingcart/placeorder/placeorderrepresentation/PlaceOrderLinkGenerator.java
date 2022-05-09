@@ -2,7 +2,6 @@ package com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation;
 
 import com.technogise.interns.shoppingcart.dto.Order;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
@@ -13,8 +12,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class LinkGenerator {
-    public EntityModel<Order> addLinks(Order order, UUID customerId){
+public class PlaceOrderLinkGenerator {
+    public EntityModel<Order> addAllOrdersLink(final Order order, final UUID customerId){
         EntityModel<Order> orderEntityModel = EntityModel.of(order);
         Link allOrdersLink =linkTo(methodOn(OrderController.class).getAllOrders(customerId)).withRel("all-orders");
         orderEntityModel.add(allOrdersLink);

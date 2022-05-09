@@ -8,7 +8,7 @@ import com.technogise.interns.shoppingcart.enums.PaymentType;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.placeorder.controller.PlaceOrderController;
-import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.LinkGenerator;
+import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.PlaceOrderLinkGenerator;
 import com.technogise.interns.shoppingcart.placeorder.service.PlaceOrderService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -45,7 +45,7 @@ public class PlaceOrderControllerTest {
     @MockBean
     private PlaceOrderService placeOrderService;
     @MockBean
-    private LinkGenerator linkGenerator;
+    private PlaceOrderLinkGenerator placeOrderLinkGenerator;
     @Test
     public void shouldPlaceOrder() throws Exception {
         UUID customerId = UUID.fromString("62ecbdf5-4107-4d04-980b-d20323d2cd6c");
@@ -76,7 +76,7 @@ public class PlaceOrderControllerTest {
         Mockito.when(placeOrderService.placeOrder(customerId,payOrderDetail)).thenReturn(order);
         //Mockito.when(placeOrderLinks.prepareLink(customerId))
                 //.thenReturn(linkTo(methodOn(OrderController.class).getAllOrders(customerId)).withRel("all-orders"));
-        doReturn(orderEntityModel).when(linkGenerator).addLinks(order,customerId);
+        doReturn(orderEntityModel).when(placeOrderLinkGenerator).addAllOrdersLink(order,customerId);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/pay")
