@@ -1,4 +1,4 @@
-package com.technogise.interns.shoppingcart.orders.order.entity;
+package com.technogise.interns.shoppingcart.orders.orderItems.entity;
 
 import lombok.Data;
 

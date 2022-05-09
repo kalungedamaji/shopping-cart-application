@@ -2,9 +2,11 @@ package com.technogise.interns.shoppingcart.order.service;
 
 import com.technogise.interns.shoppingcart.dto.Order;
 import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
+import com.technogise.interns.shoppingcart.enums.PaymentStatus;
+import com.technogise.interns.shoppingcart.enums.PaymentType;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.orders.order.entity.OrderEntity;
-import com.technogise.interns.shoppingcart.orders.order.entity.OrdersOrderItemEntity;
+import com.technogise.interns.shoppingcart.orders.orderItems.entity.OrdersOrderItemEntity;
 import com.technogise.interns.shoppingcart.orders.order.mapper.OrderMapper;
 import com.technogise.interns.shoppingcart.orders.order.repository.OrderRepository;
 import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
@@ -69,8 +71,8 @@ public class OrderServiceTest {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         orderEntity.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        orderEntity.setOrderPaymentType("cash");
-        orderEntity.setOrderPaymentStatus("done");
+        orderEntity.setOrderPaymentType(PaymentType.COD);
+        orderEntity.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItemEntity ordersOrderItemEntity = getOrdersOrderItemEntity();
         List<OrdersOrderItemEntity> ordersOrderItemEntityList = new ArrayList<>();
@@ -82,8 +84,8 @@ public class OrderServiceTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType("cash");
-        order.setOrderPaymentStatus("done");
+        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
         List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
@@ -105,8 +107,8 @@ public class OrderServiceTest {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         orderEntity.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        orderEntity.setOrderPaymentType("cash");
-        orderEntity.setOrderPaymentStatus("done");
+        orderEntity.setOrderPaymentType(PaymentType.COD);
+        orderEntity.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItemEntity ordersOrderItemEntity = getOrdersOrderItemEntity();
         List<OrdersOrderItemEntity> ordersOrderItemEntityList = new ArrayList<>();
@@ -116,8 +118,8 @@ public class OrderServiceTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType("cash");
-        order.setOrderPaymentStatus("done");
+        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
         List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
@@ -137,8 +139,8 @@ public class OrderServiceTest {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         orderEntity.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        orderEntity.setOrderPaymentType("cash");
-        orderEntity.setOrderPaymentStatus("done");
+        orderEntity.setOrderPaymentType(PaymentType.COD);
+        orderEntity.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItemEntity ordersOrderItemEntity = getOrdersOrderItemEntity();
         List<OrdersOrderItemEntity> ordersOrderItemEntityList = new ArrayList<>();
@@ -148,8 +150,8 @@ public class OrderServiceTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType("cash");
-        order.setOrderPaymentStatus("done");
+        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
         List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();
@@ -172,8 +174,8 @@ public class OrderServiceTest {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         orderEntity.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        orderEntity.setOrderPaymentType("cash");
-        orderEntity.setOrderPaymentStatus("done");
+        orderEntity.setOrderPaymentType(PaymentType.COD);
+        orderEntity.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItemEntity ordersOrderItemEntity = getOrdersOrderItemEntity();
         List<OrdersOrderItemEntity> ordersOrderItemEntityList = new ArrayList<>();
@@ -207,8 +209,8 @@ public class OrderServiceTest {
         Order order = new Order();
         order.setId(UUID.fromString("a0217f70-7123-45bc-a1b6-f9d392579401"));
         order.setTimestamp(Instant.parse("2022-04-07T10:29:35.721Z"));
-        order.setOrderPaymentType("cash");
-        order.setOrderPaymentStatus("done");
+        order.setOrderPaymentType(PaymentType.COD);
+        order.setOrderPaymentStatus(PaymentStatus.COMPLETED);
 
         OrdersOrderItem ordersOrderItem = getOrdersOrderItem();
         List<OrdersOrderItem> ordersOrderItemList = new ArrayList<>();

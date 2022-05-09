@@ -1,5 +1,6 @@
 package com.technogise.interns.shoppingcart.cart;
 
+import com.technogise.interns.shoppingcart.cart.controller.CartController;
 import com.technogise.interns.shoppingcart.cart.service.CartService;
 import com.technogise.interns.shoppingcart.dto.CartItem;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
@@ -41,7 +42,7 @@ public class CartControllerTest {
     public void shouldReturnEmptyCart() throws Exception{
         List<CartItem> cart = new ArrayList<>();
         Mockito.when(
-                cartService.getAllCartItems()).thenReturn(cart);
+                cartService.getAllCartItems(UUID.fromString("62ecbdf5-4107-4d04-980b-d20323d2cd6c"))).thenReturn(cart);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
                 "http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart").accept(MediaType.APPLICATION_JSON);
@@ -61,7 +62,7 @@ public class CartControllerTest {
         newCartItem.setName("Dove");
         cart.add(newCartItem);
 
-        Mockito.when(cartService.getAllCartItems()).thenReturn(cart);
+        Mockito.when(cartService.getAllCartItems(UUID.fromString("62ecbdf5-4107-4d04-980b-d20323d2cd6c"))).thenReturn(cart);
 
         RequestBuilder requestBuilderGet = MockMvcRequestBuilders.get("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart")
                 .accept(MediaType.APPLICATION_JSON);
@@ -95,7 +96,7 @@ public class CartControllerTest {
         newCartItem.setPrice(BigDecimal.valueOf(10.00));
         newCartItem.setQuantity(5);
 
-        Mockito.when(cartService.getCartItemById(any(UUID.class))).thenReturn(newCartItem);
+        Mockito.when(cartService.getCartItemById(any(UUID.class), any(UUID.class))).thenReturn(newCartItem);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("http://localhost:9000/customers/676ea10c-537b-4861-b27b-f3b8cbc0dc36/cart/676ea10c-537b-4861-b27b-f3b8cbc0dc36")
                 .accept(MediaType.APPLICATION_JSON);
@@ -124,8 +125,10 @@ public class CartControllerTest {
         newCartItem.setPrice(BigDecimal.valueOf(10.00));
         newCartItem.setImage("image");
         newCartItem.setName("Dove");
+        newCartItem.setCustomerId(UUID.randomUUID());
+        newCartItem.setId(UUID.randomUUID());
 
-        Mockito.when(cartService.addProductToCart(any(CartItem.class))).thenReturn(newCartItem);
+        Mockito.when(cartService.addProductToCart(any(CartItem.class),any(UUID.class))).thenReturn(newCartItem);
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.post("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart")
                 .accept(MediaType.APPLICATION_JSON)
@@ -164,7 +167,7 @@ public class CartControllerTest {
                 .content(objectMapper.writeValueAsString(newCartItem))
                 .contentType(MediaType.APPLICATION_JSON);
 
-        Mockito.when(cartService.updateCartItem(any(CartItem.class), any(UUID.class))).thenReturn(newCartItem);
+        Mockito.when(cartService.updateCartItem(any(CartItem.class), any(UUID.class), any(UUID.class))).thenReturn(newCartItem);
 
         CartItem updatedCartItem = new CartItem();
         updatedCartItem.setId(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));
@@ -192,7 +195,7 @@ public class CartControllerTest {
         newCartItem.setImage("image");
         newCartItem.setName("Dove");
 
-        Mockito.doNothing().when(cartService).deleteCartItemById(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+        Mockito.doNothing().when(cartService).deleteCartItemById(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"),UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart/cf7f42d3-42d1-4727-97dd-4a086ecc0060")
                 .accept(MediaType.APPLICATION_JSON);
 
@@ -206,7 +209,7 @@ public class CartControllerTest {
 
         UUID cartItemId = UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678");
 
-        Mockito.when(cartService.getCartItemById(any(UUID.class))).thenThrow(new EntityNotFoundException(CartItem.class, "id", cartItemId.toString()));
+        Mockito.when(cartService.getCartItemById(any(UUID.class), any(UUID.class))).thenThrow(new EntityNotFoundException(CartItem.class, "id", cartItemId.toString()));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders.get("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98678/cart/43668cf2-6ce4-4238-b32e-dfadafb98678")
                 .accept(MediaType.APPLICATION_JSON);
@@ -235,7 +238,7 @@ public class CartControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newCartItem))
                 .contentType(MediaType.APPLICATION_JSON);
-        Mockito.when(cartService.updateCartItem(any(CartItem.class),any(UUID.class))).thenThrow(new EntityNotFoundException(CartItem.class, "id", cartItemId.toString()) );
+        Mockito.when(cartService.updateCartItem(any(CartItem.class),any(UUID.class), any(UUID.class))).thenThrow(new EntityNotFoundException(CartItem.class, "id", cartItemId.toString()) );
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound())
@@ -249,7 +252,7 @@ public class CartControllerTest {
     public void deleteCartItemShouldReturnNotFoundErrorIfCartItemIsNotPresent() throws Exception{
         UUID cartItemId = UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36");
 
-        Mockito.doThrow(new EntityNotFoundException(CartItem.class, "id", cartItemId.toString())).when(cartService).deleteCartItemById(cartItemId);
+        Mockito.doThrow(new EntityNotFoundException(CartItem.class, "id", cartItemId.toString())).when(cartService).deleteCartItemById(cartItemId, UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678"));
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("http://localhost:9000/customers/43668cf2-6ce4-4238-b32e-dfadafb98678/cart/676ea10c-537b-4861-b27b-f3b8cbc0dc36")
                 .accept(MediaType.APPLICATION_JSON);
 

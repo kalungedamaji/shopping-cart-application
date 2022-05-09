@@ -1,7 +1,7 @@
-package com.technogise.interns.shoppingcart.cart;
+package com.technogise.interns.shoppingcart.cart.controller;
 import com.technogise.interns.shoppingcart.cart.service.CartService;
 import com.technogise.interns.shoppingcart.dto.CartItem;
-import com.technogise.interns.shoppingcart.store.ProductController;
+import com.technogise.interns.shoppingcart.store.controller.ProductController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class CartController {
         logger.info("Getting all the cart items from Cart Service...");
         logger.debug("getAllCartItem() is called with customerId: "+customerId);
         List<EntityModel<CartItem>> entityModelList= new ArrayList<>();
-        List<CartItem> cartItemList= cartService.getAllCartItems();
+        List<CartItem> cartItemList= cartService.getAllCartItems(customerId);
         for(CartItem cartItem : cartItemList){
             EntityModel<CartItem> resource = EntityModel.of(cartItem);
             WebMvcLinkBuilder linkToSelf = linkTo(methodOn(this.getClass()).getCartItemById(cartItem.getId(),customerId));
@@ -65,7 +65,7 @@ public class CartController {
             logger.debug("getCartItemById() is called with customerId: "+customerId+" and cartItemId: "+cartItemId);
 
 
-            CartItem cartItem = cartService.getCartItemById(cartItemId);
+            CartItem cartItem = cartService.getCartItemById(cartItemId, customerId);
             EntityModel<CartItem> resource = EntityModel.of(cartItem);
             WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
             WebMvcLinkBuilder linkToProducts = linkTo(methodOn(ProductController.class).getAllProducts());
@@ -89,8 +89,7 @@ public class CartController {
         logger.info("Adding product to cart service...");
         logger.debug("addProductToCartItem() is called with customerId: "+customerId+" and cartItem: "+newCartItem);
 
-        CartItem cartItem=cartService.addProductToCart(newCartItem);
-        cartItem.setId(UUID.randomUUID());
+        CartItem cartItem=cartService.addProductToCart(newCartItem,customerId);
         EntityModel<CartItem> resource = EntityModel.of(cartItem);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getAllCartItems(customerId));
         resource.add(linkTo.withRel("all-cartItems"));
@@ -109,7 +108,7 @@ public class CartController {
         logger.info("Updating details for cart item in service...");
         logger.debug("updateCartItem() is called with customerId: "+customerId+", cartItemId: "+cartItemId+" and cartItemDetails: "+cartItemDetails);
 
-        CartItem replacedCartItem = cartService.updateCartItem(cartItemDetails, cartItemId);
+        CartItem replacedCartItem = cartService.updateCartItem(cartItemDetails, cartItemId, customerId);
 
         EntityModel<CartItem> resource = EntityModel.of(replacedCartItem);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(getClass()).getAllCartItems(customerId));
@@ -133,7 +132,7 @@ public class CartController {
         logger.info("Removing cart item from service...");
         logger.debug("deleteCartItem() is called with customerId: "+customerId+" and cartItemId: "+cartItemId);
 
-        cartService.deleteCartItemById(cartItemId);
+        cartService.deleteCartItemById(cartItemId,customerId);
         logger.info(" Removed cart item from service.");
 
         return new ResponseEntity<>(HttpStatus.OK);

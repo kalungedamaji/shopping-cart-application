@@ -17,8 +17,5 @@ public class CartItemEntity {
     private BigDecimal price;
     private int  quantity;
     private String image;
-
-
-
-
+    private UUID customerId;
 }

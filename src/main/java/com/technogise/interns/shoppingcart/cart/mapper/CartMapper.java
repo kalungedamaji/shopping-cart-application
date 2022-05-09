@@ -19,6 +19,7 @@ public class CartMapper {
         cartItem.setPrice(cartItemEntity.getPrice());
         cartItem.setQuantity(cartItemEntity.getQuantity());
         cartItem.setImage(cartItemEntity.getImage());
+        cartItem.setCustomerId(cartItemEntity.getCustomerId());
         logger.trace("Converted cartItem: "+cartItem.toString());
         return cartItem;
     }
@@ -32,6 +33,7 @@ public class CartMapper {
         cartItemEntity.setImage(cartItem.getImage());
         cartItemEntity.setPrice(cartItem.getPrice());
         cartItemEntity.setQuantity(cartItem.getQuantity());
+        cartItemEntity.setCustomerId(cartItem.getCustomerId());
         logger.trace("Converted entity: "+cartItemEntity.toString());
         return cartItemEntity;
     }

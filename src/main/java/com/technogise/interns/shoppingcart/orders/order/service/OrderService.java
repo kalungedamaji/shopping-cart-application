@@ -7,6 +7,7 @@ package com.technogise.interns.shoppingcart.orders.order.service;
         import com.technogise.interns.shoppingcart.orders.order.repository.OrderRepository;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.stereotype.Service;
+        import org.springframework.transaction.annotation.Transactional;
 
         import java.time.Instant;
         import java.util.List;
@@ -22,7 +23,7 @@ public class OrderService {
     @Autowired
     OrderMapper orderMapper;
 
-
+@Transactional
     public List<Order> getAllOrders() {
 
         return orderRepository.findAll()
@@ -41,9 +42,15 @@ public class OrderService {
         }
     }
 
-    public Order createOrder(Order order) {
+    public Order createOrder(Order orderDetails) {
+        Order order = new Order();
         order.setId(UUID.randomUUID());
         order.setTimestamp(Instant.now());
+        order.setOrderPaymentType(orderDetails.getOrderPaymentType());
+        order.setOrderPaymentStatus(orderDetails.getOrderPaymentStatus());
+        order.setOrderStatus(orderDetails.getOrderStatus());
+        order.setOrderItems(orderDetails.getOrderItems());
+
         OrderEntity orderEntity = orderRepository.save(orderMapper.mapToEntity(order));
         return orderMapper.map(orderEntity);
     }

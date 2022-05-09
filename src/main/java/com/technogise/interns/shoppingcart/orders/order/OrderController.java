@@ -2,7 +2,7 @@ package com.technogise.interns.shoppingcart.orders.order;
 
 import com.technogise.interns.shoppingcart.dto.*;
 import com.technogise.interns.shoppingcart.orders.order.service.OrderService;
-import com.technogise.interns.shoppingcart.store.ProductController;
+import com.technogise.interns.shoppingcart.store.controller.ProductController;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

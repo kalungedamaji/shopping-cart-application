@@ -1,7 +1,7 @@
 package com.technogise.interns.shoppingcart.customer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.technogise.interns.shoppingcart.cart.CartController;
+import com.technogise.interns.shoppingcart.cart.controller.CartController;
 import com.technogise.interns.shoppingcart.customer.CustomerController;
 import com.technogise.interns.shoppingcart.orders.order.OrderController;
 import com.technogise.interns.shoppingcart.representation.HttpMethods;

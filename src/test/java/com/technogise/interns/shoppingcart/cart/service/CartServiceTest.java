@@ -78,7 +78,7 @@ public class CartServiceTest {
         Mockito.when(cartMapper.entityToCartItemConvertor(cartItemEntity1)).thenReturn(cartItem1);
         Mockito.when(cartMapper.entityToCartItemConvertor(cartItemEntity2)).thenReturn(cartItem2);
 
-        List<CartItem> actualCartItemList = cartService.getAllCartItems();
+        List<CartItem> actualCartItemList = cartService.getAllCartItems(UUID.fromString("62ecbdf5-4107-4d04-980b-d20323d2cd6c"));
 
         MatcherAssert.assertThat(actualCartItemList, is(expectedCartItemList));
 
@@ -104,7 +104,7 @@ public class CartServiceTest {
         Mockito.when(cartMapper.cartItemToEntityConvertor(cartItem)).thenReturn(cartItemEntity);
         Mockito.when(cartMapper.entityToCartItemConvertor(cartItemEntity)).thenReturn(cartItem);
 
-        CartItem actualCartItem = cartService.addProductToCart(cartItem);
+        CartItem actualCartItem = cartService.addProductToCart(cartItem, UUID.fromString("edb9b593-757e-4bf1-82a2-6d73495f1020"));
         verify(cartRepository,Mockito.times(1)).save(cartItemEntity);
         Assertions.assertNotNull(actualCartItem.getId());
         MatcherAssert.assertThat(actualCartItem.getName(), is(cartItem.getName()));
@@ -115,8 +115,9 @@ public class CartServiceTest {
     }
 
 @Test
-public void shouldReturnCustomerFromRepositoryWithRequiredId() {
+public void shouldReturnCartItemFromRepositoryWithRequiredId() {
 
+       UUID customerId = UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060");
     CartItemEntity cartItemEntity = new CartItemEntity();
     cartItemEntity.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
     cartItemEntity.setName("Dove");
@@ -141,7 +142,7 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
     Mockito.when(cartRepository.findById(any(UUID.class))).thenReturn(Optional.of(cartItemEntity));
     Mockito.when(cartMapper.entityToCartItemConvertor(any(CartItemEntity.class))).thenReturn(cartItem);
 
-    CartItem actualRequiredCartItem = cartService.getCartItemById(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+    CartItem actualRequiredCartItem = cartService.getCartItemById(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"),customerId);
 
     MatcherAssert.assertThat(actualRequiredCartItem, is(expectedCartItem));
 }
@@ -158,13 +159,15 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
         Mockito.when(cartRepository.findById(any(UUID.class))).thenReturn(Optional.of(cartItemEntity));
         Mockito.doNothing().when(cartRepository).deleteById(any(UUID.class));
 
-        cartService.deleteCartItemById(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+        cartService.deleteCartItemById(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"),UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
 
         verify(cartRepository,Mockito.times(1)).deleteById(any(UUID.class));
 
     }
     @Test
     public void shouldReturnUpdatedCartItemFromRepository(){
+
+        UUID customerId = (UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
 
         CartItemEntity cartItemEntity = new CartItemEntity();
         cartItemEntity.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
@@ -192,18 +195,18 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
         Mockito.when(cartMapper.cartItemToEntityConvertor(any(CartItem.class))).thenReturn(newCartItemEntity);
         Mockito.when(cartMapper.entityToCartItemConvertor(newCartItemEntity)).thenReturn(newCartItem);
 
-        CartItem actualReplacedCustomer = cartService.updateCartItem(newCartItem,UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+        CartItem actualReplacedCustomer = cartService.updateCartItem(newCartItem,UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"), customerId);
 
         MatcherAssert.assertThat(actualReplacedCustomer, is(newCartItem));
     }
 
     @Test
     public void getCartItemShouldThrowNotFoundExceptionWhenCartItemIsNotPresent(){
-
+        UUID customerId = UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678");
         UUID cartItemId = UUID.fromString("43668cf2-6ce4-4238-b32e-dfadafb98678");
         Mockito.when(cartRepository.findById(any())).thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.getCartItemById(cartItemId), "EntityNotFoundException was expected");
+        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.getCartItemById(cartItemId,customerId), "EntityNotFoundException was expected");
 
         MatcherAssert.assertThat(thrown.getMessage(), is("CartItem was not found for parameters {id=43668cf2-6ce4-4238-b32e-dfadafb98678}"));
 
@@ -211,6 +214,8 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
 
     @Test
     public void replaceCartItemShouldThrowNotFoundExceptionWhenCartItemIdIsInvalid(){
+        UUID customerId= (UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
+
         CartItem newCartItem = new CartItem();
         newCartItem.setId(UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060"));
         newCartItem.setName("Dove");
@@ -222,7 +227,7 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
 
         Mockito.when(cartRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
-        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.updateCartItem(newCartItem,cartItemId),"EntityNotFoundException was expected");
+        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.updateCartItem(newCartItem,cartItemId,customerId),"EntityNotFoundException was expected");
         MatcherAssert.assertThat(thrown.getMessage(), is("CartItem was not found for parameters {id=cf7f42d3-42d1-4727-97dd-4a086ecc0060}"));
     }
 
@@ -231,7 +236,7 @@ public void shouldReturnCustomerFromRepositoryWithRequiredId() {
         UUID cartItemId = UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060");
 
         Mockito.when(cartRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.deleteCartItemById(cartItemId),"EntityNotFoundException was expected");
+        EntityNotFoundException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> cartService.deleteCartItemById(cartItemId,UUID.fromString("cf7f42d3-42d1-4727-97dd-4a086ecc0060")),"EntityNotFoundException was expected");
 
         MatcherAssert.assertThat(thrown.getMessage(), is("CartItem was not found for parameters {id=cf7f42d3-42d1-4727-97dd-4a086ecc0060}"));
     }

@@ -2,8 +2,8 @@ package com.technogise.interns.shoppingcart.store;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.technogise.interns.shoppingcart.Application;
 
+import com.technogise.interns.shoppingcart.CartApplication;
 import com.technogise.interns.shoppingcart.dto.Product;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 @RunWith(SpringRunner.class)
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "file:src/test/resources/dbtest/product-test.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "file:src/test/resources/dbtest/cleanup-product.sql")
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = CartApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ProductStoreTest {
     @Autowired
     private ObjectMapper objectMapper;

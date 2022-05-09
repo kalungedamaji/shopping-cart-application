@@ -1,6 +1,6 @@
 package com.technogise.interns.shoppingcart.customer.hateosLinksProvider;
 
-import com.technogise.interns.shoppingcart.cart.CartController;
+import com.technogise.interns.shoppingcart.cart.controller.CartController;
 import com.technogise.interns.shoppingcart.customer.CustomerController;
 import com.technogise.interns.shoppingcart.representation.HttpMethods;
 import com.technogise.interns.shoppingcart.dto.Customer;

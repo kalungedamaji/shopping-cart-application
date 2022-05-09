@@ -27,4 +27,7 @@ public class CartItem {
     private int quantity;
     @ApiModelProperty(notes = "image of the cart item")
     private String image;
+    @ApiModelProperty(notes = "id of the customer")
+    private UUID customerId;
+
 }

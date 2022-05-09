@@ -1,7 +1,4 @@
 package com.technogise.interns.shoppingcart.store.controller;
-import com.technogise.interns.shoppingcart.cart.CartController;
-import com.technogise.interns.shoppingcart.customer.hateosLinksProvider.CustomerLinks;
-import com.technogise.interns.shoppingcart.dto.Customer;
 import com.technogise.interns.shoppingcart.dto.Product;
 import com.technogise.interns.shoppingcart.representation.HttpMethods;
 import com.technogise.interns.shoppingcart.store.hateosLinksProvider.ProductLinks;
@@ -13,18 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class ProductController {
