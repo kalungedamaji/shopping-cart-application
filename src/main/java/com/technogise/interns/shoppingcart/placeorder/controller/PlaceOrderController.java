@@ -2,9 +2,7 @@ package com.technogise.interns.shoppingcart.placeorder.controller;
 
 import com.technogise.interns.shoppingcart.dto.Order;
 import com.technogise.interns.shoppingcart.dto.PayOrderDetail;
-import com.technogise.interns.shoppingcart.enums.PaymentType;
-import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.PlaceOrderLinks;
-import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.Representation;
+import com.technogise.interns.shoppingcart.placeorder.placeorderrepresentation.LinkGenerator;
 import com.technogise.interns.shoppingcart.placeorder.service.PlaceOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -21,15 +19,13 @@ public class PlaceOrderController {
     @Autowired
     private PlaceOrderService placeOrderService;
     @Autowired
-    private PlaceOrderLinks placeOrderLinks;
-    @Autowired
-    private Representation representation;
+    private LinkGenerator linkGenerator;
 
     @PostMapping(path = "/pay",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<Order>> proceedToPay(@PathVariable UUID customerId, @RequestBody PayOrderDetail paymentType) {
             Order order = placeOrderService.placeOrder(customerId, paymentType);
-            return new ResponseEntity<>(representation.placeOrderRepresentation(order,customerId), HttpStatus.CREATED);
+            return new ResponseEntity<>(linkGenerator.addLinks(order,customerId), HttpStatus.CREATED);
     }
 }

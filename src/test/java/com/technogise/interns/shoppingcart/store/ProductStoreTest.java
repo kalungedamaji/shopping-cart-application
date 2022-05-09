@@ -66,10 +66,10 @@ public class ProductStoreTest {
                 .assertThat().body("name",equalTo("Dove-test"))
                 .assertThat().body("image",equalTo("Dove soap image"))
                 .assertThat().body("description",equalTo("Its a dove soap"))
-                .assertThat().body("links[0].rel",equalTo("all-products"))
-                .assertThat().body("links[0].href",equalTo("http://localhost:9000/products"))
-                .assertThat().body("links[1].rel",equalTo("self"))
-                .assertThat().body("links[1].href",notNullValue());
+                .assertThat().body("links[1].rel",equalTo("all-products"))
+                .assertThat().body("links[1].href",equalTo("http://localhost:9000/products"))
+                .assertThat().body("links[0].rel",equalTo("self"))
+                .assertThat().body("links[0].href",notNullValue());
     }
     @Test
     public void testUpdateProduct() throws JsonProcessingException {
@@ -91,10 +91,10 @@ public class ProductStoreTest {
                 .assertThat().body("name",equalTo("Axe"))
                 .assertThat().body("image",equalTo("Axe image"))
                 .assertThat().body("description",equalTo("This is axe"))
-                .assertThat().body("links[0].rel",equalTo("all-products"))
-                .assertThat().body("links[0].href",equalTo("http://localhost:9000/products"))
-                .assertThat().body("links[1].rel",equalTo("self"))
-                .assertThat().body("links[1].href",notNullValue());
+                .assertThat().body("links[1].rel",equalTo("all-products"))
+                .assertThat().body("links[1].href",equalTo("http://localhost:9000/products"))
+                .assertThat().body("links[0].rel",equalTo("self"))
+                .assertThat().body("links[0].href",notNullValue());
     }
     @Test
     public void testDeleteProduct() throws JsonProcessingException {

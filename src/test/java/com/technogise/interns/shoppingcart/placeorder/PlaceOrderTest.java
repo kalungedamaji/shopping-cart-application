@@ -3,6 +3,7 @@ package com.technogise.interns.shoppingcart.placeorder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.technogise.interns.shoppingcart.CartApplication;
+import com.technogise.interns.shoppingcart.dto.PayOrderDetail;
 import com.technogise.interns.shoppingcart.enums.PaymentType;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -31,11 +32,12 @@ public class PlaceOrderTest {
 
     @Test
     public void shouldPlaceOrder() throws JsonProcessingException {
-        PaymentType paymentType = PaymentType.UPI;
+        PayOrderDetail payOrderDetail = new PayOrderDetail();
+        payOrderDetail.setPaymentType(PaymentType.UPI);
 
         RestAssured.given().accept(ContentType.JSON)
                 .contentType(ContentType.JSON).and()
-                .body(objectMapper.writeValueAsString(paymentType)).when()
+                .body(objectMapper.writeValueAsString(payOrderDetail)).when()
                 .post("http://localhost:9000/customers/edb9b593-757e-4bf1-82a2-6d73495f1020/pay").then()
                 .assertThat().statusCode(201)
                 .assertThat().body("id", notNullValue())
