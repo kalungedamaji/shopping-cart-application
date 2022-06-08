@@ -48,8 +48,8 @@ public class CartControllerTest {
                 "http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart").accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder).andExpect(status().isOk())
-                .andExpect(jsonPath("$._links[0].rel").value("self"))
-                .andExpect(jsonPath("$._links[0].href").value("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart"));
+                .andExpect(jsonPath("$.links[0].rel").value("self"))
+                .andExpect(jsonPath("$.links[0].href").value("http://localhost:9000/customers/62ecbdf5-4107-4d04-980b-d20323d2cd6c/cart"));
     }
     @Test
     public void shouldReturnAllCartItemsForACustomer() throws Exception{

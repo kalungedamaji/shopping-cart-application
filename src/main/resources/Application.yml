@@ -27,5 +27,5 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-  hateoas:
-    use-hal-as-default-json-media-type: false
+#  hateoas:
+#    use-hal-as-default-json-media-type: false
