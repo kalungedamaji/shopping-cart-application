@@ -11,9 +11,9 @@ logging:
 
 spring:
   # Database
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/shoppingcart
+  #datasource:
+    #driver-class-name: org.postgresql.Driver
+    #url: jdbc:postgresql://localhost:5432/shoppingcart
   # JPA properties
   jpa:
     hibernate:
