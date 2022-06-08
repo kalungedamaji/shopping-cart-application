@@ -49,7 +49,7 @@ public class OrderController {
         resourceList.add(linkToSelf.withSelfRel());
         resourceList.add(linkTo.withRel("product-store"));
 
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS)).body(resourceList);
+        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(0, TimeUnit.SECONDS)).body(resourceList);
     }
 
     @GetMapping(value="/orders/{orderId}" ,produces= MediaType.APPLICATION_JSON_VALUE)

@@ -1,3 +1,5 @@
+create extension "citext";
+create extension "uuid-ossp";
 create table product(
     id UUID PRIMARY KEY,
     image VARCHAR(100),
@@ -19,10 +21,13 @@ create table customer(
 );
 create table cart_item (
     id UUID PRIMARY KEY,
-    quantity SMALLINT NOT NULL DEFAULT 1,
+    quantity INTEGER NOT NULL DEFAULT 1,
     customer_id UUID REFERENCES customer(id),
     product_id UUID REFERENCES product(id),
-    status boolean DEFAULT TRUE
+    status boolean DEFAULT TRUE,
+    name VARCHAR(50),
+    image VARCHAR(256),
+    price NUMERIC(10,2)
 );
 CREATE TYPE PAYMENT_TYPE AS ENUM ('UPI', 'NET_BANKING', 'COD' , 'DEBIT_CARD');
 CREATE TYPE PAYMENT_STATUS AS ENUM ('REJECTED', 'IN_PROGRESS', 'COMPLETED' , 'CANCELED');

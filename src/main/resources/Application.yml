@@ -2,7 +2,7 @@ server:
   port: 9000
 
 logging:
-#  file: /Users/apple/Desktop/LogFile/logs.log
+  #  file: /Users/apple/Desktop/LogFile/logs.log
   level:
     com:
       technogise:

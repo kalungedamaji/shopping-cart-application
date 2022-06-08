@@ -19,7 +19,7 @@ public class CustomerEntity {
     @Column(name="phone_number")
     private String phoneNumber;
     private String address;
-    @Column(name="email_id")
+    @Column(name="email_id",columnDefinition="EMAIL")
     private String emailId;
     private String password;
 }
