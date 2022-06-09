@@ -20,25 +20,25 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-  postgres-job:
-    runs-on: macos-12
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: main
-          POSTGRES_PORT: 5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-    steps:
-      - name: Install PostgreSQL Client
-        run: |
-          apt-get update
-          apt-get install --yes postgresql-client
-      - name: Query database
-        run: psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
+#  postgres-job:
+#    runs-on: macos-12
+#    services:
+#      postgres:
+#        image: postgres
+#        env:
+#          POSTGRES_DB: main
+#          POSTGRES_PORT: 5432
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#        ports:
+#          - 5432:5432
+#    steps:
+#      - name: Install PostgreSQL Client
+#        run: |
+#          apt-get update
+#          apt-get install --yes postgresql-client
+#      - name: Query database
+#        run: psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
