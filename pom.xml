@@ -28,6 +28,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>8.5.11</version>
+    </dependency>
+    <dependency>
       <groupId>com.vladmihalcea</groupId>
       <artifactId>hibernate-types-52</artifactId>
       <version>2.13.0</version>

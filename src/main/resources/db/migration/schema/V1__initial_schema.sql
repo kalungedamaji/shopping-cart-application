@@ -1,3 +1,6 @@
+create extension "citext";
+create extension "uuid-ossp";
+
 create table product(
     id UUID PRIMARY KEY,
     image VARCHAR(100),
