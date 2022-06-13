@@ -13,11 +13,9 @@ import java.util.UUID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
-@SpringBootTest
 public class ItemConvertorTest {
 
-    @Autowired
-    private ItemConvertor itemConvertor;
+    private ItemConvertor itemConvertor = new ItemConvertor();
 
     @Test
     public void shouldConvertCartItemToOrderItem(){

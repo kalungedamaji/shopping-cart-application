@@ -5,6 +5,7 @@ import com.technogise.interns.shoppingcart.dto.OrdersOrderItem;
 import com.technogise.interns.shoppingcart.placeorder.convertor.ListConvertor;
 import com.technogise.interns.shoppingcart.placeorder.convertor.ItemConvertor;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,12 +20,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 
-@SpringBootTest
+
 public class ListConvertorTest {
-    @Autowired
-    private ListConvertor listConvertor;
-    @MockBean
-    private ItemConvertor itemConvertor;
+
+    private ItemConvertor itemConvertor = Mockito.mock(ItemConvertor.class);
+
+    private ListConvertor listConvertor = new ListConvertor(itemConvertor);
+
 
     @Test
     public void shouldConvertCartItemListToOrderItemList(){

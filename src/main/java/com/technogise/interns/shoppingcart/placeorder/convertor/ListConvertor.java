@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Component
 public class ListConvertor {
-    @Autowired
+
     private ItemConvertor itemConvertor;
+
+    public ListConvertor(ItemConvertor itemConvertor){
+        this.itemConvertor = itemConvertor;
+    }
     public List<OrdersOrderItem> cartItemListToOrderItemListConvertor(List<CartItem> cartItemList){
         List<OrdersOrderItem> orderItemList= cartItemList
                 .stream()

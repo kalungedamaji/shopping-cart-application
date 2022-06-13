@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ItemConvertor {
+
     public OrdersOrderItem convertCartItemToOrderItem(CartItem cartItem) {
         OrdersOrderItem ordersOrderItem = new OrdersOrderItem();
         ordersOrderItem.setName(cartItem.getName());
