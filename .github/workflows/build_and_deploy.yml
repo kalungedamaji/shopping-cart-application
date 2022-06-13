@@ -28,7 +28,7 @@
 name: CICD
 on:
   push:
-    branches: [ ci/cd ]
+    branches: [ master ]
 
 jobs:
   testAndBuild:
