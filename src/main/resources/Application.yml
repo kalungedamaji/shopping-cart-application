@@ -10,11 +10,11 @@ logging:
           shoppingcart: trace
 
 spring:
-  # Database
-  #datasource:
-    #driver-class-name: org.postgresql.Driver
-    #url: jdbc:postgresql://localhost:5432/shoppingcart
-  # JPA properties
+#   Database
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/shoppingcart
+#   JPA properties
   jpa:
     hibernate:
       ddl-auto: update # When you launch the application for the first time - switch "none" at "create"
