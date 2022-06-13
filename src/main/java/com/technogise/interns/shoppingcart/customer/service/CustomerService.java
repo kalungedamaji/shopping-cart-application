@@ -17,11 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerService {
 
-    @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
     private CustomerMapper customerMapper;
+
+    CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper){
+        this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
+    }
     private final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     public List<Customer> getAllCustomer() {

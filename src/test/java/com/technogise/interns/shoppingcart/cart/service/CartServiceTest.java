@@ -11,9 +11,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,19 +22,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
 public class CartServiceTest {
 
-    @Autowired
-    private CartService cartService;
+    private CartRepository cartRepository = Mockito.mock(CartRepository.class);
 
-    @MockBean
-    private CartRepository cartRepository;
+    private CartMapper cartMapper = Mockito.mock(CartMapper.class);
 
-    @MockBean
-    private CartMapper cartMapper;
-    @MockBean
-    private CustomerRepository customerRepository;
+    private CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
+
+    private CartService cartService = new CartService(cartRepository, cartMapper, customerRepository);
 
     @Test
     public void testGetAllCartItemsShouldReturnAllCartItems() {

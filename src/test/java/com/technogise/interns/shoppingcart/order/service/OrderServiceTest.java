@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -29,17 +31,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
 public class OrderServiceTest {
 
-    @Autowired
-    private OrderService orderService;
+    private OrderRepository orderRepository = Mockito.mock(OrderRepository.class);
 
-    @MockBean
-    private OrderRepository orderRepository;
+    private OrderMapper orderMapper = Mockito.mock(OrderMapper.class);
 
-    @MockBean
-    private OrderMapper orderMapper;
+    private OrderService orderService = new OrderService(orderRepository, orderMapper);
 
     public OrdersOrderItem getOrdersOrderItem() {
         OrdersOrderItem ordersOrderItem = new OrdersOrderItem();

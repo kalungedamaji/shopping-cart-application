@@ -10,9 +10,6 @@ import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,20 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest(properties = {
-        "spring.flyway.enabled=false",
-        "spring.jpa.hibernate.ddl-auto=create"})
+
 public class ProductServiceTest {
 
-    @Autowired
-    private ProductStoreService productStoreService;
+    private ProductRepository productRepository = Mockito.mock(ProductRepository.class);
 
-    @MockBean
-    private ProductRepository productRepository;
+    private ProductMapper productMapper = Mockito.mock(ProductMapper.class);
 
-    @MockBean
-    private ProductMapper productMapper;
-
+    private ProductStoreService productStoreService= new ProductStoreService(productRepository, productMapper);
 
     @Test
     public void shouldReturnAllProducts() {
@@ -207,4 +198,3 @@ public class ProductServiceTest {
         assertThat(thrown.getMessage(), is("Product was not found for parameters {id=a0217f70-7123-45bc-a1b6-f9d392579401}"));
     }
 }
-

@@ -7,9 +7,6 @@ import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,18 +17,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
 public class CustomerServiceTest {
-    @Autowired
-    private CustomerService customerService;
 
-    @MockBean
-    private CustomerRepository customerRepository;
+    private CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
 
-    @MockBean
-    private CustomerMapper customerMapper;
+    private CustomerMapper customerMapper = Mockito.mock(CustomerMapper.class);
 
-@Test
+    private CustomerService customerService= new CustomerService(customerRepository, customerMapper);
+
+
+    @Test
     public void shouldReturnCustomerAfterItsCreationInRepository(){
     CustomerEntity customerEntity = new CustomerEntity();
     customerEntity.setId(UUID.fromString("676ea10c-537b-4861-b27b-f3b8cbc0dc36"));

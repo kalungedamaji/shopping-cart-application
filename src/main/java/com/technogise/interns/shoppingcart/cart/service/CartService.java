@@ -20,13 +20,20 @@ import java.util.stream.Collectors;
 @Service
 public class CartService {
 
-        @Autowired
+
         private CartRepository cartRepository;
-        @Autowired
+
         private CustomerRepository customerRepository;
-        @Autowired
+
         private CartMapper cartMapper;
+
         private final Logger logger = LoggerFactory.getLogger(CartService.class);
+
+        CartService(CartRepository cartRepository, CartMapper cartMapper, CustomerRepository customerRepository){
+                this.cartMapper = cartMapper;
+                this.cartRepository = cartRepository;
+                this.customerRepository = customerRepository;
+        }
 
         public List<CartItem> getAllCartItems(UUID customerId) {
                 if(customerRepository.findById(customerId).isPresent()){

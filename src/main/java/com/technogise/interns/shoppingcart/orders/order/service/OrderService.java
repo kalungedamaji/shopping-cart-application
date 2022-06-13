@@ -17,11 +17,15 @@ package com.technogise.interns.shoppingcart.orders.order.service;
 
 @Service
 public class OrderService {
-    @Autowired
-    OrderRepository orderRepository;
 
-    @Autowired
-    OrderMapper orderMapper;
+    private OrderRepository orderRepository;
+
+    private OrderMapper orderMapper;
+
+    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper){
+        this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
+    }
 
 @Transactional
     public List<Order> getAllOrders() {

@@ -1,6 +1,5 @@
 package com.technogise.interns.shoppingcart.store.service;
 
-import com.technogise.interns.shoppingcart.cart.service.CartService;
 import com.technogise.interns.shoppingcart.dto.Product;
 import com.technogise.interns.shoppingcart.error.EntityNotFoundException;
 import com.technogise.interns.shoppingcart.store.entity.ProductEntity;
@@ -8,7 +7,6 @@ import com.technogise.interns.shoppingcart.store.mpper.ProductMapper;
 import com.technogise.interns.shoppingcart.store.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +17,16 @@ import java.util.stream.Collectors;
 @Service
 public class ProductStoreService {
 
-    @Autowired
     private ProductRepository  productRepository;
 
-    @Autowired
     private ProductMapper productMapper;
 
     private final Logger logger = LoggerFactory.getLogger(ProductStoreService.class);
 
+    ProductStoreService(ProductRepository productRepository, ProductMapper productMapper){
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
+    }
 
     public List<Product> getAllProduct() {
         logger.info("Getting all the products from Repository...");
