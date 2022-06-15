@@ -23,6 +23,7 @@ import static org.hamcrest.core.Is.is;
 @SpringBootTest(classes = CartApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 
 public class CustomerTest {
+
     @Autowired
     private ObjectMapper objectMapper;
 
