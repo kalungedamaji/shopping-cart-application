@@ -7,19 +7,19 @@ import com.technogise.interns.shoppingcart.CartApplication;
 import com.technogise.interns.shoppingcart.dto.Product;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "file:src/test/resources/dbtest/product-test.sql")
 @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "file:src/test/resources/dbtest/cleanup-product.sql")
 @SpringBootTest(classes = CartApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -27,7 +27,7 @@ public class ProductStoreTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Before
+    @BeforeAll
     public void setup() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = 9000;
