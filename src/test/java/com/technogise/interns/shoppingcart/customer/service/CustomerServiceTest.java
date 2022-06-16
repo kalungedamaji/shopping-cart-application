@@ -19,11 +19,11 @@ import static org.mockito.Mockito.verify;
 
 public class CustomerServiceTest {
 
-    private CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
+    private final CustomerRepository customerRepository = Mockito.mock(CustomerRepository.class);
 
-    private CustomerMapper customerMapper = Mockito.mock(CustomerMapper.class);
+    private final CustomerMapper customerMapper = Mockito.mock(CustomerMapper.class);
 
-    private CustomerService customerService= new CustomerService(customerRepository, customerMapper);
+    private final CustomerService customerService= new CustomerService(customerRepository, customerMapper);
 
 
     @Test
